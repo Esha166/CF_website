@@ -14,6 +14,7 @@ import {
   BookOpen,
   Users,
   Trophy,
+  GraduationCap,
 } from "lucide-react";
 
 const Linkedin = ({ className }: { className?: string }) => (
@@ -73,6 +74,7 @@ export default function Header() {
   const joinUsItems = [
     { label: "Career Opportunities", href: "/career", icon: <Briefcase className="w-4 h-4" /> },
     { label: "Volunteer for Combine", href: "/volunteer-program", icon: <Users className="w-4 h-4" /> },
+    { label: "Youth Leadership Program", href: "ylp.combinefoundation.org", icon: <GraduationCap className="w-4 h-4" /> },
   ];
 
   return (
