@@ -4,6 +4,7 @@ import PageMotion from "@/components/UI/PageMotion";
 export const metadata = {
   title: "Terms of Service",
   description: "Review the terms that apply when using the Combine Foundation website.",
+  keywords: ["Combine Foundation Terms of Service", "Nonprofit Organization Pakistan"],
 };
 
 const sections = [

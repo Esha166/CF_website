@@ -8,6 +8,7 @@ interface EventFormData {
   name: string;
   description: string;
   location: string;
+  coordinates: string;
   date: string;
   registrationLink: string;
   bulletPoints: string;
@@ -51,6 +52,7 @@ export default function EditEventModal({ event, onCancel, onSave }: EditEventMod
     name: event.name,
     description: event.description,
     location: event.location,
+    coordinates: event.coordinates || "",
     date: event.dateTime === "To be announced" ? "" : toDatetimeLocal(event.dateTime),
     registrationLink: event.registrationLink || "",
     bulletPoints: event.bulletPoints ? (Array.isArray(event.bulletPoints) ? event.bulletPoints.join("\n") : event.bulletPoints) : "",
@@ -180,17 +182,31 @@ export default function EditEventModal({ event, onCancel, onSave }: EditEventMod
           <p className="mt-2 text-xs text-gray-500">Upload 4 to 5 images for the previous-events gallery.</p>
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm text-gray-600 mb-1">Location</label>
-          <input
-            type="text"
-            name="location"
-            value={form.location}
-            onChange={handleChange}
-            placeholder="Event location"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+        <div className="flex gap-4 mb-4">
+          <div className="flex-1">
+            <label className="block text-sm text-gray-600 mb-1">Location</label>
+            <input
+              type="text"
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              placeholder="Event location"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-sm text-gray-600 mb-1">Coordinates (Optional)</label>
+            <input
+              type="text"
+              name="coordinates"
+              value={form.coordinates}
+              onChange={handleChange}
+              placeholder="e.g. 24.8608, 67.0104"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
         </div>
+        <p className="text-xs text-gray-400 -mt-2 mb-4">Adding coordinates pins this event on the Achievements map alongside projects.</p>
 
         <div className="mb-4">
           <label className="block text-sm text-gray-600 mb-1">Date</label>

@@ -6,6 +6,19 @@ import FaqSection from "@/components/home/FaqSection";
 import { getAllCourses, SuccessStory } from "@/lib/freeCourses";
 import PageMotion from "@/components/UI/PageMotion";
 
+export const metadata = {
+    title: "Free Courses",
+    description: "Discover free skill-building courses offered by Combine Foundation to empower youth across Pakistan.",
+    keywords: [
+        "Free Courses Pakistan",
+        "Youth Leadership Program",
+        "Youth Empowerment Pakistan",
+        "NGO in Pakistan",
+        "Nonprofit Organization Pakistan",
+        "Skill Development Program Pakistan",
+    ],
+};
+
 export const dynamic = "force-dynamic";
 
 export default async function Home() {

@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import PageHeroMobile from "@/components/UI/Pageheromobile";
 import AchievementsList from "@/components/projects/Achievementslist ";
 import { getAllProjects, type Project } from "@/lib/projects";
+import { getEventLocations, type EventLocation } from "@/lib/events";
 import { Loader2 } from "lucide-react";
 import PageMotion from "@/components/UI/PageMotion";
 
@@ -13,6 +14,7 @@ const AchievementsMap = dynamic(() => import("@/components/projects/map"), { ssr
 export default function Projects() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [eventLocations, setEventLocations] = useState<EventLocation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,6 +42,10 @@ export default function Projects() {
       }
     };
     loadProjects();
+
+    getEventLocations()
+      .then(setEventLocations)
+      .catch((err) => console.error("Error loading event locations:", err));
   }, []);
 
   const handleMapSelect = (id: string) => {
@@ -67,6 +73,7 @@ export default function Projects() {
             <PageHeroMobile title="Projects" imageSrc="/achievement-gallery/hero.svg" />
             <AchievementsMap
               projects={projects}
+              events={eventLocations}
               activeId={activeId}
               onSelect={handleMapSelect}
             />

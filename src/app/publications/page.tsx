@@ -6,6 +6,19 @@ import { fetchMOUs, fetchAnnualReports, type FirestoreAnnualReport,type Firestor
 import PartnersSection from "@/components/our-team/partners-section"
 import PageMotion from "@/components/UI/PageMotion"
 
+export const metadata = {
+    title: "Publications",
+    description: "Explore Combine Foundation's annual reports, MOUs, tax and Sharia compliance certificates as a registered, tax exempted NPO in Pakistan.",
+    keywords: [
+        "Tax Exempted NPO",
+        "Tax Exempted NGO Pakistan",
+        "NPO in Pakistan",
+        "NGO in Pakistan",
+        "Nonprofit Annual Report Pakistan",
+        "Registered NGO Pakistan",
+    ],
+};
+
 export const dynamic = "force-dynamic";
 
 const page = async () => {

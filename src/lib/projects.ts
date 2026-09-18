@@ -1,4 +1,4 @@
-import { collection, getDocs, query, orderBy } from "firebase/firestore/lite";
+import { collection, getDocs } from "firebase/firestore/lite";
 import { db } from "@/lib/firebase";
 
 export interface ProjectStat {
@@ -51,20 +51,26 @@ export async function getAllProjects(): Promise<Project[]> {
       return [];
     }
     try {
-      const snap = await getDocs(
-        query(collection(db, "projects"), orderBy("createdAt", "desc"))
-      );
+      const snap = await getDocs(collection(db, "projects"));
       if (snap.empty) {
         return [];
       }
-      return snap.docs.map((doc) => {
+      const withMeta = snap.docs.map((doc) => {
         const data = doc.data();
-        const { createdAt, ...rest } = data;
+        const { createdAt, order, ...rest } = data;
         return {
-          id: doc.id,
-          ...rest,
-        } as Project;
+          project: { id: doc.id, ...rest } as Project,
+          order: typeof order === "number" ? order : null,
+          createdAtSeconds: createdAt?.seconds ?? 0,
+        };
       });
+      withMeta.sort((a, b) => {
+        if (a.order !== null && b.order !== null) return a.order - b.order;
+        if (a.order !== null) return -1;
+        if (b.order !== null) return 1;
+        return b.createdAtSeconds - a.createdAtSeconds;
+      });
+      return withMeta.map((d) => d.project);
     } catch (error) {
       console.error("Error fetching projects from Firebase:", error);
       return [];

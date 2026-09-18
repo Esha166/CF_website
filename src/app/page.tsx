@@ -1,5 +1,6 @@
 import Hero from "@/components/home/Hero";
 import OurImpact from "@/components/home/OurImpact";
+import Introduction from "@/components/home/Introduction";
 import OurProject from "@/components/home/OurProject";
 import FounderInfo from "@/components/home/FounderInfo";
 import FaqSection from "@/components/home/FaqSection"; 
@@ -13,6 +14,18 @@ export const metadata = {
   title: "Combine Foundation",
   description:
     "Combine Foundation is a nonprofit organization focused on education, health awareness, youth empowerment, and community welfare in Pakistan.",
+  keywords: [
+    "Combine Foundation",
+    "Non Profit Organization in Pakistan",
+    "NPO in Pakistan",
+    "NGO in Pakistan",
+    "Tax Exempted NPO",
+    "Youth Leadership Program",
+    "Youth Empowerment Pakistan",
+    "Charity Organization in Pakistan",
+    "Nonprofit Organization Pakistan",
+    "Community Welfare Pakistan",
+  ],
 };
 
 export const dynamic = "force-dynamic";
@@ -25,6 +38,7 @@ export default async function Home() {
       {/* <SplashBanner /> */}
       <Reveal><Hero /></Reveal>
       <Reveal delay={80}><OurImpact /></Reveal>
+      <Reveal delay={100}><Introduction /></Reveal>
       <Reveal delay={120}><OurProject projects={projects} /></Reveal>
       <Reveal delay={80}><FounderInfo /></Reveal>
       <Reveal delay={120}>

@@ -8,6 +8,18 @@ import PartnersSection from "@/components/our-team/partners-section"
 import { fetchTeamMembers, fetchPartners, fetchMOUs, type FirestoreTeamMember, type FirestorePartner, type FirestoreMOU } from "@/lib/admin-actions"
 import PageMotion from "@/components/UI/PageMotion"
 
+export const metadata = {
+    title: "Our Team",
+    description: "Meet the leadership, founders, board of trustees, and partners driving Combine Foundation's mission in Pakistan.",
+    keywords: [
+        "Combine Foundation Team",
+        "NGO Leadership Pakistan",
+        "Nonprofit Organization Pakistan",
+        "NPO in Pakistan",
+        "Board of Trustees Pakistan",
+    ],
+};
+
 export const dynamic = "force-dynamic";
 
 const Page = async () => {

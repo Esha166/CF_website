@@ -5,6 +5,12 @@ import PageMotion from "@/components/UI/PageMotion";
 export const metadata = {
     title: "Contact Us",
     description: "Get in touch with Combine Foundation for donations, volunteering, programs, partnerships, and general enquiries.",
+    keywords: [
+        "Contact NGO in Pakistan",
+        "Contact Nonprofit Organization Pakistan",
+        "Combine Foundation Contact",
+        "NPO in Pakistan",
+    ],
 };
 
 export default function ContactPage() {

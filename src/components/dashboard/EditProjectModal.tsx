@@ -21,18 +21,21 @@ interface ProjectFormData {
   afterImage: string;
   futurePlans: string;
   partners: string[];
+  order: number;
 }
 
 interface EditProjectModalProps {
   project: ProjectFormData & { id: string };
+  projectsCount: number;
   onCancel: () => void;
   onSave: (data: ProjectFormData) => Promise<void> | void;
 }
 
-export default function EditProjectModal({ project, onCancel, onSave }: EditProjectModalProps) {
+export default function EditProjectModal({ project, projectsCount, onCancel, onSave }: EditProjectModalProps) {
   const [saving, setSaving] = useState(false);
   const [uploadingFields, setUploadingFields] = useState<Record<string, boolean>>({});
   const [error, setError] = useState("");
+  const maxOrder = Math.max(projectsCount, 1);
   const [form, setForm] = useState<ProjectFormData>({
     title: project.title || "",
     description: project.description || "",
@@ -50,6 +53,7 @@ export default function EditProjectModal({ project, onCancel, onSave }: EditProj
     afterImage: project.afterImage || "",
     futurePlans: project.futurePlans || "",
     partners: project.partners || [],
+    order: project.order || maxOrder,
   });
 
   const handleChange = (
@@ -142,6 +146,12 @@ export default function EditProjectModal({ project, onCancel, onSave }: EditProj
     }));
   };
 
+  const handleOrderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = parseInt(e.target.value, 10);
+    const clamped = Number.isNaN(raw) ? maxOrder : Math.min(Math.max(raw, 1), maxOrder);
+    setForm((prev) => ({ ...prev, order: clamped }));
+  };
+
   const isValid =
     !!(form.title?.trim() &&
     form.description?.trim() &&
@@ -228,6 +238,21 @@ export default function EditProjectModal({ project, onCancel, onSave }: EditProj
               className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm text-gray-600 mb-1">Display Position</label>
+          <input
+            type="number"
+            min={1}
+            max={maxOrder}
+            value={form.order}
+            onChange={handleOrderChange}
+            className="w-32 border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Where this project appears in the sequence (1 = first). 1–{maxOrder}.
+          </p>
         </div>
 
         <hr className="my-5 border-gray-200" />

@@ -10,8 +10,11 @@ import {
 } from "@vnedyalk0v/react19-simple-maps";
 import GEO_DATA from "@/data/pakistan-provinces.json";
 
-interface ProjectPin {
+type PinKind = "project" | "event";
+
+interface MapPin {
     id: string;
+    kind: PinKind;
     coordinates: [number, number];
     label: string;
 }
@@ -62,65 +65,127 @@ const posFromEvent = (e: any) => {
     return { x: rect.left + rect.width / 2, y: rect.top - 100 };
 };
 
+interface LocatableItem {
+    id: string;
+    title: string;
+    location: string;
+    coordinates: string;
+}
+
 interface AchievementsMapProps {
-    projects: Array<{
-        id: string;
-        title: string;
-        location: string;
-        coordinates: string;
-    }>;
+    projects: LocatableItem[];
+    events?: LocatableItem[];
     activeId: string | null;
     onSelect: (id: string) => void;
 }
 
-export default function AchievementsMap({ projects, activeId, onSelect }: AchievementsMapProps) {
-    const [hoveredId, setHoveredId] = useState<string | null>(null);
+function buildPins(items: LocatableItem[], kind: PinKind): MapPin[] {
+    return items
+        .filter((p) => p.coordinates)
+        .map((p) => {
+            const parts = p.coordinates.split(",").map(Number);
+            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) return null;
+            return {
+                id: p.id,
+                kind,
+                coordinates: [parts[1], parts[0]] as [number, number],
+                label: p.title,
+            };
+        })
+        .filter((p): p is MapPin => p !== null);
+}
+
+const PIN_COLORS: Record<PinKind, { active: string; idle: string }> = {
+    project: { active: "#FF6900", idle: "#ef4444" },
+    event: { active: "#169AD7", idle: "#3b82f6" },
+};
+
+export default function AchievementsMap({ projects, events = [], activeId, onSelect }: AchievementsMapProps) {
+    const [hovered, setHovered] = useState<{ kind: PinKind; id: string } | null>(null);
+    const [activeEventId, setActiveEventId] = useState<string | null>(null);
     const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
     const geoData = useMemo(() => rewindGeoJSON(GEO_DATA), []);
 
-    const pins: ProjectPin[] = useMemo(() => {
-        return projects
-            .filter((p) => p.coordinates)
-            .map((p) => {
-                const parts = p.coordinates.split(",").map(Number);
-                if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) return null;
-                return {
-                    id: p.id,
-                    coordinates: [parts[1], parts[0]] as [number, number],
-                    label: p.title,
-                };
-            })
-            .filter((p): p is ProjectPin => p !== null);
-    }, [projects]);
+    const projectPins = useMemo(() => buildPins(projects, "project"), [projects]);
+    const eventPins = useMemo(() => buildPins(events, "event"), [events]);
 
-    const displayId = hoveredId ?? activeId;
+    const displayed: { kind: PinKind; id: string } | null =
+        hovered ??
+        (activeId ? { kind: "project", id: activeId } : null) ??
+        (activeEventId ? { kind: "event", id: activeEventId } : null);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleMarkerClick = (pin: ProjectPin, e: any) => {
+    const displayedPin =
+        displayed &&
+        (displayed.kind === "project" ? projectPins : eventPins).find((p) => p.id === displayed.id);
+
+    const handleMarkerClick = (pin: MapPin, e: React.MouseEvent) => {
         e.stopPropagation();
-        onSelect(pin.id);
+        if (pin.kind === "project") {
+            onSelect(pin.id);
+        } else {
+            setActiveEventId((prev) => (prev === pin.id ? null : pin.id));
+        }
         setTooltipPos(posFromEvent(e));
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleMarkerEnter = (pin: ProjectPin, e: any) => {
+    const handleMarkerEnter = (pin: MapPin, e: React.MouseEvent) => {
         if (!isLg()) return;
-        setHoveredId(pin.id);
+        setHovered({ kind: pin.kind, id: pin.id });
         setTooltipPos(posFromEvent(e));
     };
 
     const handleMarkerLeave = () => {
         if (!isLg()) return;
-        setHoveredId(null);
+        setHovered(null);
         setTooltipPos(null);
     };
+
+    const renderPins = (pins: MapPin[]) =>
+        pins.map((pin) => (
+            <Marker
+                key={`${pin.kind}-${pin.id}`}
+                coordinates={createCoordinates(pin.coordinates[0], pin.coordinates[1])}
+                onClick={(e: React.MouseEvent) => handleMarkerClick(pin, e)}
+            >
+                <g
+                    transform="translate(-12, -28)"
+                    style={{ cursor: "pointer", userSelect: "none", outline: "none" }}
+                    tabIndex={-1}
+                    onMouseEnter={(e: React.MouseEvent) => handleMarkerEnter(pin, e)}
+                    onMouseLeave={handleMarkerLeave}
+                >
+                    {/* Drop shadow */}
+                    <ellipse
+                        cx={12} cy={29} rx={4} ry={1.5}
+                        fill="#00000033"
+                    />
+                    {/* Pin body — teardrop, tip at (12,28) */}
+                    <path
+                        d="M 12 28 C 6 22, 4 16, 4 10 A 8 8 0 1 1 20 10 C 20 16, 18 22, 12 28 Z"
+                        fill={
+                            displayed?.kind === pin.kind && displayed.id === pin.id
+                                ? PIN_COLORS[pin.kind].active
+                                : PIN_COLORS[pin.kind].idle
+                        }
+                        stroke="#fff"
+                        strokeWidth={1.5}
+                    />
+                    {/* Inner white dot */}
+                    <circle
+                        cx={12} cy={10} r={3.5}
+                        fill="#fff"
+                        opacity={0.9}
+                    />
+                </g>
+            </Marker>
+        ));
 
     return (
         <section
             className="w-full mx-auto px-6 py-10 md:py-16 flex flex-col justify-center"
             onClick={() => {
                 if (!isLg()) {
-                    setHoveredId(null);
+                    setHovered(null);
                     setTooltipPos(null);
                 }
                 const el = document.activeElement as HTMLElement | null;
@@ -130,6 +195,19 @@ export default function AchievementsMap({ projects, activeId, onSelect }: Achiev
             <h2 className="text-gray-900 font-bold text-3xl md:text-4xl text-center mb-2">
                 Achievements
             </h2>
+
+            {eventPins.length > 0 && (
+                <div className="flex items-center justify-center gap-6 mt-2 text-xs font-medium text-gray-500">
+                    <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: PIN_COLORS.project.idle }} />
+                        Projects
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: PIN_COLORS.event.idle }} />
+                        Events
+                    </span>
+                </div>
+            )}
 
             <div className="w-full flex justify-center mt-8">
                 <div
@@ -195,48 +273,14 @@ export default function AchievementsMap({ projects, activeId, onSelect }: Achiev
                         </Geographies>
 
                         {/* ── Markers ── */}
-                        {pins.map((pin) => (
-                            <Marker
-                                key={pin.id}
-                                coordinates={createCoordinates(pin.coordinates[0], pin.coordinates[1])}
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                onClick={(e: any) => handleMarkerClick(pin, e)}
-                            >
-                                <g
-                                    transform="translate(-12, -28)"
-                                    style={{ cursor: "pointer", userSelect: "none", outline: "none" }}
-                                    tabIndex={-1}
-                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                    onMouseEnter={(e: any) => handleMarkerEnter(pin, e)}
-                                    onMouseLeave={handleMarkerLeave}
-                                >
-                                    {/* Drop shadow */}
-                                    <ellipse
-                                        cx={12} cy={29} rx={4} ry={1.5}
-                                        fill="#00000033"
-                                    />
-                                    {/* Pin body — teardrop, tip at (12,28) */}
-                                    <path
-                                        d="M 12 28 C 6 22, 4 16, 4 10 A 8 8 0 1 1 20 10 C 20 16, 18 22, 12 28 Z"
-                                        fill={pin.id === displayId ? "#b91c1c" : "#ef4444"}
-                                        stroke="#fff"
-                                        strokeWidth={1.5}
-                                    />
-                                    {/* Inner white dot */}
-                                    <circle
-                                        cx={12} cy={10} r={3.5}
-                                        fill="#fff"
-                                        opacity={0.9}
-                                    />
-                                </g>
-                            </Marker>
-                        ))}
+                        {renderPins(projectPins)}
+                        {renderPins(eventPins)}
                     </ComposableMap>
                 </div>
             </div>
 
             {/* ── Tooltip (rendered outside the map so it's never clipped) ── */}
-            {displayId !== null && tooltipPos && (
+            {displayedPin && tooltipPos && (
                 <div
                     className="fixed pointer-events-none z-50"
                     style={{
@@ -247,7 +291,7 @@ export default function AchievementsMap({ projects, activeId, onSelect }: Achiev
                 >
                     <div className="bg-secondary-600 text-white rounded-lg px-4 py-3 shadow-xl min-w-max whitespace-nowrap border-2 border-secondary-700">
                         <p className="text-sm font-semibold text-center">
-                            {pins.find((p) => p.id === displayId)?.label}
+                            {displayedPin.label}
                         </p>
                     </div>
                     {/* Arrow */}
