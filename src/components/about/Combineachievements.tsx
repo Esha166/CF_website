@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import Image from "next/image";
 import SectionHeader from "@/components/UI/SectionHeader";
+import FadeImage from "@/components/UI/FadeImage";
 type Achievement = {
     id: number;
     title: string;
@@ -154,7 +154,7 @@ export default function CombineAchievements() {
                             className="relative rounded-xl overflow-hidden"
                             style={{ height: "clamp(120px, 14vw, 190px)" }}
                         >
-                            <Image
+                            <FadeImage
                                 src={src}
                                 alt={`${item.title} image ${i + 1}`}
                                 fill

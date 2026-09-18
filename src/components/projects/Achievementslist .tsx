@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import FadeImage from "@/components/UI/FadeImage";
 
 type Stat = {
     value: string;
@@ -118,7 +118,7 @@ function AchievementItem({
                                         transition-transform duration-500
                                     "
                                 >
-                                    <Image
+                                    <FadeImage
                                         src={src}
                                         alt={`${item.title} image ${i + 1}`}
                                         fill
@@ -180,7 +180,7 @@ function AchievementItem({
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
                             <div>
                                 <div className="relative rounded-2xl overflow-hidden aspect-video w-[90%] m-auto mb-3">
-                                    <Image
+                                    <FadeImage
                                         src={item.beforeImage}
                                         alt="Before"
                                         fill
@@ -197,7 +197,7 @@ function AchievementItem({
 
                             <div>
                                 <div className="relative rounded-2xl overflow-hidden aspect-video w-[90%] m-auto mb-3">
-                                    <Image
+                                    <FadeImage
                                         src={item.afterImage}
                                         alt="After"
                                         fill
@@ -246,7 +246,7 @@ function AchievementItem({
                                             shrink-0 w-[200px] h-[200px]
                                         "
                                     >
-                                        <Image
+                                        <FadeImage
                                             src={src}
                                             alt={`Partner ${i + 1}`}
                                             fill

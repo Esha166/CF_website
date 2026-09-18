@@ -54,30 +54,30 @@ export default function Projects() {
     setActiveId((prev) => (prev === id ? null : id));
   };
 
-  if (loading) {
-    return (
-      <PageMotion>
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-20">
-        <Loader2 className="w-10 h-10 text-orange animate-spin" />
-        <span className="mt-4 text-gray-600 font-medium">Loading projects...</span>
-        </div>
-      </PageMotion>
-    );
-  }
-
   return (
     <PageMotion>
-      <PageHeroMobile title="Projects" imageSrc="/achievement-gallery/hero.svg" />
-      <AchievementsMap
-        projects={projects}
-        activeId={activeId}
-        onSelect={handleMapSelect}
-      />
-      <AchievementsList
-        projects={projects}
-        activeId={activeId}
-        onToggle={handleCardToggle}
-      />
+      <div>
+        {loading ? (
+          <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-10 h-10 text-orange animate-spin" />
+            <span className="mt-4 text-gray-600 font-medium">Loading projects...</span>
+          </div>
+        ) : (
+          <>
+            <PageHeroMobile title="Projects" imageSrc="/achievement-gallery/hero.svg" />
+            <AchievementsMap
+              projects={projects}
+              activeId={activeId}
+              onSelect={handleMapSelect}
+            />
+            <AchievementsList
+              projects={projects}
+              activeId={activeId}
+              onToggle={handleCardToggle}
+            />
+          </>
+        )}
+      </div>
     </PageMotion>
   );
 }

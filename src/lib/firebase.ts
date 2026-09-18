@@ -44,9 +44,9 @@ export const getDb = (): Firestore => {
 
 // Initialize Analytics (only in client-side)
 let analytics;
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined" && app) {
   isSupported().then((supported) => {
-    if (supported) {
+    if (supported && app) {
       analytics = getAnalytics(app);
     }
   });
