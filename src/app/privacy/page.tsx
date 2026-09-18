@@ -4,7 +4,6 @@ import PageMotion from "@/components/UI/PageMotion";
 export const metadata = {
   title: "Privacy Policy",
   description: "Read how Combine Foundation collects, uses, and protects your information.",
-  keywords: ["Combine Foundation Privacy Policy", "Nonprofit Organization Pakistan"],
 };
 
 const sections = [
