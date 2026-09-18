@@ -33,6 +33,7 @@ export interface Project {
   partners: string[];
   location: string;
   coordinates: string;
+  order: number;
 }
 
 const PAGE_SIZE = 10;
@@ -211,6 +212,7 @@ export default function ProjectsView() {
                   className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer accent-blue-600"
                 />
               </th>
+              <th className="py-3 text-left font-medium text-gray-500 w-14">#</th>
               <th className="py-3 text-left font-medium text-gray-500">Project Title</th>
               <th className="py-3 text-left font-medium text-gray-500 w-36">Location</th>
               <th className="py-3 text-left font-medium text-gray-500 w-40">Coordinates</th>
@@ -237,6 +239,7 @@ export default function ProjectsView() {
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 cursor-pointer accent-blue-600"
                     />
                   </td>
+                  <td className="py-3.5 text-gray-500 font-medium">{project.order}</td>
                   <td className="py-3.5 pr-4">
                     <p className="text-gray-800 font-medium">{project.title}</p>
                     <p className="text-gray-400 text-xs mt-0.5">ID: {project.id.slice(0, 8)}...</p>
@@ -268,6 +271,7 @@ export default function ProjectsView() {
       {editProject && (
         <EditProjectModal
           project={editProject}
+          projectsCount={projects.length}
           onCancel={() => setEditProject(null)}
           onSave={handleSaveEdit}
         />
@@ -275,6 +279,7 @@ export default function ProjectsView() {
 
       {showAddModal && (
         <AddProjectModal
+          projectsCount={projects.length}
           onCancel={() => setShowAddModal(false)}
           onSave={handleAdd}
         />

@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import WhatsAppButton from "@/components/UI/WhatsAppButton";
 
 export default function ClientChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -13,6 +14,7 @@ export default function ClientChrome({ children }: { children: React.ReactNode }
       {!isAdminPage && <Header />}
       <main className="site-main grow flex flex-col overflow-x-clip">{children}</main>
       {!isAdminPage && <Footer />}
+      {!isAdminPage && <WhatsAppButton />}
     </>
   );
 }

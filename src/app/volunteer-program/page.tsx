@@ -6,6 +6,19 @@ import HearFromVolunteers from "@/components/volunteer/ourVolunteer";
 import VolunteerFAQ from "@/components/volunteer/VolunteerFAQ";
 import PageMotion from "@/components/UI/PageMotion";
 
+export const metadata = {
+    title: "Volunteer Program",
+    description: "Join Combine Foundation's Youth Leadership Program and volunteer opportunities in Pakistan to grow your career while serving the community.",
+    keywords: [
+        "Youth Leadership Program",
+        "Volunteer Program Pakistan",
+        "NGO Volunteer Program Pakistan",
+        "Volunteer Opportunities Pakistan",
+        "NGO in Pakistan",
+        "Nonprofit Organization Pakistan",
+    ],
+};
+
 export default function VolunteerPage() {
     return (
         <PageMotion>
