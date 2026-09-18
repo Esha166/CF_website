@@ -11,6 +11,15 @@ import PageMotion from "@/components/UI/PageMotion"
 export const metadata = {
     title: "About Us",
     description: "Learn about Combine Foundation's mission, story, leadership, values, and community impact.",
+    keywords: [
+        "Non Profit Organization in Pakistan",
+        "NPO in Pakistan",
+        "NGO in Pakistan",
+        "Registered NGO Pakistan",
+        "Nonprofit Organization Mission Pakistan",
+        "Combine Foundation About Us",
+        "Community Welfare Organization",
+    ],
 };
 
 const AboutPage = () => {

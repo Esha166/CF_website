@@ -31,6 +31,13 @@ export async function generateMetadata({
   return {
     title: post.title,
     description: post.description,
+    keywords: [
+      post.title,
+      "Combine Foundation Blog",
+      "NGO in Pakistan",
+      "Nonprofit Organization Pakistan",
+      "Community Welfare Pakistan",
+    ],
     openGraph: {
       title: post.title,
       description: post.description,

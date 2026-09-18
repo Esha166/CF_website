@@ -34,6 +34,13 @@ export async function generateMetadata({
   return {
     title: course.title,
     description: course.description,
+    keywords: [
+      course.title,
+      "Free Courses Pakistan",
+      "Youth Leadership Program",
+      "Youth Empowerment Pakistan",
+      "NGO in Pakistan",
+    ],
     openGraph: {
       title: course.title,
       description: course.description,
