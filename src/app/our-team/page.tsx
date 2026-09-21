@@ -20,7 +20,7 @@ export const metadata = {
     ],
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 const Page = async () => {
   let teamMembers: FirestoreTeamMember[] = [];

@@ -14,7 +14,7 @@ export async function generateStaticParams() {
   return getAllBlogSlugs();
 }
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
