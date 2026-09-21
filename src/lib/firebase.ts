@@ -14,15 +14,32 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase only if API key is present
+// initializeApp() must receive all six of these or the SDK falls back to
+// fetching the rest from firebase.googleapis.com/.../webConfig at runtime,
+// adding a multi-second lookup (CORS preflight included) to first load.
+const REQUIRED_CONFIG_KEYS = [
+  "apiKey",
+  "authDomain",
+  "projectId",
+  "storageBucket",
+  "messagingSenderId",
+  "appId",
+] as const;
+
+const missingConfigKeys = REQUIRED_CONFIG_KEYS.filter((key) => !firebaseConfig[key]);
+
 let app: FirebaseApp | undefined = undefined;
 let isAppAlreadyInitialized = false;
-if (firebaseConfig.apiKey) {
+if (missingConfigKeys.length === 0) {
   isAppAlreadyInitialized = getApps().length > 0;
   app = isAppAlreadyInitialized ? getApp() : initializeApp(firebaseConfig);
 } else {
   // During build time or if env vars are missing
-  console.warn("Firebase API Key is missing. Firebase services will not be initialized.");
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(
+      `Firebase config is missing: ${missingConfigKeys.join(", ")}. Firebase services will not be initialized.`
+    );
+  }
 }
 
 // Initialize services with safety checks
