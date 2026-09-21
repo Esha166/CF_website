@@ -1,5 +1,4 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
-import { getAnalytics, isSupported } from "firebase/analytics";
 import { getFirestore, Firestore } from "firebase/firestore/lite";
 import { getStorage, FirebaseStorage } from "firebase/storage";
 import type { Auth } from "firebase/auth";
@@ -80,14 +79,4 @@ export const getDb = (): Firestore => {
   return db;
 };
 
-// Initialize Analytics (only in client-side)
-let analytics;
-if (typeof window !== "undefined" && app) {
-  isSupported().then((supported) => {
-    if (supported && app) {
-      analytics = getAnalytics(app);
-    }
-  });
-}
-
-export { app, db, storage, analytics };
+export { app, db, storage };
