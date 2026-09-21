@@ -1,11 +1,21 @@
-// One-off migration: unwraps .svg files in /public that are actually base64-embedded
-// PNG/JPEG photographs, extracting the largest embedded bitmap and re-encoding it as
-// WebP at 2x its CSS display width. Run with: node scripts/unwrap-svg.mjs
+// One-off migration: several .svg files in /public are large, multi-layer
+// compositions (a masked/filtered photo plus vector text overlays, gradients,
+// and crops) rather than plain vector art. Re-rasterizing just the largest
+// embedded bitmap (an earlier version of this script) silently threw away
+// every one of those layers - crop, darkening, title text - leaving a bare,
+// uncropped source photo. Instead this renders each full SVG (all layers) to
+// a WebP raster at 2x its CSS display width, which reproduces exactly what a
+// browser would have painted. Run with: node scripts/unwrap-svg.mjs
 import { readFile, writeFile, stat } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
 const ROOT = path.resolve(import.meta.dirname, "..");
+
+// Rasterize well above the largest target export width so the final resize
+// is a downsample (supersampling), keeping vector text/edges crisp instead
+// of upscaling a low-res render.
+const RENDER_DENSITY = 300;
 
 // displayWidth = the CSS width the image renders at (not the 2x export width).
 const TARGETS = [
@@ -30,19 +40,6 @@ const TARGETS = [
   { file: "public/home/projects/6.svg", displayWidth: 1500 },
 ];
 
-const DATA_URI_RE = /data:image\/(png|jpe?g);base64,([A-Za-z0-9+/=]+)/g;
-
-function findLargestEmbeddedBitmap(svgText) {
-  let best = null;
-  for (const match of svgText.matchAll(DATA_URI_RE)) {
-    const [, , base64] = match;
-    if (!best || base64.length > best.base64.length) {
-      best = { base64 };
-    }
-  }
-  return best;
-}
-
 function formatBytes(bytes) {
   return (bytes / 1024 / 1024).toFixed(2) + " MB";
 }
@@ -52,24 +49,15 @@ async function main() {
 
   for (const { file, displayWidth } of TARGETS) {
     const absPath = path.join(ROOT, file);
-    const svgText = await readFile(absPath, "utf8");
-    const bitmap = findLargestEmbeddedBitmap(svgText);
-
-    if (!bitmap) {
-      console.warn(`SKIP (no embedded bitmap found): ${file}`);
-      continue;
-    }
-
-    const buffer = Buffer.from(bitmap.base64, "base64");
+    const svgBuffer = await readFile(absPath);
     const targetWidth = displayWidth * 2;
-
     const outPath = absPath.replace(/\.svg$/i, ".webp");
-    const image = sharp(buffer).resize({
-      width: targetWidth,
-      withoutEnlargement: true,
-    });
 
-    const outBuffer = await image.webp({ quality: 80 }).toBuffer();
+    const outBuffer = await sharp(svgBuffer, { density: RENDER_DENSITY })
+      .resize({ width: targetWidth, withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer();
+
     await writeFile(outPath, outBuffer);
 
     const beforeSize = (await stat(absPath)).size;
