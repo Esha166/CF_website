@@ -1,8 +1,8 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
-import { getAuth, Auth } from "firebase/auth";
 import { getFirestore, Firestore } from "firebase/firestore/lite";
 import { getStorage, FirebaseStorage } from "firebase/storage";
+import type { Auth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -42,8 +42,29 @@ if (missingConfigKeys.length === 0) {
   }
 }
 
-// Initialize services with safety checks
-const auth: Auth | undefined = app ? getAuth(app) : undefined;
+// Auth pulls in Firebase's gapi iframe stack (apis.google.com/js/api.js, the
+// __/auth/iframe helper, getProjectConfig, ~350 KB / 4 round trips) as soon as
+// firebase/auth is evaluated, whether or not a visitor ever signs in. Nothing
+// on the public site needs auth, so it's loaded lazily, only when a consumer
+// (the login form, the admin route guard) actually asks for it. No popup or
+// redirect sign-in is used anywhere in this app, so initializeAuth() is used
+// without a popupRedirectResolver, which keeps the iframe stack out entirely.
+let authPromise: Promise<Auth | undefined> | undefined;
+export function getFirebaseAuth(): Promise<Auth | undefined> {
+  if (!app) return Promise.resolve(undefined);
+  if (!authPromise) {
+    const currentApp = app;
+    authPromise = import("firebase/auth").then(({ initializeAuth, browserLocalPersistence, getAuth }) => {
+      try {
+        return initializeAuth(currentApp, { persistence: browserLocalPersistence });
+      } catch {
+        // Already initialized (e.g. React Strict Mode / Fast Refresh re-running this module).
+        return getAuth(currentApp);
+      }
+    });
+  }
+  return authPromise;
+}
 
 let db: Firestore | undefined = undefined;
 if (app) {
@@ -69,4 +90,4 @@ if (typeof window !== "undefined" && app) {
   });
 }
 
-export { app, auth, db, storage, analytics };
+export { app, db, storage, analytics };

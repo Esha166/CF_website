@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,6 +19,7 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
+    const auth = await getFirebaseAuth();
     if (!auth) {
       setLoading(false);
       setError("Authentication is not initialized. Please try again later.");
@@ -27,6 +27,7 @@ export default function LoginPage() {
     }
 
     try {
+      const { signInWithEmailAndPassword } = await import("firebase/auth");
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user) {
         throw new Error("Authentication succeeded but no user was returned.");
