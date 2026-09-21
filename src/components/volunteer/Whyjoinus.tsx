@@ -29,13 +29,13 @@ const PANELS = [
     "desc": "Receive hands-on experience by working on real-world projects under the guidance of experienced mentors to enhance your practical knowledge."
   },
   {
-    "src": "/home/impact cards/4.svg",
+    "src": "/home/impact cards/4.webp",
     "label": "Free IT Courses",
     "heading": "Learn In-Demand Technical Skills",
     "desc": "Access free IT courses designed to enhance your technical knowledge and help you stay competitive in today's job market."
   },
   {
-    "src": "/home/impact cards/6.svg",
+    "src": "/home/impact cards/6.webp",
     "label": "Innovation Support",
     "heading": "Funding for Innovative Ideas",
     "desc": "Receive opportunities for funding and mentorship to transform impactful ideas into successful community initiatives."
