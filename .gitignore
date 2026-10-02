@@ -29,6 +29,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# storage migration output (contains production URLs, regenerated per run)
+/scripts/migration-output/
+
 # vercel
 .vercel
 
