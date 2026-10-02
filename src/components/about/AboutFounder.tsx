@@ -12,7 +12,7 @@ type FounderContent = {
 
 const founderContent: FounderContent = {
     title: "The Vision Behind Combine Foundation ",
-    image: "/about/founder/aboutfounder.svg",
+    image: "/about/founder/aboutfounder.webp",
     imageAlt: "About the founder meeting",
     description:
         "Combine Foundation is led by dedicated Founders who believe in creating opportunities for youth and communities across Pakistan. Mr. Amin Nathani started the foundation with a vision to spread education, leadership, and long-term social impact. Mr. Ashfaq Nathani leads the organization with a focus on youth development, digital education, mentorship, and innovation-driven learning opportunities. Alongside them, Mr. Farrukh Rehman brings years of experience in leadership development, finance, and corporate consultancy, helping strengthen the foundation's mission of preparing future-ready generations and creating meaningful change in communities.",
