@@ -19,7 +19,7 @@ export const metadata = {
     ],
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function Home() {
   const courses = await getAllCourses();
@@ -37,7 +37,7 @@ export default async function Home() {
 
   return (
   <PageMotion>
-    <Hero text1="Free" text2="Courses" image1="/course/hero.svg" image2="/course/hero (2).svg"
+    <Hero text1="Free" text2="Courses" image1="/course/hero.webp" image2="/course/hero (2).webp"
     mobileTitle="Free Courses" text1Size = "big"
     text2Size="big"
     />

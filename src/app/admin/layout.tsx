@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import { fetchContacts, fetchDonations } from "@/lib/admin-actions";
 
@@ -87,6 +87,7 @@ function AdminHeader() {
   const readKey = "admin-notification-read-ids";
 
   const handleLogout = async () => {
+    const auth = await getFirebaseAuth();
     if (auth) {
       await auth.signOut();
     }
@@ -103,8 +104,11 @@ function AdminHeader() {
   };
 
   useEffect(() => {
-    if (auth) {
-      const unsubscribe = auth.onAuthStateChanged((user) => {
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
+    getFirebaseAuth().then((auth) => {
+      if (!auth || cancelled) return;
+      unsubscribe = auth.onAuthStateChanged((user) => {
         if (user && user.email) {
           const emailName = user.email.split("@")[0];
           const formattedName = emailName.charAt(0).toUpperCase() + emailName.slice(1);
@@ -115,8 +119,11 @@ function AdminHeader() {
           setAdminInitial("A");
         }
       });
-      return () => unsubscribe();
-    }
+    });
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, []);
 
   useEffect(() => {
@@ -382,19 +389,27 @@ export default function AdminLayout({
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
-    if (!auth) {
-      setAuthorized(true);
-      return;
-    }
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (!user) {
-        router.push("/login");
-      } else {
+    let unsubscribe: (() => void) | undefined;
+    let cancelled = false;
+    getFirebaseAuth().then((auth) => {
+      if (cancelled) return;
+      if (!auth) {
         setAuthorized(true);
+        return;
       }
+      unsubscribe = auth.onAuthStateChanged((user) => {
+        if (!user) {
+          router.push("/login");
+        } else {
+          setAuthorized(true);
+        }
+      });
     });
 
-    return () => unsubscribe();
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
   }, [router]);
 
   if (!authorized) {

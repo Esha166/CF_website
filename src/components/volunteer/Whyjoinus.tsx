@@ -5,49 +5,49 @@ import { useState, useRef } from "react";
 
 const PANELS = [
   {
-    "src": "/volunteer-program/why join us (2).svg",
+    "src": "/volunteer-program/why join us (2).webp",
     "label": "Community Impact",
     "heading": "Serve the Community with Purpose",
     "desc": "Create a positive impact on society by contributing to meaningful community programs in a safe, supportive, and friendly environment."
   },
   {
-    "src": "/volunteer-program/why join us.svg",
+    "src": "/volunteer-program/why join us.webp",
     "label": "Skills & Career",
     "heading": "Build Your Skills & Career",
     "desc": "Gain practical experience, develop valuable professional skills, and strengthen your CV or resume for future career opportunities."
   },
   {
-    "src": "/achievement-gallery/vol2.svg",
+    "src": "/achievement-gallery/vol2.webp",
     "label": "Area of Interest",
     "heading": "Choose the Field You're Passionate About",
     "desc": "Join the volunteer program based on your interests, including leadership, social work, graphic designing, IT, marketing, content writing, programming, web designing, video editing, and many more."
   },
   {
-    "src": "/volunteer-program/why join us (4).svg",
+    "src": "/volunteer-program/why join us (4).webp",
     "label": "Real Experience",
     "heading": "Work on Real Projects with Expert Mentors",
     "desc": "Receive hands-on experience by working on real-world projects under the guidance of experienced mentors to enhance your practical knowledge."
   },
   {
-    "src": "/home/impact cards/4.svg",
+    "src": "/home/impact cards/4.webp",
     "label": "Free IT Courses",
     "heading": "Learn In-Demand Technical Skills",
     "desc": "Access free IT courses designed to enhance your technical knowledge and help you stay competitive in today's job market."
   },
   {
-    "src": "/home/impact cards/6.svg",
+    "src": "/home/impact cards/6.webp",
     "label": "Innovation Support",
     "heading": "Funding for Innovative Ideas",
     "desc": "Receive opportunities for funding and mentorship to transform impactful ideas into successful community initiatives."
   },
   {
-    "src": "/volunteer-program/why join us (3).svg",
+    "src": "/volunteer-program/why join us (3).webp",
     "label": "Recognition",
     "heading": "Earn Certificates & Recommendation Letters",
     "desc": "Outstanding volunteers receive professional certificates and recommendation letters based on their dedication, commitment, and performance."
   },
   {
-    "src": "/volunteer-program/career.svg",
+    "src": "/volunteer-program/career.webp",
     "label": "Employment",
     "heading": "Unlock Career & Employment Opportunities",
     "desc": "Exceptional volunteers may receive employment opportunities and long-term career growth within the organization."

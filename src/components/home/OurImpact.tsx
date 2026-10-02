@@ -17,7 +17,7 @@ const impactItems: ImpactItem[] = [
     id: 1,
     stat: "3000+",
     title: "Lives Impacted",
-    image: "/home/impact cards/5.svg",
+    image: "/home/impact cards/5.webp",
     description:
       "At Combine Foundation, every project is created with the mission to bring positive change in people's lives. Through our educational, welfare, leadership, and community development programs, we have proudly impacted 3000+ individuals by creating opportunities, spreading hope, and supporting communities in times of need.",
   },
@@ -33,7 +33,7 @@ const impactItems: ImpactItem[] = [
     id: 3,
     stat: "250+",
     title: "Passionate Volunteers",
-    image: "/home/impact cards/6.svg",
+    image: "/home/impact cards/6.webp",
     description:
       "Our 250+ active volunteers are the heart of our community initiatives. From welfare drives to educational campaigns or Youth Leadership Program, they dedicate their time and efforts to serving humanity, supporting communities, and spreading kindness across Pakistan.",
   },
@@ -41,7 +41,7 @@ const impactItems: ImpactItem[] = [
     id: 4,
     stat: "40+",
     title: "Emerging Youth Leaders",
-    image: "/home/impact cards/8.svg",
+    image: "/home/impact cards/8.webp",
     description:
       "We have empowered 40+ active youth leaders who are confidently leading projects, social initiatives, and community activities and working as leaders in the Youth Leadership Program of the Combine Foundation.",
   },
@@ -49,7 +49,7 @@ const impactItems: ImpactItem[] = [
     id: 5,
     stat: "20+",
     title: "Dedicated Team Members",
-    image: "/home/impact cards/7.svg",
+    image: "/home/impact cards/7.webp",
     description:
       "Behind every successful initiative is our Combine Foundation team. We have 20+ committed members working across different departments with passion, teamwork, and a shared vision to create meaningful social impact.",
   },
@@ -57,7 +57,7 @@ const impactItems: ImpactItem[] = [
     id: 6,
     stat: "30+",
     title: "Webinars & Awareness Sessions",
-    image: "/home/impact cards/4.svg",
+    image: "/home/impact cards/4.webp",
     description:
       "We have organized 30+ webinars and awareness sessions covering AI, technology, medical awareness, cybersecurity, leadership, sustainability, scholarships, freelancing, self-grooming, and personal development. These sessions have inspired and educated countless individuals to learn, grow, and move toward a brighter future.",
   },

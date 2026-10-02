@@ -20,7 +20,7 @@ export const metadata = {
     ],
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 const Page = async () => {
   let teamMembers: FirestoreTeamMember[] = [];
@@ -54,7 +54,7 @@ const Page = async () => {
 
   return (
     <PageMotion>
-      <Hero text1="OUR" text2="TEAM" image1="/home/projects/4.svg" image2="/home/impact cards/8.svg" text1Size="big" text2Size="big" mobileTitle="OUR TEAM"/>
+      <Hero text1="OUR" text2="TEAM" image1="/home/projects/4.webp" image2="/home/impact cards/8.webp" text1Size="big" text2Size="big" mobileTitle="OUR TEAM"/>
       <FounderProfile />
       <CeoProfile />
       <BoardOfTrustees members={teamMembers} />

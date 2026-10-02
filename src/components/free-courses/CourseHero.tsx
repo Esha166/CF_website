@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { Course } from "@/lib/freeCourses";
 
 interface CourseHeroProps {
@@ -111,10 +112,12 @@ export default function CourseHero({ course }: CourseHeroProps) {
 
           <div className="relative w-full h-80 mx-auto max-sm:hidden">
             <div className="absolute left-0 top-0 w-[55%] h-[260px] rounded-[10px] overflow-hidden shadow-md z-10">
-              <img
-                src={course.heroImage1}
+              <Image
+                src={course.heroImage1 || "/course/hero.webp"}
                 alt=""
-                className="w-full h-full object-cover object-top rounded-[10px]"
+                fill
+                sizes="(max-width: 640px) 55vw, 300px"
+                className="object-cover object-top rounded-[10px]"
                 onError={(e) => {
                   const t = e.currentTarget;
                   t.style.background = "#e8e2d8";
@@ -126,10 +129,12 @@ export default function CourseHero({ course }: CourseHeroProps) {
               className="absolute left-[35%] top-[85px] w-[62%] h-[260px] rounded-[10px] overflow-hidden z-20"
               style={{ boxShadow: "0 6px 18px rgba(0,0,0,0.22)" }}
             >
-              <img
-                src={course.heroImage2}
+              <Image
+                src={course.heroImage2 || "/course/hero (2).webp"}
                 alt={course.title || course.name || ""}
-                className="w-full h-full object-cover object-top rounded-[10px]"
+                fill
+                sizes="(max-width: 640px) 62vw, 340px"
+                className="object-cover object-top rounded-[10px]"
                 onError={(e) => {
                   const t = e.currentTarget;
                   t.style.background = "#d0cbc0";

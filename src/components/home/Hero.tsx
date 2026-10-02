@@ -13,26 +13,26 @@ type Slide = {
 const slides: Slide[] = [
   {
     id: 1,
-    image: "/home/heroslider/1.svg",
-    mobile: "/home/heroslider/mobile1.svg",
+    image: "/home/heroslider/1.webp",
+    mobile: "/home/heroslider/mobile1.webp",
     alt: "Building communities together",
   },
   {
     id: 2,
-    image: "/home/heroslider/2.svg",
-    mobile: "/home/heroslider/mobile2.svg",
+    image: "/home/heroslider/2.webp",
+    mobile: "/home/heroslider/mobile2.webp",
     alt: "Empowering education across borders",
   },
   {
     id: 3,
-    image: "/home/heroslider/3.svg",
-    mobile: "/home/heroslider/mobile3.svg",
+    image: "/home/heroslider/3.webp",
+    mobile: "/home/heroslider/mobile3.webp",
     alt: "Creating lasting change",
   },
   {
     id: 4,
-    image: "/home/heroslider/5.svg",
-    mobile: "/home/heroslider/mobile5.svg",
+    image: "/home/heroslider/5.webp",
+    mobile: "/home/heroslider/mobile5.webp",
     alt: "Volunteers making a difference",
   },
 ];

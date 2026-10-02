@@ -70,7 +70,7 @@ export default function Projects() {
           </div>
         ) : (
           <>
-            <PageHeroMobile title="Projects" imageSrc="/achievement-gallery/hero.svg" />
+            <PageHeroMobile title="Projects" imageSrc="/achievement-gallery/hero.webp" />
             <AchievementsMap
               projects={projects}
               events={eventLocations}

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { FirestoreAnnualReport } from "@/lib/admin-actions";
 
 type Report = {
@@ -15,11 +16,13 @@ function ReportCard({ report }: { report: Report | FirestoreAnnualReport }) {
     return (
         <div className="w-full bg-white rounded-2xl shadow-xl flex flex-col min-[500px]:flex-row overflow-hidden h-auto min-[500px]:h-[350px] items-center md:p-6 p-4 gap-4 min-[500px]:gap-0">
             {/* Image */}
-            <div className="w-full min-[500px]:w-[200px] sm:min-[500px]:w-[250px] md:min-[500px]:w-[430px] shrink-0 h-[220px] min-[500px]:h-[300px]">
-                <img
+            <div className="relative w-full min-[500px]:w-[200px] sm:min-[500px]:w-[250px] md:min-[500px]:w-[430px] shrink-0 h-[220px] min-[500px]:h-[300px]">
+                <Image
                     src={report.image}
                     alt={report.title}
-                    className="w-full h-full object-top object-cover rounded-xl"
+                    fill
+                    sizes="(max-width: 500px) 100vw, (max-width: 768px) 250px, 430px"
+                    className="object-top object-cover rounded-xl"
                 />
             </div>
 

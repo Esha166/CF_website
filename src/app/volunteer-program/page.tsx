@@ -23,8 +23,8 @@ export default function VolunteerPage() {
     return (
         <PageMotion>
             <Hero text1="VOLUNTEER" text2="PROGRAM"
-                image1="/volunteer-program/hero g (2).svg"
-                image2="/volunteer-program/hero g.svg"
+                image1="/volunteer-program/hero g (2).webp"
+                image2="/volunteer-program/hero g.webp"
                 text1Size="small"
                 text2Size="small"
                 mobileTitle="Volunteer"

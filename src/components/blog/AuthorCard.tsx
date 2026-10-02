@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface AuthorCardProps {
   name?: string;
   bio?: string;
@@ -22,13 +24,15 @@ export default function AuthorCard({
           </div>
 
           <div
-            className="shrink-0 rounded-full overflow-hidden bg-gray-100"
+            className="relative shrink-0 rounded-full overflow-hidden bg-gray-100"
             style={{ width: 56, height: 56 }}
           >
-            <img
+            <Image
               src={image}
               alt={name}
-              className="w-full h-full object-cover object-top"
+              fill
+              sizes="56px"
+              className="object-cover object-top"
             />
           </div>
         </div>

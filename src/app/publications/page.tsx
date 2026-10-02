@@ -19,7 +19,7 @@ export const metadata = {
     ],
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 const page = async () => {
     let mous: FirestorePartner[] = [];
@@ -38,7 +38,7 @@ const page = async () => {
     return (
         <PageMotion>
             <PageHeroMobile
-                imageSrc="/publications/hero.svg"
+                imageSrc="/publications/hero.webp"
                 title="Publications"
                 mobileStyles="!text-5xl"
                 styles="object-top"

@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 type Speaker = {
     id: number;
     name: string;
@@ -32,11 +34,13 @@ function SpeakerCard({ speaker }: { speaker: Speaker }) {
     return (
         <div className="flex flex-col items-center text-center">
             <div className="w-36 h-32 mb-4">
-                <div className="w-36 h-32 rounded-2xl overflow-hidden border-2 border-white shadow-sm">
-                    <img
+                <div className="relative w-36 h-32 rounded-2xl overflow-hidden border-2 border-white shadow-sm">
+                    <Image
                         src={speaker.image}
                         alt={speaker.name}
-                        className="w-full h-full object-cover object-top"
+                        fill
+                        sizes="144px"
+                        className="object-cover object-top"
                     />
                 </div>
             </div>

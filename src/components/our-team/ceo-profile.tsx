@@ -1,4 +1,4 @@
-
+import Image from "next/image";
 
 export default function CeoProfile() {
   return (
@@ -11,11 +11,13 @@ export default function CeoProfile() {
 
       <div className="flex flex-col md:flex-row gap-10 lg:gap-16 items-start">
         
-        <div className="w-full md:w-[23rem] lg:w-[32rem] xl:w-[38rem] flex-shrink-0 order-2 md:order-1">
-          <img
+        <div className="relative w-full md:w-[23rem] lg:w-[32rem] xl:w-[38rem] aspect-[4/3] md:aspect-square flex-shrink-0 order-2 md:order-1 rounded-[2rem] overflow-hidden shadow-sm">
+          <Image
             src="/1.jpg"
             alt="Mr. Ashfaq Nathani"
-            className="w-full aspect-[4/3] md:aspect-square object-cover rounded-[2rem] shadow-sm"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 23rem, (max-width: 1280px) 32rem, 38rem"
+            className="object-cover"
           />
         </div>
 

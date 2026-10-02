@@ -12,17 +12,24 @@ function readFileAsDataURL(file: File): Promise<string> {
 }
 
 async function compressUploadFile(file: File): Promise<File> {
-  if (!/^image\/(jpeg|jpg|webp)$/i.test(file.type)) {
+  if (!/^image\/(jpeg|jpg|png|webp)$/i.test(file.type)) {
     return file;
   }
 
   const dataUrl = await readFileAsDataURL(file);
-  const compressedDataUrl = await compressImage(dataUrl, 1600, 1600, 0.78);
+  const compressedDataUrl = await compressImage(dataUrl, 1600, 1600, 0.8);
   const response = await fetch(compressedDataUrl);
   const blob = await response.blob();
 
-  return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.jpg`, {
-    type: "image/jpeg",
+  // compressImage() targets WebP but falls back to JPEG if the browser
+  // can't encode WebP, so the output extension/type must match whichever
+  // it actually produced rather than being hardcoded.
+  const isWebp = compressedDataUrl.startsWith("data:image/webp");
+  const extension = isWebp ? "webp" : "jpg";
+  const mimeType = isWebp ? "image/webp" : "image/jpeg";
+
+  return new File([blob], `${file.name.replace(/\.[^.]+$/, "")}.${extension}`, {
+    type: mimeType,
     lastModified: file.lastModified,
   });
 }

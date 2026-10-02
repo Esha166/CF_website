@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface Instructor {
   id: number;
   name: string;
@@ -12,25 +14,25 @@ const INSTRUCTORS: Instructor[] = [
     id: 1,
     name: "Syeda Maliha Naz",
     title: "Web Development Instructor",
-    image: "/course/Maliha naz.svg",
+    image: "/course/Maliha naz.webp",
   },
   {
     id: 2,
     name: "Esha",
     title: "Python & AI Mentor | Lead Developer",
-    image: "/course/Esha.svg",
+    image: "/course/Esha.webp",
   },
   {
     id: 3,
     name: "Muhammad Umar",
     title: "Digital Empowerment Course Instructor",
-    image: "/course/M Umar.svg",
+    image: "/course/M Umar.webp",
   },
   {
     id: 4,
     name: "Rida Fatima",
     title: "Quantitative Finance Course Instructor",
-    image: "/course/avtar rida.svg",
+    image: "/course/avtar rida.webp",
   },
 ];
 
@@ -51,10 +53,12 @@ export default function MeetInstructors() {
               className="relative rounded-xl overflow-hidden bg-gray-100"
               style={{ width: 130, height: 130, flexShrink: 0 }}
             >
-              <img
+              <Image
                 src={inst.image}
                 alt={inst.name}
-                className="w-full h-full object-cover object-top"
+                fill
+                sizes="130px"
+                className="object-cover object-top"
               />
             </div>
 
