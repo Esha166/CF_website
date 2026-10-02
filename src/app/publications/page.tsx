@@ -38,7 +38,7 @@ const page = async () => {
     return (
         <PageMotion>
             <PageHeroMobile
-                imageSrc="/publications/hero.svg"
+                imageSrc="/publications/hero.webp"
                 title="Publications"
                 mobileStyles="!text-5xl"
                 styles="object-top"
