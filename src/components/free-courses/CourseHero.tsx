@@ -113,7 +113,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
           <div className="relative w-full h-80 mx-auto max-sm:hidden">
             <div className="absolute left-0 top-0 w-[55%] h-[260px] rounded-[10px] overflow-hidden shadow-md z-10">
               <Image
-                src={course.heroImage1 || "/course/hero.svg"}
+                src={course.heroImage1 || "/course/hero.webp"}
                 alt=""
                 fill
                 sizes="(max-width: 640px) 55vw, 300px"
@@ -130,7 +130,7 @@ export default function CourseHero({ course }: CourseHeroProps) {
               style={{ boxShadow: "0 6px 18px rgba(0,0,0,0.22)" }}
             >
               <Image
-                src={course.heroImage2 || "/course/hero (2).svg"}
+                src={course.heroImage2 || "/course/hero (2).webp"}
                 alt={course.title || course.name || ""}
                 fill
                 sizes="(max-width: 640px) 62vw, 340px"
