@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 interface ProfileHeroProps {
   name: string;
@@ -14,11 +15,15 @@ const ProfileHero = ({ name, role, description, image, reverse = false }: Profil
       <div className="w-full md:w-1/2">
         <div className="relative">
           <div className="absolute -top-4 -left-4 w-24 h-24 bg-orange opacity-20 rounded-full blur-2xl"></div>
-          <img 
-            src={image} 
-            alt={name} 
-            className="rounded-3xl shadow-2xl w-full object-cover aspect-[4/3] relative z-10" 
-          />
+          <div className="relative w-full aspect-[4/3] rounded-3xl shadow-2xl overflow-hidden z-10">
+            <Image
+              src={image}
+              alt={name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover"
+            />
+          </div>
           <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-navy opacity-10 rounded-full blur-3xl"></div>
         </div>
       </div>

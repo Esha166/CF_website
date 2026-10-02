@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 interface Instructor {
   id: number;
   name: string;
@@ -51,10 +53,12 @@ export default function MeetInstructors() {
               className="relative rounded-xl overflow-hidden bg-gray-100"
               style={{ width: 130, height: 130, flexShrink: 0 }}
             >
-              <img
+              <Image
                 src={inst.image}
                 alt={inst.name}
-                className="w-full h-full object-cover object-top"
+                fill
+                sizes="130px"
+                className="object-cover object-top"
               />
             </div>
 

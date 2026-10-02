@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { CommentData } from "@/lib/blogs";
 import { saveComment } from "@/lib/blogs";
 import { isWithinCooldown, markSubmitted } from "@/lib/anti-spam";
@@ -126,14 +127,16 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
         {comments.map((c) => (
           <div key={c.id} className="py-5 flex gap-3">
             <div
-              className="shrink-0 rounded-full overflow-hidden bg-gray-200"
+              className="relative shrink-0 rounded-full overflow-hidden bg-gray-200"
               style={{ width: 40, height: 40 }}
             >
               {c.avatar ? (
-                <img
+                <Image
                   src={c.avatar}
                   alt={c.name}
-                  className="w-full h-full object-cover object-top"
+                  fill
+                  sizes="40px"
+                  className="object-cover object-top"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm font-bold">
