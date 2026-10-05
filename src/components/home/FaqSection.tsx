@@ -12,72 +12,63 @@ type FaqItem = {
 const faqs: FaqItem[] = [
   {
     id: 1,
-    question: "What is Combine Foundation?",
+    question: "What is Combine Foundation and what is its mission?",
     answer:
       "Combine Foundation is a registered non-profit organization under section 42 companies Act 2017 while we are Tax exempted organization and the social impact arm of Combine Group. We are dedicated to creating sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare. Our approach is built on transparency, innovation, and long-term impact.",
   },
   {
     id: 2,
-    question: "What is the core mission of the Combine Foundation?",
+    question: "How can I join or volunteer with Combine Foundation?",
     answer:
-      "The core mission of Combine Foundation is to create structured, accountable, and impact-driven initiatives that reduce inequality and help communities grow stronger through education, empowerment, and sustainable development.",
+      "You can join Combine Foundation by submitting an application through the Combine Foundation Portal. The process includes application submission, review, interview, and onboarding. Students, professionals, and passionate individuals who want to contribute to social impact, community development, and learning opportunities are welcome. No prior experience is required.",
   },
   {
     id: 3,
-    question: "How can I join the Combine Foundation?",
-    answer:
-      "You can join Combine Foundation by submitting an application through Combine Foundation Portal. The joining process includes application submission, application review, interview, and onboarding.",
+    question: "How can I donate or support the foundation?",
+    answer: [
+      "You can support Combine Foundation by:",
+      "Donating to fund education, healthcare, and welfare programs",
+      "Sponsoring students through scholarships",
+      "Supporting community relief initiatives",
+    ],
   },
   {
     id: 4,
-    question: "How can I donate or support the foundation?",
-    answer:
-      ["You can support Combine Foundation by:", "Donating to fund education, healthcare, and welfare programs", "Sponsoring students through scholarships", "Supporting community relief initiatives"],
+    question: "Why should organizations partner with the Combine Foundation?",
+    answer: [
+      "Partnering with Combine Foundation offers:",
+      "Direct impact through a zero-admin-cost approach",
+      "Transparency and accountability in all operations",
+      "Future-focused programs (AI, technology, workforce development)",
+      "CSR collaboration opportunities aligned with global standards",
+    ],
   },
   {
     id: 5,
-    question: "Why should organizations partner with the Combine Foundation?",
+    question: "Is prior experience required for volunteering?",
     answer:
-      ["Partnering with Combine Foundation offers:", "Direct impact through a zero-admin-cost approach", "Transparency and accountability in all operations", "Future-focused programs (AI, technology, workforce development)", "CSR collaboration opportunities aligned with global standards"],
+      "No. Beginners and students are welcome as long as they are motivated to contribute and learn.",
   },
   {
     id: 6,
-    question: "Is prior experience required for volunteering?",
+    question: "Are certificates provided to volunteers?",
     answer:
-      "No, beginners and students are welcome just you have concept to do something for Allah and Pakistan.",
+      "Yes, certificates are awarded based on participation and performance.",
   },
   {
     id: 7,
-    question: "Are certificates provided to volunteers?",
-    answer:
-      "Yes, certificates awarded based on participation and performance.",
-  },
-  {
-    id: 8,
     question: "Can volunteers grow into leadership roles?",
     answer:
       "Yes, volunteers can progress into youth leadership, internship, and job opportunities.",
   },
   {
+    id: 8,
+    question: "What benefits do volunteers get?",
+    answer:
+      "Volunteers gain practical experience, leadership and communication skills, access to training sessions and webinars, real project exposure, networking opportunities, and career development support.",
+  },
+  {
     id: 9,
-    question: "What are the benefits of joining as a volunteer?",
-    answer:
-      "Joining as a volunteer provides opportunities to gain practical experience, improve leadership and communication skills, and work on real-world projects and community initiatives. Volunteers also build teamwork, confidence, networking opportunities, and professional exposure while contributing positively to society.",
-  },
-  {
-    id: 10,
-    question: "Will volunteers receive learning and growth opportunities?",
-    answer:
-      "Yes, volunteers get access to training sessions, webinars, leadership activities, project participation, and skill development opportunities that support personal and professional growth.",
-  },
-  {
-    id: 11,
-    question: "Can volunteering help in career development?",
-    answer:
-      "Yes, volunteering helps individuals gain practical experience, improve soft skills, strengthen their portfolio, and explore networking and career opportunities in different fields.",
-  },
-  {
-    id: 12,
     question: "Who can join as a volunteer?",
     answer:
       "Students, professionals, and passionate individuals who want to contribute to social impact, community development, and learning opportunities can join as volunteers.",
@@ -88,17 +79,20 @@ type FaqRowProps = {
   item: FaqItem;
   isOpen: boolean;
   onToggle: () => void;
+  panelId: string;
 };
 
-function FaqRow({ item, isOpen, onToggle }: FaqRowProps) {
+function FaqRow({ item, isOpen, onToggle, panelId }: FaqRowProps) {
   return (
     <div className="border-b border-gray-200 transition-colors duration-300 hover:bg-black/[0.02]">
       <button
+        type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className="w-full flex items-center justify-between gap-4 py-5 px-4 text-left cursor-pointer group"
+        aria-controls={panelId}
+        className="flex w-full items-center justify-between gap-4 px-4 py-5 text-left cursor-pointer group"
       >
-        <span className="text-gray-900 font-semibold text-base md:text-lg transition-colors duration-300 group-hover:text-secondary-500">
+        <span className="text-base font-semibold text-gray-900 transition-colors duration-300 group-hover:text-secondary-500 md:text-lg">
           {item.question}
         </span>
         <span
@@ -111,24 +105,25 @@ function FaqRow({ item, isOpen, onToggle }: FaqRowProps) {
       </button>
 
       <div
-        className={`grid transition-all duration-300 ease-in-out px-4 ${
-          isOpen
-            ? "grid-rows-[1fr] opacity-100 pb-5"
-            : "grid-rows-[0fr] opacity-0 pb-0"
+        id={panelId}
+        className={`grid px-4 transition-all duration-300 ease-in-out ${
+          isOpen ? "grid-rows-[1fr] pb-5 opacity-100" : "grid-rows-[0fr] pb-0 opacity-0"
         }`}
       >
         <div className="overflow-hidden">
           {Array.isArray(item.answer) ? (
             <>
-              <p className="text-gray-600 text-sm md:text-base leading-relaxed">{item.answer[0]}</p>
-              <ul className="list-disc list-inside text-gray-600 text-sm md:text-base leading-relaxed mt-2 space-y-1">
+              <p className="text-sm leading-relaxed text-gray-600 md:text-base">
+                {item.answer[0]}
+              </p>
+              <ul className="mt-2 list-disc list-inside space-y-1 text-sm leading-relaxed text-gray-600 md:text-base">
                 {item.answer.slice(1).map((line, i) => (
                   <li key={i}>{line}</li>
                 ))}
               </ul>
             </>
           ) : (
-            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+            <p className="text-sm leading-relaxed text-gray-600 md:text-base">
               {item.answer}
             </p>
           )}
@@ -138,10 +133,7 @@ function FaqRow({ item, isOpen, onToggle }: FaqRowProps) {
   );
 }
 
-// ─── Props ────────────────────────────────────────────────────────────────────
 type FaqSectionProps = {
-  /** When provided the full SectionHeader (title + description) is rendered.
-   *  When omitted the heading falls back to the plain image-style layout. */
   description?: string;
 };
 
@@ -153,17 +145,14 @@ export default function FaqSection({ description }: FaqSectionProps) {
   };
 
   return (
-    <section className="max-w-[1500px] mx-auto px-4 md:px-6 lg:px-8 py-16">
-      {/* ── Heading ── */}
+    <section className="mx-auto max-w-[1500px] px-4 py-16 md:px-6 lg:px-8">
       {description ? (
-        // ✅ Description provided → keep existing SectionHeader unchanged
         <SectionHeader
           title="Frequently Asked Questions"
           description={description}
         />
       ) : (
-        // 🖼 No description → plain heading style matching the image
-        <h2 className="text-2xl md:text-5xl font-bold text-black tracking-tight border-b border-gray-300 pb-3">
+        <h2 className="border-b border-gray-300 pb-3 text-2xl font-bold tracking-tight text-black md:text-5xl">
           Frequently Asked Questions
         </h2>
       )}
@@ -174,6 +163,7 @@ export default function FaqSection({ description }: FaqSectionProps) {
             key={item.id}
             item={item}
             isOpen={openId === item.id}
+            panelId={`faq-panel-${item.id}`}
             onToggle={() => toggle(item.id)}
           />
         ))}

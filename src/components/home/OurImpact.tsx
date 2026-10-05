@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import SectionHeader from "../UI/SectionHeader";
 
@@ -17,7 +17,7 @@ const impactItems: ImpactItem[] = [
     id: 1,
     stat: "3000+",
     title: "Lives Impacted",
-    image: "/home/impact cards/5.svg",
+    image: "/home/impact cards/5.webp",
     description:
       "At Combine Foundation, every project is created with the mission to bring positive change in people's lives. Through our educational, welfare, leadership, and community development programs, we have proudly impacted 3000+ individuals by creating opportunities, spreading hope, and supporting communities in times of need.",
   },
@@ -33,7 +33,7 @@ const impactItems: ImpactItem[] = [
     id: 3,
     stat: "250+",
     title: "Passionate Volunteers",
-    image: "/home/impact cards/6.svg",
+    image: "/home/impact cards/6.webp",
     description:
       "Our 250+ active volunteers are the heart of our community initiatives. From welfare drives to educational campaigns or Youth Leadership Program, they dedicate their time and efforts to serving humanity, supporting communities, and spreading kindness across Pakistan.",
   },
@@ -41,7 +41,7 @@ const impactItems: ImpactItem[] = [
     id: 4,
     stat: "40+",
     title: "Emerging Youth Leaders",
-    image: "/home/impact cards/8.svg",
+    image: "/home/impact cards/8.webp",
     description:
       "We have empowered 40+ active youth leaders who are confidently leading projects, social initiatives, and community activities and working as leaders in the Youth Leadership Program of the Combine Foundation.",
   },
@@ -49,7 +49,7 @@ const impactItems: ImpactItem[] = [
     id: 5,
     stat: "20+",
     title: "Dedicated Team Members",
-    image: "/home/impact cards/7.svg",
+    image: "/home/impact cards/7.webp",
     description:
       "Behind every successful initiative is our Combine Foundation team. We have 20+ committed members working across different departments with passion, teamwork, and a shared vision to create meaningful social impact.",
   },
@@ -57,7 +57,7 @@ const impactItems: ImpactItem[] = [
     id: 6,
     stat: "30+",
     title: "Webinars & Awareness Sessions",
-    image: "/home/impact cards/4.svg",
+    image: "/home/impact cards/4.webp",
     description:
       "We have organized 30+ webinars and awareness sessions covering AI, technology, medical awareness, cybersecurity, leadership, sustainability, scholarships, freelancing, self-grooming, and personal development. These sessions have inspired and educated countless individuals to learn, grow, and move toward a brighter future.",
   },
@@ -85,7 +85,7 @@ function ImpactCard({ item }: ImpactCardProps) {
           alt={item.title}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           fill
-          className="object-cover object-top"
+          className="motion-image object-cover object-top"
         />
       </div>
 
@@ -113,11 +113,113 @@ function ImpactCard({ item }: ImpactCardProps) {
 }
 
 export default function OurImpact() {
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isAutoScrollingRef = useRef(false);
+
+  const stopAutoScroll = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  const startAutoScroll = () => {
+    stopAutoScroll();
+    timerRef.current = setInterval(() => {
+      const nextIndex = (activeIndex + 1) % impactItems.length;
+      scrollToIndex(nextIndex, true);
+    }, 4500);
+  };
+
+  const scrollToIndex = (index: number, fromAuto = false) => {
+    const container = sliderRef.current;
+    if (!container) return;
+
+    const clampedIndex = Math.max(0, Math.min(index, impactItems.length - 1));
+    const card = container.children.item(clampedIndex) as HTMLElement | null;
+    if (!card) return;
+
+    if (!fromAuto) {
+      stopAutoScroll();
+    }
+
+    isAutoScrollingRef.current = fromAuto;
+    container.scrollTo({
+      left: card.offsetLeft - container.offsetLeft,
+      behavior: "smooth",
+    });
+    setActiveIndex(clampedIndex);
+  };
+
+  const handleScroll = () => {
+    const container = sliderRef.current;
+    if (!container) return;
+
+    if (isAutoScrollingRef.current) {
+      return;
+    }
+
+    const center = container.scrollLeft + container.clientWidth / 2;
+    let closestIndex = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
+
+    Array.from(container.children).forEach((child, index) => {
+      const element = child as HTMLElement;
+      const childCenter = element.offsetLeft + element.offsetWidth / 2;
+      const distance = Math.abs(center - childCenter);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    setActiveIndex(closestIndex);
+  };
+
+  useEffect(() => {
+    startAutoScroll();
+    return () => stopAutoScroll();
+  }, [activeIndex]);
+
   return (
-    <section className="max-w-[1500px] mx-auto px-4 md:px-6 lg:px-8 py-16">
+    <section className="max-w-[1500px] mx-auto px-4 md:px-6 lg:px-8 md:py-16">
       <SectionHeader title="OUR IMPACT" description="At Combine Foundation, every project is created with the mission to bring positive change in people's lives. Through our educational, welfare, leadership, and community development programs, we have proudly impacted 3000+ individuals by creating opportunities, spreading hope, and supporting communities in times of need." />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-center justify-items-center">
+      <div className="md:hidden mt-10">
+        <div
+          ref={sliderRef}
+          onScroll={handleScroll}
+          onTouchStart={stopAutoScroll}
+          onTouchEnd={startAutoScroll}
+          onMouseDown={stopAutoScroll}
+          onMouseUp={startAutoScroll}
+          className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 -mx-4 px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {impactItems.map((item) => (
+            <div key={item.id} className="min-w-full snap-center">
+              <ImpactCard item={item} />
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 flex items-center justify-center gap-2">
+          {impactItems.map((_, index) => (
+            <button
+              key={index}
+              type="button"
+              aria-label={`Go to impact card ${index + 1}`}
+              onClick={() => scrollToIndex(index)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                activeIndex === index ? "w-6 bg-secondary-500" : "w-2 bg-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-center justify-items-center">
         {impactItems.map((item) => (
           <ImpactCard key={item.id} item={item} />
         ))}

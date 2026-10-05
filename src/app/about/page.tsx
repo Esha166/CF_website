@@ -6,14 +6,30 @@ import AboutFounder from "@/components/about/AboutFounder"
 import Combineachievements from "@/components/about/Combineachievements"
 import Ourvalues from "@/components/about/Ourvalues"
 import Goals from "@/components/about/Goals"
+import PageMotion from "@/components/UI/PageMotion"
+
+export const metadata = {
+    title: "About Us",
+    description: "Learn about Combine Foundation's mission, story, leadership, values, and community impact.",
+    keywords: [
+        "Non Profit Organization in Pakistan",
+        "NPO in Pakistan",
+        "NGO in Pakistan",
+        "Registered NGO Pakistan",
+        "Nonprofit Organization Mission Pakistan",
+        "Combine Foundation About Us",
+        "Community Welfare Organization",
+    ],
+};
+
 const AboutPage = () => {
     return (
-        <>
+        <PageMotion>
             <AboutHero
                 text1="ABOUT"
                 text2="COMBINE"
-                image1="/about/hero/1.svg"
-                image2="/about/hero/2.svg"
+                image1="/about/hero/1.webp"
+                image2="/about/hero/2.webp"
                 text1Size="big"
                 text2Size="big"
                 mobileTitle="About"
@@ -25,7 +41,7 @@ const AboutPage = () => {
             <Combineachievements />
             <Ourvalues />
             <Goals />
-        </>
+        </PageMotion>
     )
 }
 

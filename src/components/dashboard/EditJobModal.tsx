@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { X, Plus, Trash2 } from "lucide-react";
+import JobDescriptionEditor from "./JobDescriptionEditor";
 
 interface JobFormData {
   title: string;
+  department: string;
   location: string;
   type: string;
   description: string;
+  formLink: string;
   requirements: string[];
   active: boolean;
 }
@@ -15,9 +18,11 @@ interface JobFormData {
 interface EditJobModalProps {
   job: {
     title: string;
+    department?: string;
     location: string;
     type: string;
     description: string;
+    formLink?: string;
     requirements: string[];
     active: boolean;
   };
@@ -28,9 +33,11 @@ interface EditJobModalProps {
 export default function EditJobModal({ job, onCancel, onSave }: EditJobModalProps) {
   const [form, setForm] = useState<JobFormData>({
     title: job.title,
+    department: job.department || "",
     location: job.location,
     type: job.type,
     description: job.description,
+    formLink: job.formLink || "",
     requirements: job.requirements.length > 0 ? job.requirements : [""],
     active: job.active,
   });
@@ -58,7 +65,7 @@ export default function EditJobModal({ job, onCancel, onSave }: EditJobModalProp
     });
   };
 
-  const isValid = form.title.trim() && form.description.trim() && form.requirements.some((r) => r.trim());
+  const isValid = form.title.trim() && form.description.replace(/<[^>]+>/g, "").trim() && form.requirements.some((r) => r.trim());
 
   const handleSave = () => {
     if (!isValid) return;
@@ -100,6 +107,18 @@ export default function EditJobModal({ job, onCancel, onSave }: EditJobModalProp
         </div>
 
         <div className="mb-4">
+          <label className="block text-sm text-gray-600 mb-1">Department</label>
+          <input
+            type="text"
+            name="department"
+            value={form.department}
+            onChange={handleChange}
+            placeholder="Programs, Finance, Communications"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        <div className="mb-4">
           <label className="block text-sm text-gray-600 mb-1">Type</label>
           <select
             name="type"
@@ -116,13 +135,21 @@ export default function EditJobModal({ job, onCancel, onSave }: EditJobModalProp
 
         <div className="mb-4">
           <label className="block text-sm text-gray-600 mb-1">Description</label>
-          <textarea
-            name="description"
+          <JobDescriptionEditor
             value={form.description}
+            onChange={(description) => setForm((prev) => ({ ...prev, description }))}
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-sm text-gray-600 mb-1">Application Form Link</label>
+          <input
+            type="url"
+            name="formLink"
+            value={form.formLink}
             onChange={handleChange}
-            placeholder="Job description..."
-            rows={4}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+            placeholder="https://forms.google.com/..."
+            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>
 

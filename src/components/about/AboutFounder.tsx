@@ -12,7 +12,7 @@ type FounderContent = {
 
 const founderContent: FounderContent = {
     title: "The Vision Behind Combine Foundation ",
-    image: "/about/founder/aboutfounder.svg",
+    image: "/about/founder/aboutfounder.webp",
     imageAlt: "About the founder meeting",
     description:
         "Combine Foundation is led by dedicated Founders who believe in creating opportunities for youth and communities across Pakistan. Mr. Amin Nathani started the foundation with a vision to spread education, leadership, and long-term social impact. Mr. Ashfaq Nathani leads the organization with a focus on youth development, digital education, mentorship, and innovation-driven learning opportunities. Alongside them, Mr. Farrukh Rehman brings years of experience in leadership development, finance, and corporate consultancy, helping strengthen the foundation's mission of preparing future-ready generations and creating meaningful change in communities.",
@@ -20,18 +20,15 @@ const founderContent: FounderContent = {
 
 export default function AboutFounder() {
     return (
-        <section className="max-w-[1500px] mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-14">
+        <section className="max-w-[1500px] mx-auto px-4 md:px-6 lg:px-8 md:py-14">
             <SectionHeader title={`${founderContent.title}`} />
 
-            <div
-                className="relative w-full rounded-2xl overflow-hidden mb-7"
-                style={{ height: "clamp(220px, 35vw, 350px)" }}
-            >
+            <div className="relative w-full rounded-2xl overflow-hidden md:mb-7 h-32 md:h-[clamp(220px,45vw,400px)]">
                 <Image
                     src={founderContent.image}
                     alt={founderContent.imageAlt}
                     fill
-                    className="object-cover "
+                    className="object-contain "
                     priority
                 />
             </div>

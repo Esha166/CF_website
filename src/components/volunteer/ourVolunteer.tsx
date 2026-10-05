@@ -9,15 +9,23 @@ const TESTIMONIALS = [
         role: "Volunteer — Content Writer",
         quote:
             "My six-month journey as a Content Writer team member at Combine Foundation has been one of the most helpful and meaningful experiences in my content writing journey. This is where I truly learned how to research properly, structure content, and write with clarity and purpose. Working on education and health-related topics felt very close to my heart, which motivated me to give my best. The team and coordinators were extremely supportive, patient, and understanding, especially during deadlines or delays, which created a positive and stress-free working environment. Being part of such a cooperative and respectful team helped me grow not only as a writer but also as a responsible team member. Overall, this experience strengthened my confidence, improved my skills, and made me more passionate about purpose-driven content writing.",
-        image: "/volunteer-program/testimonial.svg",
+        image: "/volunteer-program/testimonial.webp",
     },
     {
         name: "Sadain Zafar",
         role: "Volunteer",
         quote:
             "Joining Combine Foundation was a great learning experience for me. Through this volunteer program, I improved my communication, teamwork, and professional skills while working on real-world projects. The environment is very supportive, peaceful, and motivating for students and young professionals. I also got the opportunity to connect with talented people, learn from industry professionals, and gain practical experience that helped strengthen my confidence and career growth. I highly recommend this volunteer program to anyone who wants to create positive impact while building their future.",
-        image: "",
+        image: "/avatar.svg",
     },
+    {
+        name: "Umama Khan",
+        role: "Volunteer — Course Assistance and Program Assistance",
+        quote:
+            "My six month journey with Combine Foundation has been a truly meaningful experience. As a Course Assistant for the Quantitative Finance program, I worked closely with students throughout the course addressing their queries, helping them overcome challenges, reviewing assignments, conducting interviews, and ensuring they received the support they needed. I also supported the team in coordinating sessions and various program activities, giving me the opportunity to take responsibility and work collaboratively. Beyond the course, I helped plan and coordinate an Eid visit for people with disabilities during Ramadan, an experience that was especially meaningful to me. Throughout these six months, Combine Foundation strengthened my confidence, leadership, communication, and coordination skills, while reminding me that meaningful impact often begins with simply taking the initiative.",
+        image: "/volunteer-program/umama.png",
+    },
+    
 ];
 
 type Direction = "next" | "prev";

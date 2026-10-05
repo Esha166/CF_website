@@ -191,6 +191,12 @@ export default function DonationsView() {
                 Phone
               </th>
               <th className="py-3 text-left font-medium text-gray-500 w-28">
+                Country
+              </th>
+              <th className="py-3 text-left font-medium text-gray-500 w-32">
+                City
+              </th>
+              <th className="py-3 text-left font-medium text-gray-500 w-28">
                 Amount
               </th>
               <th className="py-3 text-left font-medium text-gray-500 w-32">
@@ -219,6 +225,8 @@ export default function DonationsView() {
                   </td>
                   <td className="py-3.5 text-gray-600">{donation.email}</td>
                   <td className="py-3.5 text-gray-600">{donation.phone}</td>
+                  <td className="py-3.5 text-gray-600">{donation.country || "-"}</td>
+                  <td className="py-3.5 text-gray-600">{donation.city || "-"}</td>
                   <td className="py-3.5 text-gray-800 font-medium">{donation.amount}/-</td>
                   <td className="py-3.5 text-gray-600">{donation.paymentMethod}</td>
                 </tr>

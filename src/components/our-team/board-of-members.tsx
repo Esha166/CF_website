@@ -2,7 +2,21 @@ import Image from "next/image";
 import type { FirestoreTeamMember } from "@/lib/admin-actions";
 
 export default function BoardOfMembers({ members }: { members?: FirestoreTeamMember[] }) {
-  const dbMembers = members?.filter((m) => m.section === "Board of Members") || [];
+  const roleOrder: Record<string, number> = {
+    "Chief Financial Officer (CFO)": 1,
+    "Shariah Compliance Officer": 2,
+    "Board of Member": 3,
+  };
+
+  const dbMembers = (members?.filter((m) => m.section === "Board of Members") || [])
+    .map((member, index) => ({ member, index }))
+    .sort((a, b) => {
+      const orderA = roleOrder[a.member.role] ?? 999;
+      const orderB = roleOrder[b.member.role] ?? 999;
+
+      return orderA - orderB || a.index - b.index;
+    })
+    .map(({ member }) => member);
   const displayMembers = dbMembers.length > 0
     ? dbMembers.map((m) => ({
         id: m.id || m.name,
@@ -19,11 +33,11 @@ export default function BoardOfMembers({ members }: { members?: FirestoreTeamMem
         Board of Members
       </h2>
 
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
+      <div className="grid grid-cols-1 items-stretch gap-10 md:grid-cols-3">
         {displayMembers.map((member) => (
           <div
             key={member.id}
-            className="flex flex-col items-center gap-8 py-8 first:pt-0 text-center"
+            className="flex h-full flex-col items-center gap-8 py-8 text-center"
           >
             <div className="relative w-40 sm:w-48 md:w-56 aspect-square overflow-hidden rounded-2xl">
               <Image

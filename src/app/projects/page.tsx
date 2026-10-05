@@ -5,13 +5,16 @@ import dynamic from "next/dynamic";
 import PageHeroMobile from "@/components/UI/Pageheromobile";
 import AchievementsList from "@/components/projects/Achievementslist ";
 import { getAllProjects, type Project } from "@/lib/projects";
+import { getEventLocations, type EventLocation } from "@/lib/events";
 import { Loader2 } from "lucide-react";
+import PageMotion from "@/components/UI/PageMotion";
 
 const AchievementsMap = dynamic(() => import("@/components/projects/map"), { ssr: false });
 
 export default function Projects() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [eventLocations, setEventLocations] = useState<EventLocation[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,7 +23,6 @@ export default function Projects() {
         const data = await getAllProjects();
         setProjects(data);
 
-        // Check for 'id' parameter to auto-expand and scroll to a project
         const params = new URLSearchParams(window.location.search);
         const urlId = params.get("id");
         if (urlId) {
@@ -40,6 +42,10 @@ export default function Projects() {
       }
     };
     loadProjects();
+
+    getEventLocations()
+      .then(setEventLocations)
+      .catch((err) => console.error("Error loading event locations:", err));
   }, []);
 
   const handleMapSelect = (id: string) => {
@@ -54,28 +60,31 @@ export default function Projects() {
     setActiveId((prev) => (prev === id ? null : id));
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-20">
-        <Loader2 className="w-10 h-10 text-orange animate-spin" />
-        <span className="mt-4 text-gray-600 font-medium">Loading projects...</span>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <PageHeroMobile title="Projects" imageSrc="/achievement-gallery/hero.svg" />
-      <AchievementsMap
-        projects={projects}
-        activeId={activeId}
-        onSelect={handleMapSelect}
-      />
-      <AchievementsList
-        projects={projects}
-        activeId={activeId}
-        onToggle={handleCardToggle}
-      />
-    </>
+    <PageMotion>
+      <div>
+        {loading ? (
+          <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-20">
+            <Loader2 className="w-10 h-10 text-orange animate-spin" />
+            <span className="mt-4 text-gray-600 font-medium">Loading projects...</span>
+          </div>
+        ) : (
+          <>
+            <PageHeroMobile title="Projects" imageSrc="/achievement-gallery/hero.webp" />
+            <AchievementsMap
+              projects={projects}
+              events={eventLocations}
+              activeId={activeId}
+              onSelect={handleMapSelect}
+            />
+            <AchievementsList
+              projects={projects}
+              activeId={activeId}
+              onToggle={handleCardToggle}
+            />
+          </>
+        )}
+      </div>
+    </PageMotion>
   );
 }

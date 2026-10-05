@@ -114,9 +114,9 @@ export default function Goals() {
             <div>
                 {activeTab.items.map((item, i) => (
                     <div key={item.id}>
-                        <div className="flex items-start gap-3 py-5">
-                            <span className="text-black mt-1"><Dot/></span>
-                            <p className="text-black text-sm md:text-base leading-7">
+                        <div className="flex items-start gap-3 py-5 text-black hover:text-secondary-500 hover:scale-y-105 transition-colors duration-200">
+                            <span className="mt-1 hover:text-secondary-500"><Dot/></span>
+                            <p className=" text-sm  md:text-base leading-7">
                                 {item.text}
                             </p>
                         </div>

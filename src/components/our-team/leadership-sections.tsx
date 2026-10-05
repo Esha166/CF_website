@@ -89,22 +89,39 @@ function MembersSection({ section }: { section: GroupSection }) {
 export default function LeadershipSections({ members }: { members?: FirestoreTeamMember[] }) {
   const hasDbMembers = members && members.length > 0 && members.some(m => ["Youth Forum", "International Forum"].includes(m.section));
 
+  const roleOrder: { [key: string]: number } = {
+    "Projects Coordinator and Innovation Lead": 1,
+    "Content Department Lead": 2,
+    "Lead Developer": 3,
+    "Graphics Lead": 4,
+    "Social Media Manager": 5,
+    "Video Production Lead": 6,
+    "Team Member": 7,
+    "Reporting Officer": 8,
+    "Youth Leader": 9,
+    "YouthLeader": 9,
+  };
+
+  const sortByRole = (memberList: FirestoreTeamMember[]) => {
+    return memberList.sort((a, b) => {
+      const orderA = roleOrder[a.role] ?? 999;
+      const orderB = roleOrder[b.role] ?? 999;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.name.localeCompare(b.name);
+    });
+  };
+
   const displaySections = hasDbMembers
     ? [
         {
           heading: "Youth Forum",
-          members: (members ?? [])
-            .filter((m) => m.section === "Youth Forum")
-            .sort((a, b) => {
-              if (a.section === "Youth Leader" && b.section !== "Youth Leader") return 1;
-              if (a.section !== "Youth Leader" && b.section === "Youth Leader") return -1;
-              return 0;
-            })
+          members: sortByRole(members ?? [])
+            .filter((m) => m.section === "Youth Forum" || m.section === "Youth Leader")
             .map((m) => ({ id: m.id || m.name, name: m.name, title: m.role, image: m.image })),
         },
         {
           heading: "International Forum",
-          members: (members ?? [])
+          members: sortByRole(members ?? [])
             .filter((m) => m.section === "Ambassador" || m.section === "International Forum")
             .map((m) => ({ id: m.id || m.name, name: m.name, title: m.role, image: m.image })),
         },

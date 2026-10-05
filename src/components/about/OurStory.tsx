@@ -13,9 +13,9 @@ const storyContent: StoryContent = {
     title: "The Story Behind Combine Foundation",
     paragraphs: [
         "Combine Foundation was established on the ideology that \"nation cannot build through donations\" and under this spirit Combine Foundation aims to fill the gap between despair and hope. Pakistan has extraordinary youth potential, yet millions of students still lack access to quality education, leadership opportunities, mentorship, career guidance, and digital skills for the future. After Identify this challenge and need Combine Foundation came into being as a part of Combine Group's mission to uplift Pakistani youth.",
-        "The combine foundation evolved into a structured organization officially registered as an NPO (under the Companies Act 2017) in SECP in 2023 and officially launched in May 2025 as Combine Foundation.",
+        "The Combine Foundation evolved into a structured organization officially registered as a Non-Profit Organization (NPO) under Section 42 of the Companies Act 2017, in 2023, with the SECP, and officially launched as Combine Foundation.",
     ],
-    image: "/about/story/ourstory.svg",
+    image: "/about/story/ourstory.webp",
     imageAlt: "Students on a field visit",
 };
 
@@ -26,7 +26,8 @@ export default function OurStory() {
                 className="w-full rounded-2xl px-8 py-6 mb-8 md:mb-10 bg-secondary-500"
             >
                 <h2 className="text-white font-bold text-4xl md:text-5xl">
-                    {storyContent.title}
+                    <span className="md:hidden">The Story</span>
+                    <span className="hidden md:inline">{storyContent.title}</span>
                 </h2>
             </div>
 

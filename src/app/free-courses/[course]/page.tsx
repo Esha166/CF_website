@@ -5,6 +5,7 @@ import Modules from "@/components/free-courses/Modules";
 import SuccessStories from "@/components/free-courses/SuccessStories";
 import MeetInstructors from "@/components/free-courses/MeetInstructors";
 import CtaSection from "@/components/UI/CtaSection";
+import type { Metadata } from "next";
 
 interface CoursePageProps {
   params: Promise<{
@@ -12,7 +13,41 @@ interface CoursePageProps {
   }>;
 }
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  return getAllCourseSlugs();
+}
+
+export async function generateMetadata({
+  params,
+}: CoursePageProps): Promise<Metadata> {
+  const { course: slug } = await params;
+  const course = await getCourseBySlug(slug);
+
+  if (!course) {
+    return {
+      title: "Free Course",
+    };
+  }
+
+  return {
+    title: course.title,
+    description: course.description,
+    keywords: [
+      course.title,
+      "Free Courses Pakistan",
+      "Youth Leadership Program",
+      "Youth Empowerment Pakistan",
+      "NGO in Pakistan",
+    ],
+    openGraph: {
+      title: course.title,
+      description: course.description,
+      type: "article",
+    },
+  };
+}
 
 export default async function CoursePage({ params }: CoursePageProps) {
   const { course: slug } = await params;
@@ -33,7 +68,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
     <>
       <CourseHero course={course} />
       <hr className="w-[95vw] text-gray-500 m-auto" />
-      <Modules modules={course.modules} guidelineCta={course.guidelineCta} guidelineFile={course.guidelineFile} />
+      <Modules modules={course.modules} guidelineCta={course.guidelineCta} />
       <SuccessStories stories={stories} />
       <MeetInstructors />
       <CtaSection

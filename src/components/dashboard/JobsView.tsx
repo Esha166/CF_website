@@ -127,9 +127,11 @@ export default function JobsView() {
 
   const handleSaveEdit = async (data: {
     title: string;
+    department: string;
     location: string;
     type: string;
     description: string;
+    formLink: string;
     requirements: string[];
     active: boolean;
   }) => {
@@ -142,9 +144,11 @@ export default function JobsView() {
 
   const handleAdd = async (data: {
     title: string;
+    department: string;
     location: string;
     type: string;
     description: string;
+    formLink: string;
     requirements: string[];
     active: boolean;
   }) => {

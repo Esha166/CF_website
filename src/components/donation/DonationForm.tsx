@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore/lite";
 import { db } from "@/lib/firebase";
-import type { Donation } from "@/types/database";
+import { isWithinCooldown, markSubmitted } from "@/lib/anti-spam";
+import Image from "next/image";
 
 const ChevronDown = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -15,6 +16,14 @@ const ChevronDown = () => (
 const EMAIL_RE = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,}$/;
 const NAME_RE = /^[a-zA-Z\s'\-]{2,80}$/;
 const PHONE_RE = /^[0-9\s\-\+\(\)]{7,20}$/;
+const MAX_DONATION_AMOUNT = 10_000_000;
+
+const CITIES_BY_COUNTRY: Record<string, string[]> = {
+    PK: ["Karachi", "Lahore", "Islamabad", "Peshawar", "Quetta"],
+    US: ["New York", "Los Angeles", "Chicago", "Houston", "Washington"],
+    UK: ["London", "Manchester", "Birmingham", "Liverpool", "Edinburgh"],
+    AE: ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Al Ain"],
+};
 
 function validateName(v: string) {
     if (!v.trim()) return "Name is required.";
@@ -31,7 +40,8 @@ function validateEmail(v: string) {
 function validateAmount(v: string) {
     if (!v) return "Amount is required.";
     const num = parseFloat(v);
-    if (isNaN(num) || num <= 0) return "Amount must be greater than 0.";
+    if (!Number.isFinite(num) || num <= 0 || num > MAX_DONATION_AMOUNT) return `Amount must be between 0 and ${MAX_DONATION_AMOUNT.toLocaleString()}.`;
+    if (!/^\d+(\.\d{1,2})?$/.test(v)) return "Amount can have up to 2 decimal places.";
     return "";
 }
 
@@ -93,16 +103,18 @@ export default function DonationForm() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [submitError, setSubmitError] = useState("");
+    const [honeypot, setHoneypot] = useState("");
 
     const handle = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const value = e.target.value;
-        setForm((p) => ({ ...p, [k]: value }));
+        setForm((p) => ({ ...p, [k]: value, ...(k === "country" ? { city: "" } : {}) }));
         setSubmitError("");
 
         // Live validate if field has been touched
         if (touched[k as keyof typeof touched]) {
             validateField(k, value);
         }
+        if (k === "country") setErrors((prev) => ({ ...prev, city: "" }));
     };
 
     const validateField = (name: string, value: string) => {
@@ -179,6 +191,16 @@ export default function DonationForm() {
             return;
         }
 
+        if (honeypot.trim()) {
+            setSubmitError("Submission blocked.");
+            return;
+        }
+
+        if (isWithinCooldown("donation", 60000)) {
+            setSubmitError("Please wait a minute before submitting again.");
+            return;
+        }
+
         setLoading(true);
         try {
             const payload = {
@@ -194,15 +216,8 @@ export default function DonationForm() {
                 createdAt: serverTimestamp(),
             };
             await addDoc(collection(db, "donations"), payload);
+            markSubmitted("donation");
             setSuccess(true);
-
-            const message = [
-                `Hi, I'm ${sanitise(form.firstName)} ${sanitise(form.lastName)}.`,
-                `I'd like to donate ${form.amount} Rs via ${form.paymentMethod}.`,
-                `My email: ${sanitise(form.email)}, Phone: ${sanitise(form.phone)}, Country: ${form.country}, City: ${form.city}.`,
-            ].join("%0A%0A");
-
-            window.open(`https://wa.me/923193372277?text=${message}`, "_blank");
 
             // Reset form
             setForm({
@@ -226,6 +241,7 @@ export default function DonationForm() {
                 city: false,
                 paymentMethod: false,
             });
+            setHoneypot("");
             // Clear success message after 3 seconds
             setTimeout(() => setSuccess(false), 3000);
         } catch (err) {
@@ -255,7 +271,7 @@ export default function DonationForm() {
     };
 
     return (
-        <div className="min-h-screen  flex items-center justify-center px-4 py-10" style={{ fontFamily: "'Segoe UI', sans-serif" }}>
+        <div id="form" className="min-h-screen flex items-center justify-center px-4 py-10" style={{ fontFamily: "'Segoe UI', sans-serif" }}>
             <div className="w-full 2xl:w-[80%]">
 
                 {/* Title */}
@@ -280,11 +296,23 @@ export default function DonationForm() {
 
                 {/* Two-col grid → single col on mobile */}
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-start">
+                    <label className="sr-only" aria-hidden="true">
+                        Company
+                        <input
+                            type="text"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            value={honeypot}
+                            onChange={(e) => setHoneypot(e.target.value)}
+                        />
+                    </label>
 
                     {/* ── LEFT: Form ── */}
                     <div className="flex flex-col gap-3">
                         <div className="flex flex-col gap-1">
+                            <label htmlFor="firstName" className="sr-only">First name</label>
                             <input
+                                id="firstName"
                                 className={getInputClass("firstName")}
                                 placeholder="First Name"
                                 name="firstName"
@@ -296,7 +324,9 @@ export default function DonationForm() {
                         </div>
 
                         <div className="flex flex-col gap-1">
+                            <label htmlFor="lastName" className="sr-only">Last name</label>
                             <input
+                                id="lastName"
                                 className={getInputClass("lastName")}
                                 placeholder="Last Name"
                                 name="lastName"
@@ -308,7 +338,9 @@ export default function DonationForm() {
                         </div>
 
                         <div className="flex flex-col gap-1">
+                            <label htmlFor="email" className="sr-only">Email</label>
                             <input
+                                id="email"
                                 className={getInputClass("email")}
                                 placeholder="Email"
                                 type="email"
@@ -321,7 +353,9 @@ export default function DonationForm() {
                         </div>
 
                         <div className="flex flex-col gap-1">
+                            <label htmlFor="phone" className="sr-only">Phone number</label>
                             <input
+                                id="phone"
                                 className={getInputClass("phone")}
                                 placeholder="Phone Number"
                                 type="tel"
@@ -335,14 +369,16 @@ export default function DonationForm() {
 
                         {/* Country */}
                         <div className="relative flex flex-col gap-1">
+                            <label htmlFor="country" className="sr-only">Country</label>
                             <select
+                                id="country"
                                 className={`${getSelectClass("country")} ${!form.country ? "text-gray-400" : "text-black"}`}
                                 name="country"
                                 value={form.country}
                                 onChange={handle("country")}
                                 onBlur={handleBlur}
                             >
-                                <option value="" disabled className="text-gray-400">Country</option>
+                                <option value="" disabled className="text-gray-400">Select country</option>
                                 <option value="PK" className="text-black">Pakistan</option>
                                 <option value="US" className="text-black">United States</option>
                                 <option value="UK" className="text-black">United Kingdom</option>
@@ -356,19 +392,20 @@ export default function DonationForm() {
 
                         {/* City */}
                         <div className="relative flex flex-col gap-1">
+                            <label htmlFor="city" className="sr-only">City</label>
                             <select
+                                id="city"
                                 className={`${getSelectClass("city")} ${!form.city ? "text-gray-400" : "text-black"}`}
                                 name="city"
                                 value={form.city}
                                 onChange={handle("city")}
                                 onBlur={handleBlur}
+                                disabled={!form.country}
                             >
-                                <option value="" disabled className="text-gray-400">City</option>
-                                <option value="karachi" className="text-black">Karachi</option>
-                                <option value="lahore" className="text-black">Lahore</option>
-                                <option value="islamabad" className="text-black">Islamabad</option>
-                                <option value="peshawar" className="text-black">Peshawar</option>
-                                <option value="quetta" className="text-black">Quetta</option>
+                                <option value="" disabled className="text-gray-400">{form.country ? "Select city" : "Select country first"}</option>
+                                {(CITIES_BY_COUNTRY[form.country] ?? []).map((city) => (
+                                    <option key={city} value={city} className="text-black">{city}</option>
+                                ))}
                             </select>
                             <span className="absolute right-3.5 top-10 text-gray-400 pointer-events-none flex items-center">
                                 <ChevronDown />
@@ -377,7 +414,9 @@ export default function DonationForm() {
                         </div>
 
                         <div className="flex flex-col gap-1">
+                            <label htmlFor="amount" className="sr-only">Donation amount</label>
                             <input
+                                id="amount"
                                 className={getInputClass("amount")}
                                 placeholder="Amount"
                                 type="number"
@@ -385,13 +424,19 @@ export default function DonationForm() {
                                 value={form.amount}
                                 onChange={handle("amount")}
                                 onBlur={handleBlur}
+                                min="0.01"
+                                max={MAX_DONATION_AMOUNT}
+                                step="0.01"
+                                inputMode="decimal"
                             />
                             {errors.amount && <span className="text-xs text-red-500">{errors.amount}</span>}
                         </div>
 
                         {/* Payment Method */}
                         <div className="relative flex flex-col gap-1">
+                            <label htmlFor="paymentMethod" className="sr-only">Payment method</label>
                             <select
+                                id="paymentMethod"
                                 className={`${getSelectClass("paymentMethod")} ${!form.paymentMethod ? "text-gray-400" : "text-black"}`}
                                 name="paymentMethod"
                                 value={form.paymentMethod}
@@ -434,26 +479,30 @@ export default function DonationForm() {
                         </p>
 
                         {/* Overlapping images */}
-                        <div className="relative w-full max-w-[420px] h-[320px] mb-7">
+                        <div className="relative w-full max-w-105 h-80 mb-7">
 
                             {/* Back image */}
-                            <div className="absolute left-0 top-0 w-[42%] h-[210px] rounded-md overflow-hidden shadow-md z-10">
-                                <img
+                            <div className="absolute left-0 top-0 w-[42%] h-52.5 rounded-md overflow-hidden shadow-md z-10">
+                                    <Image
                                     src="/donation/df1.png"
                                     alt="Community event"
-                                    className="w-full h-full object-cover object-top"
+                                        fill
+                                        sizes="(max-width: 1024px) 42vw, 180px"
+                                        className="object-cover object-top"
                                 />
                             </div>
 
                             {/* Front image */}
                             <div
-                                className="absolute left-[28%] top-[55px] w-[58%] h-[260px] rounded-md overflow-hidden z-20"
+                                className="absolute left-[28%] top-13.75 w-[58%] h-65 rounded-md overflow-hidden z-20"
                                 style={{ boxShadow: "0 6px 18px rgba(0,0,0,0.22)" }}
                             >
-                                <img
+                                <Image
                                     src="/donation/donation.png"
                                     alt="Community gathering"
-                                    className="w-full h-full object-cover object-top"
+                                    fill
+                                    sizes="(max-width: 1024px) 58vw, 240px"
+                                    className="object-cover object-top"
                                 />
                             </div>
 

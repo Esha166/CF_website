@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { FirestoreAnnualReport } from "@/lib/admin-actions";
 
 type Report = {
@@ -8,20 +9,20 @@ type Report = {
     description: string;
     image: string;
     viewUrl: string;
-    downloadUrl: string;
 };
-
 
 
 function ReportCard({ report }: { report: Report | FirestoreAnnualReport }) {
     return (
         <div className="w-full bg-white rounded-2xl shadow-xl flex flex-col min-[500px]:flex-row overflow-hidden h-auto min-[500px]:h-[350px] items-center md:p-6 p-4 gap-4 min-[500px]:gap-0">
             {/* Image */}
-            <div className="w-full min-[500px]:w-[200px] sm:min-[500px]:w-[250px] md:min-[500px]:w-[430px] shrink-0 h-[220px] min-[500px]:h-[300px]">
-                <img
+            <div className="relative w-full min-[500px]:w-[200px] sm:min-[500px]:w-[250px] md:min-[500px]:w-[430px] shrink-0 h-[220px] min-[500px]:h-[300px]">
+                <Image
                     src={report.image}
                     alt={report.title}
-                    className="w-full h-full object-cover rounded-xl"
+                    fill
+                    sizes="(max-width: 500px) 100vw, (max-width: 768px) 250px, 430px"
+                    className="object-top object-cover rounded-xl"
                 />
             </div>
 
@@ -36,29 +37,15 @@ function ReportCard({ report }: { report: Report | FirestoreAnnualReport }) {
                 </p>
 
                 {/* Buttons */}
-                <div className="flex flex-wrap gap-3 mt-5 flex-col md:flex-row w-full ">
+                <div className="mt-5 flex w-full flex-col flex-wrap gap-3 md:flex-row">
                     {/* View */}
                     <a
                         href={report.viewUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="
-                        w-full
-                        min-[830px]:w-[350px] h-[42px] rounded-full text-white font-semibold text-sm flex items-center justify-center hover:opacity-90 transition-opacity "
-                        style={{
-                            background: "linear-gradient(90deg, var(--secondary-700) 0%, var(--secondary-500) 100%)",
-                        }}
+                        className="flex h-[42px] w-full items-center justify-center rounded-full bg-[linear-gradient(90deg,var(--secondary-700)_0%,var(--secondary-500)_100%)] text-sm font-semibold text-white transition-opacity hover:opacity-90 min-[830px]:w-[350px]"
                     >
                         View
-                    </a>
-
-                    {/* Download */}
-                    <a
-                        href={report.downloadUrl}
-                        download
-                        className=" w-full min-[830px]:w-[350px]  h-[42px] rounded-full border border-gray-300 text-gray-700 font-medium text-sm flex items-center justify-center hover:bg-gray-50 transition-colors"
-                    >
-                        Download
                     </a>
                 </div>
             </div>

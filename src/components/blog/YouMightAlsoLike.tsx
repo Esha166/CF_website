@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { BlogPost } from "@/lib/blogs";
 
 export default function YouMightAlsoLike({ blogs }: { blogs: BlogPost[] }) {
@@ -79,11 +80,13 @@ export default function YouMightAlsoLike({ blogs }: { blogs: BlogPost[] }) {
               className="blog-card shrink-0 w-[320px] sm:w-[360px] md:w-[380px] lg:w-[420px] rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm flex flex-col"
               draggable={false}
             >
-              <div className="w-full h-44 md:h-52 lg:h-60 overflow-hidden bg-gray-100">
-                <img
+              <div className="relative w-full h-44 md:h-52 lg:h-60 overflow-hidden bg-gray-100">
+                <Image
                   src={post.image}
                   alt={post.title}
-                  className="w-full h-full object-cover pointer-events-none"
+                  fill
+                  sizes="(max-width: 640px) 320px, (max-width: 768px) 360px, (max-width: 1024px) 380px, 420px"
+                  className="object-cover pointer-events-none"
                   draggable={false}
                 />
               </div>

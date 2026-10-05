@@ -20,6 +20,7 @@ export interface FirestoreEvent {
   description: string;
   dateTime: string;
   location: string;
+  coordinates?: string;
   registrationLink: string;
   bulletPoints?: string[];
   images?: string[];
@@ -80,8 +81,12 @@ export interface FirestoreContact {
 export interface FirestoreDonation {
   id?: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   phone: string;
+  country?: string;
+  city?: string;
   amount: number;
   paymentMethod: string;
   createdAt?: any;
@@ -100,6 +105,7 @@ export interface FirestoreProject {
   partners: string[];
   location: string;
   coordinates: string;
+  order?: number;
   createdAt?: any;
 }
 
@@ -261,7 +267,6 @@ export interface FirestoreAnnualReport {
   description: string;
   image: string;
   viewUrl: string;
-  downloadUrl: string;
   createdAt?: string;
 }
 
@@ -446,9 +451,11 @@ export async function deletePartners(ids: string[]): Promise<void> {
 export interface FirestoreJob {
   id?: string;
   title: string;
+  department: string;
   location: string;
   type: string;
   description: string;
+  formLink?: string;
   requirements: string[];
   active: boolean;
   createdAt?: any;
@@ -510,25 +517,70 @@ export async function addSplashBanner(
   return ref.id;
 }
 
+export async function updateSplashBanner(
+  id: string,
+  data: Partial<Omit<FirestoreSplash, "id" | "createdAt">>
+): Promise<void> {
+  await updateDoc(doc(getDb(), "splashBanners", id), { ...data });
+}
+
 export async function deleteSplashBanners(ids: string[]): Promise<void> {
   const db = getDb();
   await Promise.all(ids.map((id) => deleteDoc(doc(db, "splashBanners", id))));
 }
 
 // ─── Projects ────────────────────────────────────────────────────────
+//
+// Projects carry an explicit `order` (1-based) controlling their display
+// sequence on the public site. Older documents created before this field
+// existed are backfilled on first read, preserving their prior
+// createdAt-desc order so nothing visibly reshuffles.
 
 export async function fetchProjects(): Promise<FirestoreProject[]> {
-  const snap = await getDocs(
-    query(collection(getDb(), "projects"), orderBy("createdAt", "desc"))
-  );
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreProject));
+  const db = getDb();
+  const snap = await getDocs(collection(db, "projects"));
+  const docs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as FirestoreProject));
+
+  const withOrder = docs.filter((p) => typeof p.order === "number");
+  const withoutOrder = docs.filter((p) => typeof p.order !== "number");
+
+  if (withoutOrder.length > 0) {
+    withoutOrder.sort(
+      (a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0)
+    );
+    let next = withOrder.reduce((max, p) => Math.max(max, p.order as number), 0) + 1;
+    await Promise.all(
+      withoutOrder.map((p) => {
+        p.order = next++;
+        return updateDoc(doc(db, "projects", p.id!), { order: p.order });
+      })
+    );
+  }
+
+  return docs.sort((a, b) => (a.order as number) - (b.order as number));
 }
 
 export async function addProject(
   data: Omit<FirestoreProject, "id" | "createdAt">
 ): Promise<string> {
-  const ref = await addDoc(collection(getDb(), "projects"), {
+  const db = getDb();
+  const snap = await getDocs(collection(db, "projects"));
+  const existing = snap.docs.map((d) => ({
+    id: d.id,
+    order: typeof d.data().order === "number" ? (d.data().order as number) : 0,
+  }));
+  const total = existing.length;
+  const desiredOrder = Math.min(Math.max(Math.round(data.order ?? total + 1), 1), total + 1);
+
+  await Promise.all(
+    existing
+      .filter((p) => p.order >= desiredOrder)
+      .map((p) => updateDoc(doc(db, "projects", p.id), { order: p.order + 1 }))
+  );
+
+  const ref = await addDoc(collection(db, "projects"), {
     ...data,
+    order: desiredOrder,
     createdAt: serverTimestamp(),
   });
   return ref.id;
@@ -538,10 +590,55 @@ export async function updateProject(
   id: string,
   data: Partial<Omit<FirestoreProject, "id" | "createdAt">>
 ): Promise<void> {
-  await updateDoc(doc(getDb(), "projects", id), { ...data });
+  const db = getDb();
+
+  if (typeof data.order === "number") {
+    const snap = await getDocs(collection(db, "projects"));
+    const all = snap.docs.map((d) => ({
+      id: d.id,
+      order: typeof d.data().order === "number" ? (d.data().order as number) : 0,
+    }));
+    const total = all.length;
+    const newOrder = Math.min(Math.max(Math.round(data.order), 1), total);
+    const oldOrder = all.find((p) => p.id === id)?.order ?? newOrder;
+
+    if (newOrder !== oldOrder) {
+      await Promise.all(
+        all
+          .filter((p) => p.id !== id)
+          .filter((p) =>
+            newOrder < oldOrder
+              ? p.order >= newOrder && p.order < oldOrder
+              : p.order > oldOrder && p.order <= newOrder
+          )
+          .map((p) =>
+            updateDoc(doc(db, "projects", p.id), {
+              order: newOrder < oldOrder ? p.order + 1 : p.order - 1,
+            })
+          )
+      );
+    }
+    data = { ...data, order: newOrder };
+  }
+
+  await updateDoc(doc(db, "projects", id), { ...data });
 }
 
 export async function deleteProjects(ids: string[]): Promise<void> {
   const db = getDb();
   await Promise.all(ids.map((id) => deleteDoc(doc(db, "projects", id))));
+
+  // Compact remaining order values back to a gapless 1..N sequence.
+  const snap = await getDocs(collection(db, "projects"));
+  const remaining = snap.docs
+    .map((d) => ({
+      id: d.id,
+      order: typeof d.data().order === "number" ? (d.data().order as number) : 0,
+    }))
+    .sort((a, b) => a.order - b.order);
+  await Promise.all(
+    remaining.map((p, i) =>
+      p.order === i + 1 ? Promise.resolve() : updateDoc(doc(db, "projects", p.id), { order: i + 1 })
+    )
+  );
 }

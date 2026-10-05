@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import TableToolbar from "./TableToolbar";
 import Pagination from "./Pagination";
 import AddSplashModal from "./AddSplashModal";
+import EditSplashModal from "./EditSplashModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import {
   fetchSplashBanners,
   addSplashBanner,
+  updateSplashBanner,
   deleteSplashBanners,
   type FirestoreSplash,
 } from "@/lib/admin-actions";
@@ -24,6 +26,7 @@ export default function SplashView() {
   const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editBanner, setEditBanner] = useState<FirestoreSplash | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const loadBanners = async () => {
@@ -39,7 +42,25 @@ export default function SplashView() {
   };
 
   useEffect(() => {
-    loadBanners();
+    let active = true;
+
+    const run = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchSplashBanners();
+        if (active) setBanners(data);
+      } catch (err) {
+        console.error("Error fetching splash banners:", err);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    void run();
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const filtered = banners.filter((b) =>
@@ -57,6 +78,7 @@ export default function SplashView() {
     paginated.length > 0 && paginated.every((b) => selectedIds.has(b.id!));
   const someChecked = paginated.some((b) => selectedIds.has(b.id!));
 
+  const canEdit = selectedIds.size === 1;
   const canDelete = selectedIds.size > 0;
 
   const toggleAll = () => {
@@ -83,6 +105,13 @@ export default function SplashView() {
     });
   };
 
+  const handleEdit = () => {
+    if (!canEdit) return;
+    const id = [...selectedIds][0];
+    const banner = banners.find((b) => b.id === id);
+    if (banner) setEditBanner(banner);
+  };
+
   const handleDelete = () => {
     if (!canDelete) return;
     setShowDeleteConfirm(true);
@@ -105,6 +134,14 @@ export default function SplashView() {
     setShowAddModal(false);
     await loadBanners();
     setCurrentPage(Math.ceil((banners.length + 1) / PAGE_SIZE));
+  };
+
+  const handleSaveEdit = async (data: { image: string; linkUrl: string; alt: string }) => {
+    if (!editBanner?.id) return;
+    await updateSplashBanner(editBanner.id, data);
+    setEditBanner(null);
+    setSelectedIds(new Set());
+    await loadBanners();
   };
 
   if (loading) {
@@ -135,9 +172,9 @@ export default function SplashView() {
         filterValue={filter}
         onFilterChange={setFilter}
         filterOptions={[]}
-        canEdit={false}
+        canEdit={canEdit}
         canDelete={canDelete}
-        onEdit={() => {}}
+        onEdit={handleEdit}
         onDelete={handleDelete}
       />
 
@@ -237,6 +274,14 @@ export default function SplashView() {
         <AddSplashModal
           onCancel={() => { setShowAddModal(false); }}
           onSave={handleAdd}
+        />
+      )}
+
+      {editBanner && (
+        <EditSplashModal
+          banner={editBanner}
+          onCancel={() => { setEditBanner(null); }}
+          onSave={handleSaveEdit}
         />
       )}
 

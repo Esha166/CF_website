@@ -5,6 +5,8 @@ import PageHeroMobile from "@/components/UI/Pageheromobile";
 import OurIdeaAboutEvents from "@/components/events/ourideas";
 import UpcomingEvents from "@/components/events/UpcomingEvents";
 import EventsAcheivementList from "@/components/events/EventsAcheivementList";
+import Head from "./head";
+import PageMotion from "@/components/UI/PageMotion";
 
 export default function Page() {
     const [activeId, setActiveId] = useState<string | null>(null);
@@ -14,11 +16,12 @@ export default function Page() {
     };
 
     return (
-        <>
+        <PageMotion>
+            <Head/>
             <PageHeroMobile title="Events" imageSrc="/events/hero.png" />
             <OurIdeaAboutEvents />
             <UpcomingEvents />
             <EventsAcheivementList activeId={activeId} onToggle={handleCardToggle} />
-        </>
+        </PageMotion>
     );
 }

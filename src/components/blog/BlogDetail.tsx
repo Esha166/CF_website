@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import type { BlogPost } from "@/lib/blogs";
 import { updateBlogLikes } from "@/lib/blogs";
 import AuthorCard from "@/components/blog/AuthorCard";
-import Comments from "@/components/blog/Comments";
 import YouMightAlsoLike from "@/components/blog/YouMightAlsoLike";
 import Image from "next/image";
+import { useState } from "react";
+import Comments from "./Comments";
 
 interface BlogDetailProps {
   post: BlogPost;
@@ -33,7 +33,7 @@ export default function BlogDetail({ post, blogs }: BlogDetailProps) {
   };
 
   return (
-    <article className="max-w-[1500px] mx-auto px-9 py-8 max-sm:px-6">
+    <article className="max-w-[1500px] w-full mx-auto px-9 py-8 max-sm:px-6">
 
       <nav className="flex items-center text-xs mb-5 flex-wrap justify-center">
   <a

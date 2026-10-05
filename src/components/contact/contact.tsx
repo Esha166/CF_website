@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore/lite";
 import { db } from "@/lib/firebase";
+import { isWithinCooldown, markSubmitted } from "@/lib/anti-spam";
 // import type { Message } from "@/lib/collections";
 
 // ── Strict validators (work regardless of input type) ──────────────────────
@@ -46,6 +47,7 @@ const ContactForm = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [submitError, setSubmitError] = useState("");
+    const [honeypot, setHoneypot] = useState("");
 
     // Validate a single field and return the error string
     const validateField = (name: string, value: string) => {
@@ -99,6 +101,16 @@ const ContactForm = () => {
             return;
         }
 
+        if (honeypot.trim()) {
+            setSubmitError("Submission blocked.");
+            return;
+        }
+
+        if (isWithinCooldown("contact", 60000)) {
+            setSubmitError("Please wait a minute before sending another message.");
+            return;
+        }
+
         setLoading(true);
         try {
             const payload = {
@@ -110,10 +122,12 @@ const ContactForm = () => {
                 createdAt: serverTimestamp(),
             };
             await addDoc(collection(db, "contacts"), payload);
+            markSubmitted("contact");
             setSuccess(true);
             setForm({ name: "", email: "", message: "" });
             setErrors(EMPTY_ERRORS);
             setTouched({ name: false, email: false, message: false });
+            setHoneypot("");
         } catch (err) {
             console.error(err);
             setSubmitError("Something went wrong. Please try again.");
@@ -145,6 +159,16 @@ const ContactForm = () => {
 
                     {/* ── Left: Form ─────────────────────────────────────────── */}
                     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5 flex-1">
+                        <label className="sr-only" aria-hidden="true">
+                            Website
+                            <input
+                                type="text"
+                                tabIndex={-1}
+                                autoComplete="off"
+                                value={honeypot}
+                                onChange={(e) => setHoneypot(e.target.value)}
+                            />
+                        </label>
 
                         {/* Name */}
                         <div className="flex flex-col gap-1">
@@ -254,7 +278,7 @@ const ContactForm = () => {
                                 </svg>
                             </span>
                             <p className="text-sm lg:text-base xl:text-lg text-black font-semibold leading-relaxed mt-1">
-                                House 23, Street 3 Block 13D, Gulshan - e - Iqbal
+                                B-18 Block 16 Gulshan-e-Iqbal near Expo Centre main University Road Karachi, Sindh, Pakistan
                             </p>
                         </div>
 
@@ -272,7 +296,7 @@ const ContactForm = () => {
                                 </svg>
                             </span>
                             <p className="text-sm lg:text-base xl:text-lg text-black font-semibold">
-                                +92 319 3372277
+                                +92 320 8686644
                             </p>
                         </div>
 
@@ -291,7 +315,7 @@ const ContactForm = () => {
                                 href="mailto:info@combinefoundation.org"
                                 className="text-sm lg:text-base xl:text-lg font-semibold text-black hover:text-blue-600 transition-colors"
                             >
-                                combinegroup@gmail.com
+                                info@combinefoundation.org
                             </a>
                         </div>
 

@@ -205,8 +205,8 @@ export default function CoursesOffered({ courses }: { courses: Course[] }) {
 
         <div
           ref={scrollRef}
-          className="overflow-y-auto overflow-x-hidden"
-          style={{ maxHeight: "600px", scrollBehavior: "smooth" }}
+          className="overflow-x-hidden"
+          style={{ scrollBehavior: "smooth" }}
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pb-2 px-2 items-stretch">
             {filtered.map((course, idx) => (

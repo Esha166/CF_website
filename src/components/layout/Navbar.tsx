@@ -53,7 +53,7 @@ const Navbar = ({ navItems }: NavbarProps) => {
                           <Link 
                             key={sub.label} 
                             href={sub.href}
-                            className="flex items-center px-4 py-2.5 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#134981] transition-colors"
+                            className="flex items-center px-4 py-18 text-sm text-gray-600 hover:bg-blue-50 hover:text-[#134981] transition-colors "
                           >
                             {sub.icon && <span className="mr-3">{sub.icon}</span>}
                             {sub.label}

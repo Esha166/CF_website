@@ -113,7 +113,7 @@ export default function PublicationsView() {
     if (report) setEditReport(report);
   };
 
-  const handleSaveReport = async (data: { title: string; description: string; image: string; viewUrl: string; downloadUrl: string }) => {
+  const handleSaveReport = async (data: { title: string; description: string; image: string; viewUrl: string; }) => {
     if (editReport?.id) {
       await updateAnnualReport(editReport.id, data);
       setEditReport(null);
@@ -122,7 +122,7 @@ export default function PublicationsView() {
     }
   };
 
-  const handleAddReport = async (data: { title: string; description: string; image: string; viewUrl: string; downloadUrl: string }) => {
+  const handleAddReport = async (data: { title: string; description: string; image: string; viewUrl: string;}) => {
     await addAnnualReport(data);
     setShowAddReport(false);
     await loadReports();
@@ -195,8 +195,7 @@ export default function PublicationsView() {
                 <th className="py-3 text-left font-medium text-gray-500">Title</th>
                 <th className="py-3 text-left font-medium text-gray-500">Description</th>
                 <th className="py-3 text-left font-medium text-gray-500">View URL</th>
-                <th className="py-3 text-left font-medium text-gray-500">Download URL</th>
-              </tr>
+            </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {reportsPaginated.map((report) => {
@@ -217,15 +216,6 @@ export default function PublicationsView() {
                       {report.viewUrl ? (
                         <a href={report.viewUrl} target="_blank" rel="noopener noreferrer" className="hover:underline" title={report.viewUrl}>
                           {report.viewUrl}
-                        </a>
-                      ) : (
-                        <span className="text-gray-400">—</span>
-                      )}
-                    </td>
-                    <td className="py-3.5 text-blue-500 truncate max-w-[180px]">
-                      {report.downloadUrl ? (
-                        <a href={report.downloadUrl} target="_blank" rel="noopener noreferrer" className="hover:underline" title={report.downloadUrl}>
-                          {report.downloadUrl}
                         </a>
                       ) : (
                         <span className="text-gray-400">—</span>

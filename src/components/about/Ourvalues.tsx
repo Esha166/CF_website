@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SectionHeader from "@/components/UI/SectionHeader";
 type Value = {
     id: number;
@@ -105,14 +105,113 @@ function ValueCard({ value }: ValueCardProps) {
 }
 
 export default function OurValues() {
+    const sliderRef = useRef<HTMLDivElement | null>(null);
+    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const isAutoScrollingRef = useRef(false);
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const stopAutoScroll = () => {
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
+    };
+
+    const scrollToIndex = (index: number, fromAuto = false) => {
+        const container = sliderRef.current;
+        if (!container) return;
+
+        const clampedIndex = Math.max(0, Math.min(index, values.length - 1));
+        const card = container.children.item(clampedIndex) as HTMLElement | null;
+        if (!card) return;
+
+        if (!fromAuto) {
+            stopAutoScroll();
+        }
+
+        isAutoScrollingRef.current = fromAuto;
+        container.scrollTo({
+            left: card.offsetLeft - container.offsetLeft,
+            behavior: "smooth",
+        });
+        setActiveIndex(clampedIndex);
+    };
+
+    const startAutoScroll = () => {
+        stopAutoScroll();
+        timerRef.current = setInterval(() => {
+            setActiveIndex((current) => {
+                const next = (current + 1) % values.length;
+                scrollToIndex(next, true);
+                return next;
+            });
+        }, 4500);
+    };
+
+    const handleScroll = () => {
+        const container = sliderRef.current;
+        if (!container || isAutoScrollingRef.current) return;
+
+        const center = container.scrollLeft + container.clientWidth / 2;
+        let closestIndex = 0;
+        let closestDistance = Number.POSITIVE_INFINITY;
+
+        Array.from(container.children).forEach((child, index) => {
+            const element = child as HTMLElement;
+            const childCenter = element.offsetLeft + element.offsetWidth / 2;
+            const distance = Math.abs(center - childCenter);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestIndex = index;
+            }
+        });
+
+        setActiveIndex(closestIndex);
+    };
+
+    useEffect(() => {
+        startAutoScroll();
+        return () => stopAutoScroll();
+    }, []);
+
     return (
         <section className="max-w-[1500px] mx-auto px-4 md:px-6 lg:px-8 py-10 md:py-14 w-full">
 
             <SectionHeader title="Our Values" />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-15 w-full">
+            <div
+                ref={sliderRef}
+                onScroll={handleScroll}
+                onTouchStart={stopAutoScroll}
+                onTouchEnd={startAutoScroll}
+                onMouseDown={stopAutoScroll}
+                onMouseUp={startAutoScroll}
+                className="mt-15 w-full flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 -mx-4 px-4 md:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+                {values.map((value) => (
+                    <div key={value.id} className="min-w-full snap-center">
+                        <ValueCard value={value} />
+                    </div>
+                ))}
+            </div>
+
+            <div className="mt-15 hidden grid-cols-1 gap-4 w-full sm:grid sm:grid-cols-2 lg:grid-cols-3">
                 {values.map((value) => (
                     <ValueCard key={value.id} value={value} />
+                ))}
+            </div>
+
+            <div className="mt-4 flex items-center justify-center gap-2 md:hidden">
+                {values.map((_, index) => (
+                    <button
+                        key={index}
+                        type="button"
+                        aria-label={`Go to value ${index + 1}`}
+                        onClick={() => scrollToIndex(index)}
+                        className={`h-2 rounded-full transition-all duration-300 ${
+                            activeIndex === index ? "w-6 bg-secondary-500" : "w-2 bg-gray-300"
+                        }`}
+                    />
                 ))}
             </div>
         </section>

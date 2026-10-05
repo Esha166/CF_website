@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface StoryItem {
   name: string;
@@ -28,6 +28,15 @@ export default function SuccessStories({ stories }: { stories: StoryItem[] }) {
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState<"left" | "right" | null>(null);
   const [animating, setAnimating] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReduceMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   const navigate = (dir: "left" | "right") => {
     if (animating || stories.length <= 1) return;
@@ -48,9 +57,30 @@ export default function SuccessStories({ stories }: { stories: StoryItem[] }) {
 
   if (stories.length === 0) return null;
 
+  const motionClass =
+    reduceMotion || stories.length <= 1
+      ? ""
+      : animating
+        ? direction === "right"
+          ? "slide-exit-left"
+          : "slide-exit-right"
+        : "slide-enter-right";
+
   return (
     <>
       <style>{`
+        @media (prefers-reduced-motion: reduce) {
+          .slide-enter-right,
+          .slide-enter-left,
+          .slide-exit-right,
+          .slide-exit-left,
+          .play-btn,
+          .nav-btn,
+          .dot {
+            animation: none !important;
+            transition: none !important;
+          }
+        }
 
         @keyframes slideInRight {
           from { opacity: 0; transform: translateX(48px); }
@@ -106,6 +136,7 @@ export default function SuccessStories({ stories }: { stories: StoryItem[] }) {
               {stories.length > 1 && (
                 <>
                   <button
+                    type="button"
                     onClick={() => navigate("left")}
                     aria-label="Previous"
                     className="nav-btn absolute z-20 flex items-center justify-center rounded-full w-10 h-10 lg:w-[50px] lg:h-[50px] xl:w-[60px] xl:h-[60px]"
@@ -124,6 +155,7 @@ export default function SuccessStories({ stories }: { stories: StoryItem[] }) {
                   </button>
 
                   <button
+                    type="button"
                     onClick={() => navigate("right")}
                     aria-label="Next"
                     className="nav-btn absolute z-20 flex items-center justify-center rounded-full w-10 h-10 lg:w-[50px] lg:h-[50px] xl:w-[60px] xl:h-[60px]"
@@ -144,11 +176,7 @@ export default function SuccessStories({ stories }: { stories: StoryItem[] }) {
               )}
 
               <div
-                className={`w-full relative flex items-center justify-center overflow-hidden rounded-t-2xl ${
-                  stories.length <= 1 ? "" : animating
-                    ? direction === "right" ? "slide-exit-left" : "slide-exit-right"
-                    : "slide-enter-right"
-                }`}
+                className={`w-full relative flex items-center justify-center overflow-hidden rounded-t-2xl ${motionClass}`}
                 style={{ background: "#c4cdd6", minHeight: 220, maxHeight: 340, aspectRatio: "16/7" }}
               >
                 <div
@@ -163,6 +191,7 @@ export default function SuccessStories({ stories }: { stories: StoryItem[] }) {
                   {story.videoUrl ? (
                     <>
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.preventDefault();
                           window.open(story.videoUrl, "_blank", "noopener,noreferrer");
@@ -221,6 +250,7 @@ export default function SuccessStories({ stories }: { stories: StoryItem[] }) {
               <div className="flex items-center gap-1.5 mt-3">
                 {stories.map((_, i) => (
                   <button
+                    type="button"
                     key={i}
                     onClick={() => {
                       if (i === current) return;

@@ -63,6 +63,11 @@ export default function PartnersSection({ partners: initialPartners }: { partner
   const remainingName = remainingWords.join(" ");
 
   return (
+    <div className="">
+      <div className="mb-2 p-4 md:p-6 lg:p-8 px-16">
+        <h2 className="text-3xl font-bold text-secondary-500">Our Partners</h2>
+      <hr className="border-gray-300" />
+      </div>
     <div className="group grid grid-cols-1 md:grid-cols-5 gap-0 rounded-3xl overflow-hidden mb-5">
       {/* Text */}
       <div className="md:col-span-3 flex flex-col justify-center p-8 md:p-10 lg:p-12">
@@ -75,7 +80,7 @@ export default function PartnersSection({ partners: initialPartners }: { partner
         <p className="text-sm md:text-base text-primary-800 leading-relaxed">
           {partner.description}
         </p>
-        
+
 
         {/* moved here */}
         <div className="grid grid-cols-2">
@@ -93,7 +98,7 @@ export default function PartnersSection({ partners: initialPartners }: { partner
             </button>
           </div>
           {partner.mouUrl && (
-            <div className="mt-16 md:mt-0 flex justify-start items-center md:justify-end">
+            <div className="mt-10 md:mt-0 flex justify-start items-center md:justify-end">
               <a
                 href={partner.mouUrl}
                 target="_blank"
@@ -110,11 +115,11 @@ export default function PartnersSection({ partners: initialPartners }: { partner
         </div>
       </div>
       <div
-        className="relative md:col-span-2 w-full overflow-hidden rounded-2xl"
+        className="hidden md:flex relative md:col-span-2 w-full overflow-hidden rounded-2xl"
         style={{ height: "500px" }}
       >
         <div
-          className="absolute inset-0 transition-all w-full duration-400 ease-in-out rounded-2xl"
+          className="flex absolute inset-0 transition-all w-full duration-400 ease-in-out rounded-2xl"
           style={{
             opacity: sliding ? 0 : 1,
             transform: sliding
@@ -137,6 +142,7 @@ export default function PartnersSection({ partners: initialPartners }: { partner
 
       </div>
 
+    </div>
     </div>
   );
 }

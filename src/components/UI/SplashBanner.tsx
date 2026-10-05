@@ -17,7 +17,17 @@ export default function SplashBanner() {
   const [splash, setSplash] = useState<SplashData | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
+  const seen = (): boolean => {
+    try { return !!localStorage.getItem("splash_seen"); } catch { return false; }
+  };
+
+  const markSeen = () => {
+    try { localStorage.setItem("splash_seen", "true"); } catch {}
+  };
+
   useEffect(() => {
+    if (seen()) return;
+
     const fetchLatest = async () => {
       try {
         const snap = await getDocs(
@@ -44,43 +54,66 @@ export default function SplashBanner() {
     fetchLatest();
   }, []);
 
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        close();
+      }
+    };
+
+    if (visible) {
+      window.addEventListener("keydown", onKeyDown);
+      return () => window.removeEventListener("keydown", onKeyDown);
+    }
+  }, [visible]);
+
+  const close = () => {
+    markSeen();
+    setVisible(false);
+    setDismissed(true);
+  };
+
   if (!visible || !splash || dismissed) return null;
 
   return (
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={() => setVisible(false)}
+      onClick={close}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Announcement"
     >
       <div
-  className="relative w-[85vw] max-w-sm sm:max-w-md lg:max-w-lg rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300"
-  onClick={(e) => e.stopPropagation()}
->
-  {splash.linkUrl ? (
-    <Link href={splash.linkUrl} className="block relative w-full max-h-[80vh]">
-      <Image
-        src={splash.image}
-        alt={splash.alt}
-        width={800}
-        height={800}
-        className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
-        priority
-      />
-    </Link>
-  ) : (
-    <div className="relative w-full max-h-[80vh]">
-      <Image
-        src={splash.image}
-        alt={splash.alt}
-        width={800}
-        height={800}
-        className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
-        priority
-      />
-    </div>
-  )}
+        className="relative w-[85vw] max-w-sm sm:max-w-md lg:max-w-lg rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {splash.linkUrl ? (
+          <Link href={splash.linkUrl} className="block relative w-full max-h-[80vh]">
+            <Image
+              src={splash.image}
+              alt={splash.alt}
+              width={800}
+              height={800}
+              className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
+              priority
+            />
+          </Link>
+        ) : (
+          <div className="relative w-full max-h-[80vh]">
+            <Image
+              src={splash.image}
+              alt={splash.alt}
+              width={800}
+              height={800}
+              className="w-full h-auto max-h-[80vh] object-contain rounded-xl"
+              priority
+            />
+          </div>
+        )}
 
         <button
-          onClick={() => setVisible(false)}
+          type="button"
+          onClick={close}
           aria-label="Close"
           className="
             absolute top-3 right-3 z-10

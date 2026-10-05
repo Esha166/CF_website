@@ -4,8 +4,22 @@ import CoursesOffered from "@/components/free-courses/CoursesOffered";
 import SuccessStories from "@/components/free-courses/SuccessStories";
 import FaqSection from "@/components/home/FaqSection";
 import { getAllCourses, SuccessStory } from "@/lib/freeCourses";
+import PageMotion from "@/components/UI/PageMotion";
 
-export const dynamic = "force-dynamic";
+export const metadata = {
+    title: "Free Courses",
+    description: "Discover free skill-building courses offered by Combine Foundation to empower youth across Pakistan.",
+    keywords: [
+        "Free Courses Pakistan",
+        "Youth Leadership Program",
+        "Youth Empowerment Pakistan",
+        "NGO in Pakistan",
+        "Nonprofit Organization Pakistan",
+        "Skill Development Program Pakistan",
+    ],
+};
+
+export const revalidate = 3600;
 
 export default async function Home() {
   const courses = await getAllCourses();
@@ -22,8 +36,8 @@ export default async function Home() {
     .filter((s) => s.name && s.description);
 
   return (
-  <main>
-    <Hero text1="Free" text2="Courses" image1="/course/hero.svg" image2="/course/hero (2).svg"
+  <PageMotion>
+    <Hero text1="Free" text2="Courses" image1="/course/hero.webp" image2="/course/hero (2).webp"
     mobileTitle="Free Courses" text1Size = "big"
     text2Size="big"
     />
@@ -32,5 +46,5 @@ export default async function Home() {
     <SuccessStories stories={stories} />
     <FaqSection />
 
-  </main>
+  </PageMotion>
 )}

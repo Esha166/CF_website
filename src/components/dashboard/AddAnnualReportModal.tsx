@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 
-import { uploadImage } from "@/lib/firebase-upload";
+import { uploadImage, uploadFile } from "@/lib/firebase-upload";
 import { Loader2 } from "lucide-react";
 
 interface AnnualReportFormData {
@@ -11,7 +11,6 @@ interface AnnualReportFormData {
   description: string;
   image: string;
   viewUrl: string;
-  downloadUrl: string;
 }
 
 interface AddAnnualReportModalProps {
@@ -27,14 +26,13 @@ export default function AddAnnualReportModal({ onCancel, onSave }: AddAnnualRepo
     description: "",
     image: "",
     viewUrl: "",
-    downloadUrl: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const field = "image";
@@ -51,9 +49,26 @@ export default function AddAnnualReportModal({ onCancel, onSave }: AddAnnualRepo
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const field = "viewUrl";
+    setUploadingFields((prev) => ({ ...prev, [field]: true }));
+    setError("");
+    try {
+      const storageUrl = await uploadFile(file, "reports");
+      setForm((prev) => ({ ...prev, [field]: storageUrl }));
+    } catch (err: any) {
+      console.error("File upload error:", err);
+      setError("Failed to upload report file. Please try again.");
+    } finally {
+      setUploadingFields((prev) => ({ ...prev, [field]: false }));
+    }
+  };
+
   const isUploading = Object.values(uploadingFields).some(Boolean);
 
-  const isValid = form.title.trim() && form.description.trim() && form.image;
+  const isValid = form.title.trim() && form.description.trim() && form.image && form.viewUrl;
 
   const handleSave = () => {
     if (!isValid || isUploading) return;
@@ -99,7 +114,7 @@ export default function AddAnnualReportModal({ onCancel, onSave }: AddAnnualRepo
           <input
             type="file"
             accept="image/*"
-            onChange={handleImageUpload}
+            onChange={handleCoverUpload}
             disabled={isUploading}
             className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer disabled:opacity-50"
           />
@@ -114,27 +129,24 @@ export default function AddAnnualReportModal({ onCancel, onSave }: AddAnnualRepo
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm text-gray-600 mb-1">View URL</label>
+          <label className="block text-sm text-gray-600 mb-1">Report File</label>
           <input
-            type="url"
-            name="viewUrl"
-            value={form.viewUrl}
-            onChange={handleChange}
-            placeholder="https://example.com/report-2024"
+            type="file"
+            accept="application/pdf,image/*"
+            onChange={handleFileUpload}
+            disabled={isUploading}
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-sm text-gray-600 mb-1">Download URL</label>
-          <input
-            type="url"
-            name="downloadUrl"
-            value={form.downloadUrl}
-            onChange={handleChange}
-            placeholder="https://example.com/report-2024.pdf"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
+          {uploadingFields.viewUrl ? (
+            <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+              <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+              <span>Uploading report file...</span>
+            </div>
+          ) : form.viewUrl ? (
+            <p className="mt-2 text-xs text-gray-500 break-all">
+              Stored at: {form.viewUrl}
+            </p>
+          ) : null}
         </div>
 
         {error && (

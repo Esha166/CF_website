@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { getFirebaseAuth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,6 +19,7 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
+    const auth = await getFirebaseAuth();
     if (!auth) {
       setLoading(false);
       setError("Authentication is not initialized. Please try again later.");
@@ -27,6 +27,7 @@ export default function LoginPage() {
     }
 
     try {
+      const { signInWithEmailAndPassword } = await import("firebase/auth");
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       if (!userCredential.user) {
         throw new Error("Authentication succeeded but no user was returned.");
@@ -74,6 +75,19 @@ export default function LoginPage() {
     } finally {
 
       setLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await fetch("/api/auth/session", {
+        method: "DELETE",
+        credentials: "include",
+      });
+    } catch {
+      // If the session endpoint is unavailable, the page still continues to the public site.
+    } finally {
+      router.push("/");
     }
   };
 
@@ -166,9 +180,13 @@ export default function LoginPage() {
           </div>
 
           <div className="px-10 py-6 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-            <Link href="/" className="text-xs font-bold text-gray-400 hover:text-secondary-500 transition-colors flex items-center gap-1">
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="text-xs font-bold text-gray-400 hover:text-secondary-500 transition-colors flex items-center gap-1"
+            >
               <span className="text-lg">←</span> Back to Website
-            </Link>
+            </button>
             <div className="flex gap-2">
               <div className="w-2 h-2 rounded-full bg-orange"></div>
               <div className="w-2 h-2 rounded-full bg-secondary-500"></div>

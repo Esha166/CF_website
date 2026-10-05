@@ -61,14 +61,12 @@
   }
 } */
 
-html {
-  scroll-behavior: smooth;
-}
 
 html, body {
   width: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: clip;
 }
 
 body {
@@ -78,6 +76,58 @@ body {
   font-size: 14px;
   line-height: 1.35;
   font-weight: 400;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 700ms ease var(--reveal-delay, 0ms),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+}
+
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes page-content-enter {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-motion > * {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 700ms ease, transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-motion > *:nth-child(2) {
+  transition-delay: 90ms;
+}
+
+.page-motion > *:nth-child(3) {
+  transition-delay: 160ms;
+}
+
+.page-motion > .page-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.motion-image {
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 700ms ease;
+}
+
+.motion-image:hover {
+  transform: scale(1.04);
+  filter: saturate(1.08);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -105,4 +155,18 @@ svg g {
 /* Hide the black border rectangle rendered internally by react19-simple-maps */
 .rsm-svg > rect:first-child {
     display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-visible,
+  .page-motion > *,
+  .page-motion > .page-reveal-visible,
+  .motion-image,
+  .motion-image:hover {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    filter: none;
+  }
 }

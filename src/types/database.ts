@@ -29,6 +29,7 @@ export interface Job {
   location: string;
   type: string; // e.g. 'Full-time', 'Part-time', 'Internship', 'Volunteer'
   description: string;
+  formLink?: string;
   requirements: string[];
   active: boolean;
   createdAt: any;

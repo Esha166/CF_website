@@ -19,7 +19,7 @@ const DEFAULT_PROJECTS: Project[] = [
     name: "RAISE",
     description:
       "RAISE (Rising Ambitions in Skills & Education) is a project of the Combine Foundation that aims to empower students and employees with the information, skills, and opportunities to excel in today's fast-paced environment. The project connects learners to practical training modules relevant to industries, helping them secure future employment. RAISE offers courses like Web Development (coding fundamentals, responsive design, freelancing skills — 2 successful batches), Quantitative Finance (financial literacy, data analysis, market concepts — batches 1 & 2 completed, batch 3 upcoming), Python with AI Development (AI development, automation, coding — batch 1 completed, batch 2 in progress), Basic Computer Skills (MS Office, typing, digital platforms for beginners), and Meta Ads Marketing (Facebook & Instagram ads, audience targeting, freelancing skills). With a focus on digital literacy, innovation, and lifelong learning, this project helps learners pursue freelancing and improve their income and self-reliance.",
-    image: "/home/projects/6.svg",
+    image: "/home/projects/6.webp",
     link: "/projects",
   },
   {
@@ -27,7 +27,7 @@ const DEFAULT_PROJECTS: Project[] = [
     name: "Scholarship & Career Support",
     description:
       "The Scholarship & Career Support Projects by Combine Foundation are designed to help students achieve their educational and professional goals through financial assistance, career guidance, and skill development opportunities. The CSC Scholarship Program was launched to support deserving and talented students facing financial hardships, providing financial assistance and academic support so they can continue their studies with confidence. Currently, many deserving students are studying and growing under this program. Additionally, Freelancing & Online Earning Awareness sessions teach students and freelancers how to start earning online through digital skills and freelancing platforms, covering online marketplaces, career opportunities, and how to get clients through inbound and outbound leads.",
-    image: "/home/projects/1.svg",
+    image: "/home/projects/1.webp",
     link: "/projects",
   },
   {
@@ -35,7 +35,7 @@ const DEFAULT_PROJECTS: Project[] = [
     name: "Volunteer & Youth Leadership",
     description:
       "The Volunteer and Youth Leadership Programs by Combine Foundation are designed to help students and young individuals develop leadership, communication, teamwork, and professional skills through real-world projects, community involvement, and social initiatives beyond academics. The Volunteer Program provides opportunities to work across different niches, building leadership, teamwork, responsibility, and communication skills while contributing to social and educational initiatives. The Youth Leadership Program is a 6-month leadership development program that empowers young individuals to become confident and responsible future leaders through activities, real-world projects, teamwork, decision-making, and strategic thinking. We have a strong network of youth from various universities participating as youth leaders and volunteers.",
-    image: "/home/projects/4.svg",
+    image: "/home/projects/4.webp",
     link: "/projects",
   },
   {
@@ -43,7 +43,7 @@ const DEFAULT_PROJECTS: Project[] = [
     name: "Health & Environmental Sustainability",
     description:
       "The Health Awareness & Environmental Sustainability Initiatives by Combine Foundation focus on promoting wellness, healthy living, and environmental awareness within communities. The Healthy Lifestyle Awareness Program guides individuals on balanced nutrition, physical activity, disciplined routines, and mindful living through interactive sessions. Our One Follower One Plant plantation drive promotes environmental sustainability by planting a tree for every new supporter to improve air quality and combat climate impact. The Kitchen Garden Festival Camp educates families on organic lifestyles, home-grown food, and reducing processed food consumption. The Packet Palto Phir Kharido awareness campaign encourages smarter food choices by teaching people to read product labels, avoid harmful ingredients, and choose healthier alternatives.",
-    image: "/home/projects/2.svg",
+    image: "/home/projects/2.webp",
     link: "/projects",
   },
   {
@@ -51,7 +51,7 @@ const DEFAULT_PROJECTS: Project[] = [
     name: "Community Welfare & Support",
     description:
       "The Community Welfare & Support Initiatives by Combine Foundation are focused on helping deserving families and supporting communities during difficult times. Through Disaster Relief & Emergency camps, we provide immediate help to communities affected by floods and natural disasters, distributing essential supplies including food, clean water, and daily necessities with compassion and respect. The Winter Relief & Community Support Drives provide warm clothing, blankets, bedding, and essential supplies to vulnerable families and students in remote areas like Balochistan. The Ramadan Food Support & Relief Program distributes essential food packages to deserving households during Ramadan, ensuring dignity and complete privacy by keeping recipients' identity anonymous with no video recording.",
-    image: "/home/projects/3.svg",
+    image: "/home/projects/3.webp",
     link: "/projects",
   },
 ];
@@ -162,9 +162,9 @@ export default function ProjectsSlider({ projects: initialProjects }: ProjectsSl
             src={project.image}
             alt={project.name}
             fill
-            className="object-cover object-center"
+            className="motion-image object-cover object-center"
+            sizes="(max-width: 768px) 100vw, 1500px"
             priority
-            unoptimized
           />
 
           <div className="absolute inset-0 bg-black/35" />

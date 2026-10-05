@@ -4,8 +4,22 @@ import Mouslider from "@/components/publications/Mouseslider"
 import TaxShariaCertificates from "@/components/publications/Taxshariacertificates "
 import { fetchMOUs, fetchAnnualReports, type FirestoreAnnualReport,type FirestorePartner, fetchPartners } from "@/lib/admin-actions"
 import PartnersSection from "@/components/our-team/partners-section"
+import PageMotion from "@/components/UI/PageMotion"
 
-export const dynamic = "force-dynamic";
+export const metadata = {
+    title: "Publications",
+    description: "Explore Combine Foundation's annual reports, MOUs, tax and Sharia compliance certificates as a registered, tax exempted NPO in Pakistan.",
+    keywords: [
+        "Tax Exempted NPO",
+        "Tax Exempted NGO Pakistan",
+        "NPO in Pakistan",
+        "NGO in Pakistan",
+        "Nonprofit Annual Report Pakistan",
+        "Registered NGO Pakistan",
+    ],
+};
+
+export const revalidate = 3600;
 
 const page = async () => {
     let mous: FirestorePartner[] = [];
@@ -22,23 +36,18 @@ const page = async () => {
     }
 
     return (
-        <div>
+        <PageMotion>
             <PageHeroMobile
-                imageSrc="/publications/hero.svg"
+                imageSrc="/publications/hero.webp"
                 title="Publications"
                 mobileStyles="!text-5xl"
                 styles="object-top"
             />
             
             {reports.length > 0 && <AnnualReports reports={reports} />}
-            {/* Section Header */}
-                <div className="mt-20 mb-2 px-4 md:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-secondary-500">Our Partners</h2>
-                </div>
-                <hr className="border-gray-300 m-8 mt-0 " />
             <PartnersSection partners={mous} />
             <TaxShariaCertificates />
-        </div>
+        </PageMotion>
     )
 }
 

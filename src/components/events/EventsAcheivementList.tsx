@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { collection, getDocs } from "firebase/firestore/lite";
 import { db } from "@/lib/firebase";
@@ -90,11 +91,18 @@ function EventItem({
                         <p className="text-sm leading-7 text-white/85">{event.description}</p>
                     )}
 
-                    {images.length > 0 && (
+                    {open && images.length > 0 && (
                         <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
                             {images.map((src, index) => (
                                 <div key={`${event.id}-${index}`} className="relative h-[220px] w-[260px] shrink-0 overflow-hidden rounded-2xl border border-white/10">
-                                    <img src={src} alt={`${event.title} image ${index + 1}`} className="h-full w-full object-cover" />
+                                    <Image
+                                        src={src}
+                                        alt={`${event.title} image ${index + 1}`}
+                                        fill
+                                        sizes="260px"
+                                        loading="lazy"
+                                        className="object-cover"
+                                    />
                                 </div>
                             ))}
                         </div>

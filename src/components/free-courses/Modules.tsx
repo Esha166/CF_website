@@ -53,7 +53,9 @@ export default function Modules({ modules, guidelineCta, guidelineFile }: Module
             {guidelineCta || "Want to Master This Course? Download the Complete Course Guideline Now!"}
           </p>
           <button
+            type="button"
             onClick={handleDownload}
+            disabled={!guidelineFile}
             className="shrink-0 bg-accent-orange hover:brightness-90 text-white font-semibold text-sm px-4 sm:px-6 py-3 rounded-full transition-all duration-200 whitespace-nowrap"
           >
             Download Course Guidelines

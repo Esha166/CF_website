@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { CommentData } from "@/lib/blogs";
 import { saveComment } from "@/lib/blogs";
+import { isWithinCooldown, markSubmitted } from "@/lib/anti-spam";
 
 interface CommentsProps {
   initialComments: CommentData[];
@@ -16,6 +18,7 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
   const [response, setResponse] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [honeypot, setHoneypot] = useState("");
 
   const wordCount = response.trim() ? response.trim().split(/\s+/).length : 0;
 
@@ -33,10 +36,21 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
       return;
     }
 
+    if (honeypot.trim()) {
+      setError("Submission blocked.");
+      return;
+    }
+
+    if (isWithinCooldown("comment", 60000)) {
+      setError("Please wait a minute before posting another comment.");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const newComment = await saveComment(blogId, trimmedName, trimmedResponse);
       if (newComment) {
+        markSubmitted("comment");
         setComments((prev) => [newComment, ...prev]);
         onCommentAdded?.(newComment);
         setName("");
@@ -58,6 +72,16 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
       <h2 className="text-xl font-bold text-gray-900 mb-4">Comments</h2>
 
       <div className="mb-4">
+        <label className="sr-only" aria-hidden="true">
+          Website
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+          />
+        </label>
         <input
           type="text"
           value={name}
@@ -86,6 +110,7 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
       <div className="flex items-center gap-3 mb-6">
         {response.trim() && (
           <button
+            type="button"
             onClick={handleSubmit}
             disabled={isLoading}
             className="px-5 py-2 rounded-full bg-accent-orange text-white text-xs font-semibold hover:brightness-90 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -102,14 +127,16 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
         {comments.map((c) => (
           <div key={c.id} className="py-5 flex gap-3">
             <div
-              className="shrink-0 rounded-full overflow-hidden bg-gray-200"
+              className="relative shrink-0 rounded-full overflow-hidden bg-gray-200"
               style={{ width: 40, height: 40 }}
             >
               {c.avatar ? (
-                <img
+                <Image
                   src={c.avatar}
                   alt={c.name}
-                  className="w-full h-full object-cover object-top"
+                  fill
+                  sizes="40px"
+                  className="object-cover object-top"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm font-bold">

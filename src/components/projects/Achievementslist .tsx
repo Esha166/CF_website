@@ -1,8 +1,13 @@
 "use client";
 
-import Image from "next/image";
+import FadeImage from "@/components/UI/FadeImage";
 
-interface ProjectItem {
+type Stat = {
+    value: string;
+    label: string;
+};
+
+type ProjectItem = {
     id: string;
     title: string;
     images: string[];
@@ -32,16 +37,14 @@ function AchievementItem({
 }) {
     return (
         <div
-            id={`project-card-${item.id}`}
             className={`
                 rounded-2xl overflow-hidden border
                 transition-all duration-500 ease-in-out
                 ${open
-                    ? "bg-secondary-500 border-gray-600 "
+                    ? "bg-secondary-500 border-gray-600"
                     : "bg-white border-gray-200 hover:border-gray-300"}
             `}
         >
-            {/* Header */}
             <button
                 onClick={onToggle}
                 className="
@@ -84,7 +87,6 @@ function AchievementItem({
                 </div>
             </button>
 
-            {/* Content */}
             <div
                 className={`
                     overflow-hidden transition-all duration-700 ease-in-out
@@ -101,7 +103,7 @@ function AchievementItem({
                     `}
                 >
                     {/* Images */}
-                    {item.images && item.images.filter(src => src && src.trim() !== "").length > 0 && (
+                    {open && item.images && item.images.filter(src => src && src.trim() !== "").length > 0 && (
                         <div
                             className="flex gap-3 overflow-x-auto pb-2"
                             style={{ scrollbarWidth: "none" }}
@@ -116,11 +118,13 @@ function AchievementItem({
                                         transition-transform duration-500
                                     "
                                 >
-                                    <Image
+                                    <FadeImage
                                         src={src}
                                         alt={`${item.title} image ${i + 1}`}
                                         fill
                                         className="object-cover"
+                                        sizes="250px"
+                                        loading="lazy"
                                     />
                                 </div>
                             ))}
@@ -172,15 +176,17 @@ function AchievementItem({
                     )}
 
                     {/* Before After */}
-                    {item.beforeImage && item.beforeImage.trim() !== "" && item.afterImage && item.afterImage.trim() !== "" && (
+                    {open && item.beforeImage && item.beforeImage.trim() !== "" && item.afterImage && item.afterImage.trim() !== "" && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-10">
                             <div>
                                 <div className="relative rounded-2xl overflow-hidden aspect-video w-[90%] m-auto mb-3">
-                                    <Image
+                                    <FadeImage
                                         src={item.beforeImage}
                                         alt="Before"
                                         fill
                                         className="object-cover"
+                                        sizes="(max-width: 640px) 90vw, 45vw"
+                                        loading="lazy"
                                     />
                                 </div>
 
@@ -191,11 +197,13 @@ function AchievementItem({
 
                             <div>
                                 <div className="relative rounded-2xl overflow-hidden aspect-video w-[90%] m-auto mb-3">
-                                    <Image
+                                    <FadeImage
                                         src={item.afterImage}
                                         alt="After"
                                         fill
                                         className="object-cover"
+                                        sizes="(max-width: 640px) 90vw, 45vw"
+                                        loading="lazy"
                                     />
                                 </div>
 
@@ -220,7 +228,7 @@ function AchievementItem({
                     )}
 
                     {/* Partners */}
-                    {item.partners && item.partners.filter(src => src && src.trim() !== "").length > 0 && (
+                    {open && item.partners && item.partners.filter(src => src && src.trim() !== "").length > 0 && (
                         <div>
                             <h4 className="text-white font-bold text-base mb-4">
                                 Project Partners
@@ -238,11 +246,13 @@ function AchievementItem({
                                             shrink-0 w-[200px] h-[200px]
                                         "
                                     >
-                                        <Image
+                                        <FadeImage
                                             src={src}
                                             alt={`Partner ${i + 1}`}
                                             fill
                                             className="object-contain p-4"
+                                            sizes="200px"
+                                            loading="lazy"
                                         />
                                     </div>
                                 ))}
@@ -258,7 +268,7 @@ function AchievementItem({
 
 export default function AchievementsList({ projects, activeId, onToggle }: AchievementsListProps) {
     return (
-        <section className="max-w-[1500px] mx-auto px-4 md:px-6 lg:px-8 py-10 space-y-4">
+        <section className="w-full mx-auto px-4 md:px-6 lg:px-8 py-10 space-y-4">
             {projects.map((item) => (
                 <AchievementItem
                     key={item.id}

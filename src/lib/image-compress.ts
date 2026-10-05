@@ -1,6 +1,6 @@
 /**
  * Utility to compress images represented as Base64 Data URLs.
- * Downscales image to max dimensions and outputs as a JPEG with reduced quality.
+ * Downscales image to max dimensions and outputs as WebP with reduced quality.
  */
 export function compressImage(dataUrl: string, maxWidth = 1000, maxHeight = 1000, quality = 0.7): Promise<string> {
   return new Promise((resolve) => {
@@ -33,8 +33,13 @@ export function compressImage(dataUrl: string, maxWidth = 1000, maxHeight = 1000
       }
 
       ctx.drawImage(img, 0, 0, width, height);
-      // Output as image/jpeg to ensure reliable quality compression
-      const compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+      let compressedDataUrl = canvas.toDataURL("image/webp", quality);
+      // Per spec, toDataURL() silently falls back to PNG if the requested
+      // type isn't supported - fall back to JPEG ourselves in that case so
+      // we never ship an oversized PNG mislabeled as WebP.
+      if (!compressedDataUrl.startsWith("data:image/webp")) {
+        compressedDataUrl = canvas.toDataURL("image/jpeg", quality);
+      }
       resolve(compressedDataUrl);
     };
 
