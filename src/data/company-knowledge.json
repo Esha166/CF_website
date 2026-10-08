@@ -1,0 +1,65 @@
+{
+  "organization": {
+    "name": "Combine Foundation",
+    "tagline": "Making a difference, one person at a time",
+    "legalStatus": "Non-profit organization (NPO) registered under the Companies Act 2017; the philanthropic arm of Combine Group",
+    "foundedFocus": "Working in education since 2017",
+    "about": "Combine Foundation works to uplift underprivileged and marginalised communities by improving their access to quality healthcare and education, through practical support and collaboration with local partners.",
+    "mission": "To uplift underprivileged and marginalised communities by improving their access to quality healthcare and education, creating sustainable change that empowers people to lead healthier, more educated, and more independent lives.",
+    "vision": "A Pakistan where every person, regardless of background or income, has access to quality healthcare and education.",
+    "focusAreas": ["Education", "Healthcare", "Entrepreneurship", "Community Welfare"],
+    "contact": {
+      "email": "combinefoundation@combinegrp.com",
+      "phone": "+923208686644",
+      "website": "https://combinegrp.com/combine-foundation/",
+      "address": "Plot 9, 10, 11 & 21, Sector E-V, Phase II, K.E.P.Z, Karachi, Pakistan",
+      "officeAddress": "B-18, Block 16, Gulshan-e-Iqbal, Karachi, Pakistan",
+      "social": {
+        "facebook": "https://www.facebook.com/CombineGroup",
+        "instagram": "https://www.instagram.com/colorsofcombine/",
+        "linkedin": "https://www.linkedin.com/company/96040445"
+      }
+    },
+    "programs": [
+      {
+        "title": "Hunger Relief",
+        "description": "Food support for individuals and families who struggle to afford daily meals."
+      },
+      {
+        "title": "Disaster Relief",
+        "description": "Quick response to natural disasters and emergencies with supplies, medical aid, and essential support."
+      },
+      {
+        "title": "Homeless Assistance",
+        "description": "Shelter, clothing, and support services to help people find safety and stability."
+      },
+      {
+        "title": "Education Support",
+        "description": "Scholarships, financial aid, and course sponsorships for students from disadvantaged backgrounds."
+      },
+      {
+        "title": "Health Care Access",
+        "description": "Free or subsidised healthcare: medications, checkups, health camps, and medical test sponsorships."
+      }
+    ],
+    "educationWork": [
+      "Scholarships for talented students who can't afford to continue their education",
+      "Partial or full payment of university and college fees",
+      "Scholarships for foreign studies, with a commitment to serve back to the nation",
+      "Vocational training and skill development, especially for youth and women",
+      "Adult literacy programs",
+      "Computer literacy and digital access: computer centers and basic IT training",
+      "Support for schools and learning centers in underserved areas"
+    ],
+    "healthWork": [
+      "Donations and aid during natural disasters and emergencies",
+      "Support for hospitals, nursing homes, childcare centers, clinics, dispensaries, and vaccination centers",
+      "Awareness programs on healthy food, lifestyle, hygiene, and preventive care",
+      "Seasonal programs: warm clothes and blankets in winter, hygiene kits in summer",
+      "Advocacy for a cleaner environment as a foundation for public health"
+    ],
+    "getInvolved": ["Donate", "Volunteer", "Spread the word"],
+    "parentCompany": "Combine Group Pvt. Ltd.",
+    "websiteNavigation": ["Home", "The Foundation", "We Devote", "Activities", "Contact", "Donate Now"]
+  }
+}

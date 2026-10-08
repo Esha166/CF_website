@@ -5,6 +5,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import ClientChrome from "@/components/layout/ClientChrome";
+import ChatbotWidget from "@/components/chatbot/ChatbotWidget";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -66,6 +67,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ClientChrome>{children}</ClientChrome>
+        <ChatbotWidget />
 
         <SpeedInsights />
         <Analytics />

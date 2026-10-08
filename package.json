@@ -9,6 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.130",
+    "@ai-sdk/groq": "^3.0.72",
+    "@ai-sdk/react": "^3.0.304",
     "@hookform/resolvers": "^5.2.2",
     "@next/third-parties": "^16.2.4",
     "@tiptap/extension-underline": "^3.31.3",
@@ -17,9 +20,10 @@
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "@vnedyalk0v/react19-simple-maps": "^2.0.7",
+    "ai": "^6.0.301",
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
-    "lucide-react": "^1.11.0",
+    "lucide-react": "^1.52.0",
     "next": "16.2.4",
     "postcss": "^8.5.12",
     "react": "19.2.4",
@@ -28,7 +32,7 @@
     "react-tooltip": "^6.0.2",
     "recharts": "^3.8.1",
     "tailwind-merge": "^3.5.0",
-    "zod": "^4.3.6",
+    "zod": "^4.6.5",
     "zustand": "^5.0.12"
   },
   "devDependencies": {
