@@ -23,7 +23,7 @@ const impactItems: ImpactItem[] = [
   },
   {
     id: 2,
-    stat: "204+",
+    stat: "360+",
     title: "Students Empowered",
     image: "/home/impact cards/3.jpeg",
     description:
@@ -31,7 +31,7 @@ const impactItems: ImpactItem[] = [
   },
   {
     id: 3,
-    stat: "360+",
+    stat: "250+",
     title: "Passionate Volunteers",
     image: "/home/impact cards/6.webp",
     description:
