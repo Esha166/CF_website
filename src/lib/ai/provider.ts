@@ -51,7 +51,15 @@ export async function createChatResponse({ messages, system, tools }: Args) {
         break;
       }
       buffered.push(value);
-      if (value.type !== 'start' && value.type !== 'start-step') break;
+      // Commit only once real model output starts — until then an error
+      // can still be recovered by trying the next provider.
+      if (
+        value.type === 'text-delta' ||
+        value.type.startsWith('tool-') ||
+        value.type === 'finish'
+      ) {
+        break;
+      }
     }
 
     if (failed) {

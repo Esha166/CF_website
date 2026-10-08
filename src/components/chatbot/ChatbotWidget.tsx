@@ -8,7 +8,7 @@ import { X, Send, Bot, Loader2, Sparkles } from 'lucide-react';
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
   });
   const isLoading = status === 'submitted' || status === 'streaming';
@@ -38,7 +38,9 @@ export default function ChatbotWidget() {
   };
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 font-sans">
+    <div
+      className={`fixed right-5 z-[110] font-sans ${!isOpen ? 'bottom-24' : 'bottom-5'}`}
+    >
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -51,7 +53,7 @@ export default function ChatbotWidget() {
       )}
 
       {isOpen && (
-        <div className="w-[90vw] sm:w-[380px] h-[520px] bg-[var(--background)] text-[var(--foreground)] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
+        <div className="w-[calc(100vw-2.5rem)] sm:w-[380px] h-[520px] max-h-[calc(100dvh-10rem)] bg-[var(--background)] text-[var(--foreground)] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
           {/* Header */}
           <div className="p-4 bg-gradient-to-r from-[var(--secondary-500)] to-[var(--secondary-600)] text-white flex justify-between items-center shadow-sm">
             <div className="flex items-center gap-2.5">
@@ -88,25 +90,55 @@ export default function ChatbotWidget() {
               </div>
             )}
 
-            {messages.map((m) => (
-              <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div
-                  className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed ${
-                    m.role === 'user'
-                      ? 'bg-[var(--secondary-500)] text-white rounded-br-none shadow-sm font-medium'
-                      : 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-bl-none border border-gray-200 dark:border-gray-800 shadow-sm'
-                  }`}
-                >
-                  {m.parts.map((part, i) =>
-                    part.type === 'text' ? (
-                      <span key={i}>{formatMessageText(part.text, m.role === 'user')}</span>
-                    ) : null
-                  )}
+            {messages.map((m) => {
+              const plainText = m.parts.reduce(
+                (acc, part) => (part.type === 'text' ? acc + part.text : acc),
+                ''
+              );
+              const isStreamingReply =
+                m.role === 'assistant' && m.id === messages[messages.length - 1]?.id && isLoading;
+              const showPlaceholder = isStreamingReply && !plainText.trim();
+
+              // Skip finished assistant bubbles with no visible text
+              // (tool-only turns, or a stream that died before any text arrived).
+              if (m.role === 'assistant' && !plainText.trim() && !showPlaceholder) return null;
+
+              const usedTool = m.parts.some((p) => p.type.startsWith('tool-'));
+
+              return (
+                <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div
+                    className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed ${
+                      m.role === 'user'
+                        ? 'bg-[var(--secondary-500)] text-white rounded-br-none shadow-sm font-medium'
+                        : 'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-bl-none border border-gray-200 dark:border-gray-700 shadow-sm'
+                    }`}
+                  >
+                    {m.parts.map((part, i) =>
+                      part.type === 'text' && part.text.trim() ? (
+                        <span key={i}>{formatMessageText(part.text, m.role === 'user')}</span>
+                      ) : null
+                    )}
+                    {showPlaceholder && (
+                      <span className="inline-flex items-center gap-1.5 text-gray-500 dark:text-gray-400 text-xs italic">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-[var(--secondary-500)]" />
+                        {usedTool ? 'Looking up Combine Foundation details...' : 'Thinking...'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            {error && (
+              <div className="flex justify-start">
+                <div className="max-w-[82%] rounded-2xl rounded-bl-none px-3.5 py-2.5 text-xs sm:text-sm bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900 shadow-sm">
+                  Sorry, I could not get a response right now. Please try again in a moment.
                 </div>
               </div>
-            ))}
+            )}
 
-            {isLoading && (
+            {status === 'submitted' && (
               <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs italic pl-1">
                 <Loader2 className="w-3.5 h-3.5 animate-spin text-[var(--secondary-500)]" />
                 Checking Combine Foundation details...
