@@ -31,7 +31,7 @@ const impactItems: ImpactItem[] = [
   },
   {
     id: 3,
-    stat: "250+",
+    stat: "360+",
     title: "Passionate Volunteers",
     image: "/home/impact cards/6.webp",
     description:
@@ -39,7 +39,7 @@ const impactItems: ImpactItem[] = [
   },
   {
     id: 4,
-    stat: "40+",
+    stat: "50+",
     title: "Emerging Youth Leaders",
     image: "/home/impact cards/8.webp",
     description:
