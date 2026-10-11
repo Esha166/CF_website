@@ -23,7 +23,7 @@ const impactItems: ImpactItem[] = [
   },
   {
     id: 2,
-    stat: "204+",
+    stat: "360+",
     title: "Students Empowered",
     image: "/home/impact cards/3.jpeg",
     description:
@@ -39,7 +39,7 @@ const impactItems: ImpactItem[] = [
   },
   {
     id: 4,
-    stat: "40+",
+    stat: "50+",
     title: "Emerging Youth Leaders",
     image: "/home/impact cards/8.webp",
     description:
