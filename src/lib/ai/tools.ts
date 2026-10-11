@@ -2,10 +2,55 @@ import { tool } from 'ai';
 import { z } from 'zod';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore/lite';
 import { getDb } from '@/lib/firebase';
+import { getCompanyInfo as loadCompanyInfo } from './company-info';
 
-// ─── getOngoingCourses ────────────────────────────────────────────────────────
+// ─── getCompanyInfo ───────────────────────────────────────────────────────────
 
 export const chatbotTools = {
+  getCompanyInfo: tool({
+    description:
+      'Retrieve Combine Foundation profile details: mission, vision, focus areas, programs, education work, health work, contact info, get-involved options, and background. Use this whenever the user asks about the foundation itself beyond basic greetings.',
+    inputSchema: z.object({
+      section: z
+        .enum(['all', 'about', 'programs', 'education', 'health', 'contact', 'involvement'])
+        .optional()
+        .describe('Which part of the profile to retrieve. Use "all" when unsure.'),
+    }),
+    execute: async ({ section = 'all' }) => {
+      try {
+        const info = await loadCompanyInfo();
+        const org = info.organization;
+        const sections = {
+          about: {
+            name: org.name,
+            tagline: org.tagline,
+            legalStatus: org.legalStatus,
+            foundedFocus: org.foundedFocus,
+            about: org.about,
+            mission: org.mission,
+            vision: org.vision,
+            focusAreas: org.focusAreas,
+            parentCompany: org.parentCompany,
+          },
+          programs: org.programs,
+          education: org.educationWork,
+          health: org.healthWork,
+          contact: org.contact,
+          involvement: {
+            getInvolved: org.getInvolved,
+            websiteNavigation: org.websiteNavigation,
+          },
+        };
+
+        return section === 'all' ? sections : { [section]: sections[section] };
+      } catch (error) {
+        console.error('getCompanyInfo tool error:', error);
+        return { error: 'Could not fetch company information at this time.' };
+      }
+    },
+  }),
+
+  // ─── getOngoingCourses ──────────────────────────────────────────────────────
   getOngoingCourses: tool({
     description:
       'Fetch currently active and ongoing courses, bootcamps, and training programs at Combine Foundation.',

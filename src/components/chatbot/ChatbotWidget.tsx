@@ -75,7 +75,7 @@ export default function ChatbotWidget() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 p-4 overflow-y-auto space-y-3.5 text-sm bg-white">
+          <div className="flex-1 p-4 overflow-y-auto overflow-x-hidden space-y-3.5 text-sm bg-white">
             {messages.length === 0 && (
               <div className="text-center my-8 px-4">
                 <div className="w-12 h-12 bg-orange-100 dark:bg-orange-950/60 text-[var(--secondary-500)] rounded-full flex items-center justify-center mx-auto mb-3 shadow-inner">
@@ -108,7 +108,7 @@ export default function ChatbotWidget() {
               return (
                 <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div
-                    className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm whitespace-pre-wrap leading-relaxed ${
+                    className={`max-w-[82%] min-w-0 rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm whitespace-pre-wrap break-words [overflow-wrap:anywhere] leading-relaxed ${
                       m.role === 'user'
                         ? 'bg-[var(--secondary-500)] text-white rounded-br-none shadow-sm font-medium'
                         : 'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 rounded-bl-none border border-gray-200 dark:border-gray-700 shadow-sm'
