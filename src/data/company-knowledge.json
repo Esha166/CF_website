@@ -1,65 +1,113 @@
 {
   "organization": {
     "name": "Combine Foundation",
-    "tagline": "Making a difference, one person at a time",
-    "legalStatus": "Non-profit organization (NPO) registered under the Companies Act 2017; the philanthropic arm of Combine Group",
-    "foundedFocus": "Working in education since 2017",
-    "about": "Combine Foundation works to uplift underprivileged and marginalised communities by improving their access to quality healthcare and education, through practical support and collaboration with local partners.",
-    "mission": "To uplift underprivileged and marginalised communities by improving their access to quality healthcare and education, creating sustainable change that empowers people to lead healthier, more educated, and more independent lives.",
-    "vision": "A Pakistan where every person, regardless of background or income, has access to quality healthcare and education.",
-    "focusAreas": ["Education", "Healthcare", "Entrepreneurship", "Community Welfare"],
+    "motto": "A vision to combine efforts, uplift communities, and inspire hope",
+"tagline": "Donate your time.",
+    "legalStatus": "Non-Profit Organization (NPO) registered under Section 42 of the Companies Act 2017 (registered in 2023 with SECP); Tax-exempt organization and the social impact arm of Combine Group",
+    "charityRegistrationNo": "PCP-R3/2022/234",
+    "nationalTaxNo": "3162706-4",
+    "foundedFocus": "Registered in 2023 as the social impact arm of Combine Group to uplift Pakistani youth",
+    "about": "Combine Foundation is a Pakistan-based Non-Profit Organization working to improve access to healthcare awareness and education for underserved communities. As the social impact arm of Combine Group, it creates sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare.",
+    "mission": "Reducing inequality and helping communities grow stronger through education, leadership, and sustainable growth.",
+    "vision": "Building a stronger Pakistan and the next generation of leaders by empowering 1 million youth through leadership, digital education, sustainability, and community development.",
+    "focusAreas": [
+      "Education",
+      "Health Awareness",
+      "Youth Empowerment",
+      "Community Welfare",
+      "Sustainability"
+    ],
     "contact": {
-      "email": "combinefoundation@combinegrp.com",
-      "phone": "+923208686644",
-      "website": "https://combinegrp.com/combine-foundation/",
-      "address": "Plot 9, 10, 11 & 21, Sector E-V, Phase II, K.E.P.Z, Karachi, Pakistan",
-      "officeAddress": "B-18, Block 16, Gulshan-e-Iqbal, Karachi, Pakistan",
+      "email": "info@combinefoundation.org",
+      "phone": "03208686644",
+      "website": "https://www.combinefoundation.org/",
       "social": {
-        "facebook": "https://www.facebook.com/CombineGroup",
-        "instagram": "https://www.instagram.com/colorsofcombine/",
-        "linkedin": "https://www.linkedin.com/company/96040445"
+        "facebook": "https://www.facebook.com/combinefoundationoffical",
+        "instagram": "https://www.instagram.com/combinefoundation",
+        "linkedin": "https://www.linkedin.com/company/combine-foundation/"
       }
+    },
+    "leadership": {
+      "founder": "Mr. Amin Nathani (Founder & Board Director)",
+      "ceo": "Mr. Ashfaq Nathani (Chief Executive Officer & Board Director)",
+      "directorsAndBoard": [
+        "Mr. Farrukh Rehman (Director)",
+        "Rizwan Ahmed (CFO)",
+        "Mufti Saad (Shariah Compliance Officer)",
+        "Yasmeen (Board Member)"
+      ]
     },
     "programs": [
       {
-        "title": "Hunger Relief",
-        "description": "Food support for individuals and families who struggle to afford daily meals."
+        "title": "Youth Leadership Program (YLP 1.0 & YLP 2.0)",
+        "description": "A 6-month national leadership development journey empowering university students with practical leadership skills, industry mentorship, and community project execution."
       },
       {
-        "title": "Disaster Relief",
-        "description": "Quick response to natural disasters and emergencies with supplies, medical aid, and essential support."
+        "title": "CSC Scholarship Program",
+        "description": "A bi-annual free guidance initiative providing roadmaps, university selection, and application support for students applying for Chinese Government Scholarships."
       },
       {
-        "title": "Homeless Assistance",
-        "description": "Shelter, clothing, and support services to help people find safety and stability."
+        "title": "RAISE (Rising Ambitions in Skills & Education)",
+        "description": "Industry-relevant training connecting learners to practical modules in Python with AI, Web Development, Basic Computer Skills, Quantitative Finance, and Meta Ads."
       },
       {
-        "title": "Education Support",
-        "description": "Scholarships, financial aid, and course sponsorships for students from disadvantaged backgrounds."
+        "title": "Free IT & Technical Courses",
+        "description": "In-demand skill training courses structured with up to 95% scholarships for passionate students."
       },
       {
-        "title": "Health Care Access",
-        "description": "Free or subsidised healthcare: medications, checkups, health camps, and medical test sponsorships."
+        "title": "Ramzan Ration Distribution",
+        "description": "An annual Ramadan humanitarian project delivering food ration packages to deserving white-collar families."
+      },
+      {
+        "title": "'Packet Palto Phir Kharido' Campaign",
+        "description": "A consumer awareness campaign educating people to read product labels, understand ingredients, and make healthier food choices."
+      },
+      {
+        "title": "One Follower, One Plant (Plantation Drives)",
+        "description": "Environmental sustainability drives planting trees for supporters to improve air quality and promote ecological responsibility."
+      },
+      {
+        "title": "Healthy Lifestyle Awareness Program",
+        "description": "Interactive awareness sessions promoting preventive wellness, balanced nutrition, physical activity, and healthy routines."
+      },
+      {
+        "title": "Volunteer Program",
+        "description": "Opportunities for students to gain hands-on experience across technical, media, graphics, and community service niches."
       }
     ],
     "educationWork": [
-      "Scholarships for talented students who can't afford to continue their education",
-      "Partial or full payment of university and college fees",
-      "Scholarships for foreign studies, with a commitment to serve back to the nation",
-      "Vocational training and skill development, especially for youth and women",
-      "Adult literacy programs",
-      "Computer literacy and digital access: computer centers and basic IT training",
-      "Support for schools and learning centers in underserved areas"
+      "Provision of up to 95% scholarships on IT, Web Development, AI, Python, Quantitative Finance, and Meta Ads training",
+      "Free guidance and application support for Chinese Government Scholarships (CSC)",
+      "National Youth Leadership Programs (YLP 1.0 and YLP 2.0) active across dozens of universities and cities",
+      "Workforce skills training through the RAISE project to foster freelancing and self-reliance",
+      "Over 30 webinars and awareness sessions covering AI, cybersecurity, technology, and career development"
     ],
     "healthWork": [
-      "Donations and aid during natural disasters and emergencies",
-      "Support for hospitals, nursing homes, childcare centers, clinics, dispensaries, and vaccination centers",
-      "Awareness programs on healthy food, lifestyle, hygiene, and preventive care",
-      "Seasonal programs: warm clothes and blankets in winter, hygiene kits in summer",
-      "Advocacy for a cleaner environment as a foundation for public health"
+      "Healthy Lifestyle Awareness Program focused on preventive wellness, nutrition, and daily routine improvement",
+      "'Packet Palto Phir Kharido' consumer education campaign on food labels and avoiding harmful ingredients",
+      "'Saaf Pani Tandrust Pakistan' clean drinking water and hydration awareness campaigns",
+      "Medical and health awareness webinars"
     ],
-    "getInvolved": ["Donate", "Volunteer", "Spread the word"],
-    "parentCompany": "Combine Group Pvt. Ltd.",
-    "websiteNavigation": ["Home", "The Foundation", "We Devote", "Activities", "Contact", "Donate Now"]
+    "getInvolved": [
+      "Donate / Sponsor Students",
+      "Volunteer Program",
+      "Youth Leadership Program",
+      "Career & Internship Opportunities",
+      "Corporate CSR Collaborations"
+    ],
+    "parentCompany": "Combine Group",
+    "websiteNavigation": [
+      "Home",
+      "About Us",
+      "Events",
+      "Projects",
+      "Courses",
+      "Our Team",
+      "Publications",
+      "Career Opportunities",
+      "Volunteer for Combine",
+      "Youth Leadership Program",
+      "Donate"
+    ]
   }
 }

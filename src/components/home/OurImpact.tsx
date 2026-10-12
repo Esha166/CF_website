@@ -15,7 +15,7 @@ type ImpactItem = {
 const impactItems: ImpactItem[] = [
   {
     id: 1,
-    stat: "3000+",
+    stat: "5000+",
     title: "Lives Impacted",
     image: "/home/impact cards/5.webp",
     description:
@@ -39,7 +39,7 @@ const impactItems: ImpactItem[] = [
   },
   {
     id: 4,
-    stat: "50+",
+    stat: "150+",
     title: "Emerging Youth Leaders",
     image: "/home/impact cards/8.webp",
     description:
@@ -47,7 +47,7 @@ const impactItems: ImpactItem[] = [
   },
   {
     id: 5,
-    stat: "20+",
+    stat: "50+",
     title: "Dedicated Team Members",
     image: "/home/impact cards/7.webp",
     description:
