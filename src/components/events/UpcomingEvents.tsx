@@ -16,8 +16,9 @@ export type Event = {
     startTime: string;
     endTime: string;
     location: string;
-    registerLink?: string | null;
+    registrationLink?: string | null;
 };
+
 
 function parseEventDate(dateStr: string): Date | null {
     if (!dateStr || dateStr.toLowerCase().includes("to be announced")) return null;
@@ -131,7 +132,7 @@ function EventCard({ event }: { event: Event }) {
                         ) : (
                             <>
                                 <Link
-                                    href={event.registerLink || "#"}
+                                    href={event.registrationLink || "#"}
                                     className="px-5 py-2 rounded-full text-white text-sm font-semibold transition-colors duration-200"
                                     style={{ background: "linear-gradient(97.67deg, var(--secondary-600) 12.02%, var(--secondary-500) 65.87%)" }}
                                 >
@@ -209,10 +210,10 @@ function EventPopover({ event, onClose }: { event: Event; onClose: () => void })
                     </div>
                 </div>
 
-                {event.registerLink && event.registerLink.trim() !== "" && (
+                {event.registrationLink && event.registrationLink.trim() !== "" && (
                     <div className="flex flex-wrap gap-3">
                         <Link
-                            href={event.registerLink}
+                            href={event.registrationLink}
                             className="px-5 py-2 rounded-full text-white text-sm font-semibold"
                                                             style={{ background: "linear-gradient(97.67deg, var(--secondary-600) 12.02%, var(--secondary-500) 65.87%)" }}
                         >
@@ -396,7 +397,8 @@ export default function UpcomingEvents() {
                 const snap = await getDocs(collection(db, "events"));
                 const data = snap.docs.map(doc => {
                     const d = doc.data();
-                    
+                    console.log("EVENT DOC:", doc.id, d);
+                    console.log("FIELD NAMES:", Object.keys(d));
                     // The dashboard formats dateTime as e.g. "2026-06-22T15:00"
                     // Or if it was seeded from JSON, it might have date, startTime, endTime separately.
                     // Let's handle both. The admin dashboard saves "dateTime" and "endTime" (string).
@@ -435,7 +437,7 @@ export default function UpcomingEvents() {
                         startTime: startStr,
                         endTime: endStr,
                         location: d.location || "",
-                        registerLink: d.registerLink || "",
+                        registrationLink: d.registrationLink || "",
                         post: (d as any).post || "",
                     } as Event;
                 });
