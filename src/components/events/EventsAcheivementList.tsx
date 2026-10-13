@@ -36,14 +36,27 @@ function EventItem({
     open: boolean;
     onToggle: () => void;
 }) {
+    const [showImages, setShowImages] = useState(true);
     const bulletPoints = event.bulletPoints?.filter((point) => point && point.trim() !== "") ?? [];
     const images = event.images?.filter((src) => src && src.trim() !== "") ?? [];
 
+    useEffect(() => {
+        if (open) {
+            setShowImages(true);
+        }
+    }, [open]);
+
     const handleViewPictures = () => {
-        onToggle();
-        setTimeout(() => {
-            document.getElementById(`event-card-${event.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 120);
+        if (images.length > 0) {
+            setShowImages((prev) => !prev);
+            if (!showImages) {
+                setTimeout(() => {
+                    document.getElementById(`event-card-${event.id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 120);
+            }
+        } else {
+            onToggle();
+        }
     };
 
     return (
@@ -91,7 +104,7 @@ function EventItem({
                         <p className="text-sm leading-7 text-white/85">{event.description}</p>
                     )}
 
-                    {open && images.length > 0 && (
+                    {open && showImages && images.length > 0 && (
                         <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
                             {images.map((src, index) => (
                                 <div key={`${event.id}-${index}`} className="relative h-[220px] w-[260px] shrink-0 overflow-hidden rounded-2xl border border-white/10">
@@ -150,9 +163,9 @@ function EventItem({
                     <button
                         type="button"
                         onClick={handleViewPictures}
-                        className="inline-flex items-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-secondary-600 transition hover:bg-gray-100"
+                        className="inline-flex items-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-secondary-600 transition hover:bg-gray-100 cursor-pointer"
                     >
-                        {images.length > 0 ? (open ? "Hide Pictures" : "View Pictures") : (open ? "Hide Details" : "View Details")}
+                        {images.length > 0 ? (showImages ? "Hide Pictures" : "View Pictures") : (open ? "Hide Details" : "View Details")}
                     </button>
                 </div>
             </div>

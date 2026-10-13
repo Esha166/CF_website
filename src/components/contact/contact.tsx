@@ -278,7 +278,7 @@ const ContactForm = () => {
                                 </svg>
                             </span>
                             <p className="text-sm lg:text-base xl:text-lg text-black font-semibold leading-relaxed mt-1">
-                                House 23, Street 3 Block 13D, Gulshan - e - Iqbal
+                                B-18 Block 16 Gulshan-e-Iqbal near Expo Centre main University Road Karachi, Sindh, Pakistan
                             </p>
                         </div>
 
@@ -296,7 +296,7 @@ const ContactForm = () => {
                                 </svg>
                             </span>
                             <p className="text-sm lg:text-base xl:text-lg text-black font-semibold">
-                                +92 319 3372277
+                                +92 320 8686644
                             </p>
                         </div>
 
@@ -315,7 +315,7 @@ const ContactForm = () => {
                                 href="mailto:info@combinefoundation.org"
                                 className="text-sm lg:text-base xl:text-lg font-semibold text-black hover:text-blue-600 transition-colors"
                             >
-                                combinegroup@gmail.com
+                                info@combinefoundation.org
                             </a>
                         </div>
 

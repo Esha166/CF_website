@@ -1,0 +1,113 @@
+{
+  "organization": {
+    "name": "Combine Foundation",
+    "motto": "A vision to combine efforts, uplift communities, and inspire hope",
+"tagline": "Donate your time.",
+    "legalStatus": "Non-Profit Organization (NPO) registered under Section 42 of the Companies Act 2017 (registered in 2023 with SECP); Tax-exempt organization and the social impact arm of Combine Group",
+    "charityRegistrationNo": "PCP-R3/2022/234",
+    "nationalTaxNo": "3162706-4",
+    "foundedFocus": "Registered in 2023 as the social impact arm of Combine Group to uplift Pakistani youth",
+    "about": "Combine Foundation is a Pakistan-based Non-Profit Organization working to improve access to healthcare awareness and education for underserved communities. As the social impact arm of Combine Group, it creates sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare.",
+    "mission": "Reducing inequality and helping communities grow stronger through education, leadership, and sustainable growth.",
+    "vision": "Building a stronger Pakistan and the next generation of leaders by empowering 1 million youth through leadership, digital education, sustainability, and community development.",
+    "focusAreas": [
+      "Education",
+      "Health Awareness",
+      "Youth Empowerment",
+      "Community Welfare",
+      "Sustainability"
+    ],
+    "contact": {
+      "email": "info@combinefoundation.org",
+      "phone": "03208686644",
+      "website": "https://www.combinefoundation.org/",
+      "social": {
+        "facebook": "https://www.facebook.com/combinefoundationoffical",
+        "instagram": "https://www.instagram.com/combinefoundation",
+        "linkedin": "https://www.linkedin.com/company/combine-foundation/"
+      }
+    },
+    "leadership": {
+      "founder": "Mr. Amin Nathani (Founder & Board Director)",
+      "ceo": "Mr. Ashfaq Nathani (Chief Executive Officer & Board Director)",
+      "directorsAndBoard": [
+        "Mr. Farrukh Rehman (Director)",
+        "Rizwan Ahmed (CFO)",
+        "Mufti Saad (Shariah Compliance Officer)",
+        "Yasmeen (Board Member)"
+      ]
+    },
+    "programs": [
+      {
+        "title": "Youth Leadership Program (YLP 1.0 & YLP 2.0)",
+        "description": "A 6-month national leadership development journey empowering university students with practical leadership skills, industry mentorship, and community project execution."
+      },
+      {
+        "title": "CSC Scholarship Program",
+        "description": "A bi-annual free guidance initiative providing roadmaps, university selection, and application support for students applying for Chinese Government Scholarships."
+      },
+      {
+        "title": "RAISE (Rising Ambitions in Skills & Education)",
+        "description": "Industry-relevant training connecting learners to practical modules in Python with AI, Web Development, Basic Computer Skills, Quantitative Finance, and Meta Ads."
+      },
+      {
+        "title": "Free IT & Technical Courses",
+        "description": "In-demand skill training courses structured with up to 95% scholarships for passionate students."
+      },
+      {
+        "title": "Ramzan Ration Distribution",
+        "description": "An annual Ramadan humanitarian project delivering food ration packages to deserving white-collar families."
+      },
+      {
+        "title": "'Packet Palto Phir Kharido' Campaign",
+        "description": "A consumer awareness campaign educating people to read product labels, understand ingredients, and make healthier food choices."
+      },
+      {
+        "title": "One Follower, One Plant (Plantation Drives)",
+        "description": "Environmental sustainability drives planting trees for supporters to improve air quality and promote ecological responsibility."
+      },
+      {
+        "title": "Healthy Lifestyle Awareness Program",
+        "description": "Interactive awareness sessions promoting preventive wellness, balanced nutrition, physical activity, and healthy routines."
+      },
+      {
+        "title": "Volunteer Program",
+        "description": "Opportunities for students to gain hands-on experience across technical, media, graphics, and community service niches."
+      }
+    ],
+    "educationWork": [
+      "Provision of up to 95% scholarships on IT, Web Development, AI, Python, Quantitative Finance, and Meta Ads training",
+      "Free guidance and application support for Chinese Government Scholarships (CSC)",
+      "National Youth Leadership Programs (YLP 1.0 and YLP 2.0) active across dozens of universities and cities",
+      "Workforce skills training through the RAISE project to foster freelancing and self-reliance",
+      "Over 30 webinars and awareness sessions covering AI, cybersecurity, technology, and career development"
+    ],
+    "healthWork": [
+      "Healthy Lifestyle Awareness Program focused on preventive wellness, nutrition, and daily routine improvement",
+      "'Packet Palto Phir Kharido' consumer education campaign on food labels and avoiding harmful ingredients",
+      "'Saaf Pani Tandrust Pakistan' clean drinking water and hydration awareness campaigns",
+      "Medical and health awareness webinars"
+    ],
+    "getInvolved": [
+      "Donate / Sponsor Students",
+      "Volunteer Program",
+      "Youth Leadership Program",
+      "Career & Internship Opportunities",
+      "Corporate CSR Collaborations"
+    ],
+    "parentCompany": "Combine Group",
+    "websiteNavigation": [
+      "Home",
+      "About Us",
+      "Events",
+      "Projects",
+      "Courses",
+      "Our Team",
+      "Publications",
+      "Career Opportunities",
+      "Volunteer for Combine",
+      "Youth Leadership Program",
+      "Donate"
+    ]
+  }
+}
