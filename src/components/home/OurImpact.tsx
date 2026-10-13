@@ -43,7 +43,7 @@ const impactItems: ImpactItem[] = [
     title: "Emerging Youth Leaders",
     image: "/home/impact cards/8.webp",
     description:
-      "We have empowered 40+ active youth leaders who are confidently leading projects, social initiatives, and community activities and working as leaders in the Youth Leadership Program of the Combine Foundation.",
+      "We have empowered 90+ active youth leaders who are confidently leading projects, social initiatives, and community activities and working as leaders in the Youth Leadership Program of the Combine Foundation.",
   },
   {
     id: 5,
