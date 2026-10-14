@@ -13,7 +13,8 @@ import {
 type Args = { messages: UIMessage[]; system: string; tools: ToolSet };
 
 // Cap agentic steps so a single turn can't loop through tools indefinitely.
-const MAX_STEPS = 3;
+// 4 allows a list -> details -> answer chain with one step of headroom.
+const MAX_STEPS = 4;
 // Retry a provider once on transient (non rate-limit) errors before failing over.
 const MAX_RETRIES = 1;
 const RETRY_DELAY_MS = 400;
@@ -25,23 +26,31 @@ const isRateLimit = (error: unknown) => {
   return /rate.?limit|quota|429|resource.?exhausted|too many requests/i.test(message);
 };
 
+type ProviderConfig = { name: string; model: LanguageModel; tools: ToolSet };
+
 // Order = priority. Only providers that have a key are used.
-const providers = () =>
+// The foundation profile lives in the system prompt, so the remaining tools are
+// all Firestore-backed. Both providers get the same tool set so Groq can answer
+// course/event/project questions just like the primary provider when it is the
+// one serving the turn.
+const providers = (tools: ToolSet): ProviderConfig[] =>
   [
     process.env.GOOGLE_GENERATIVE_AI_API_KEY && {
       name: 'gemini',
-      model: google('gemini-3.8-flash'),
+      model: google('gemini-2.5-flash'),
+      tools,
     },
     process.env.GROQ_API_KEY && {
       name: 'groq',
       model: groq('openai/gpt-oss-20b'),
+      tools,
     },
-  ].filter(Boolean) as { name: string; model: LanguageModel }[];
+  ].filter(Boolean) as ProviderConfig[];
 
 export async function createChatResponse({ messages, system, tools }: Args) {
   const modelMessages = await convertToModelMessages(messages);
 
-  for (const { name, model } of providers()) {
+  for (const { name, model, tools: providerTools } of providers(tools)) {
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       let streamError: unknown;
 
@@ -49,7 +58,7 @@ export async function createChatResponse({ messages, system, tools }: Args) {
         model,
         system,
         messages: modelMessages,
-        tools,
+        tools: providerTools,
         stopWhen: stepCountIs(MAX_STEPS),
         onError: ({ error }) => {
           streamError = error;

@@ -16,14 +16,14 @@ const GREETING_RE =
 const THANKS_RE = /^(thanks|thank you|thankyou|thx|tysm|shukriya|shukran|jazak ?allah( khair)?)$/;
 
 const MISSION_RE =
-  /^(what(?: s| is)? (your|the) mission|your mission|what do you do|what is combine foundation|about combine foundation|who is combine foundation|about you|about us|tell me about (yourself|combine foundation))$/;
+  /^(what(?: s| is)? (your|the) mission|your mission|what do you do|what is combine foundation|about combine foundation|who is combine foundation|tell me about (yourself|combine foundation))$/;
 
 const CONTACT_RE =
-  /(contact|email|e mail|phone|number|call|address|location|where (are|is) (you|combine)|\breach (you|out|combine)|talk to (you|someone)|office)/;
+  /(contact|email|e mail|phone|number|call|address|location|where (are|is) combine|\breach combine|talk to (someone|combine)|office)/;
 
 // Anything asking for real detail should go to the model/tools instead.
 const DETAILED_RE =
-  /course|event|project|program|enroll|batch|admission|register|webinar|scholarship|donate|volunteer|\bfee|price|timing|schedule/;
+  /course|event|project|program|enroll|batch|admission|register|webinar|scholarship|donate|volunteer|\bfee|price|timing|schedule|job|career|vacanc|intern|\bhiring|position|apply/;
 
 export function matchTrivialIntent(raw: string): TrivialIntent | null {
   const text = normalize(raw);
@@ -48,7 +48,8 @@ export async function buildTrivialReply(intent: TrivialIntent): Promise<string> 
     return 'You are very welcome! Feel free to ask if you need anything else about Combine Foundation.';
   }
   if (intent === 'mission') {
-    return 'Combine Foundation is the philanthropic arm of Combine Group. Since 2017 we have worked to uplift underprivileged and marginalised communities by improving access to quality education and healthcare. Our focus areas are education, healthcare, entrepreneurship, and community welfare.';
+    const { organization } = await getCompanyInfo();
+    return `Combine Foundation is the social impact arm of ${organization.parentCompany}, based in Pakistan. Our mission is ${organization.mission} Our focus areas are ${organization.focusAreas.join(', ')}.`;
   }
 
   try {
@@ -56,6 +57,6 @@ export async function buildTrivialReply(intent: TrivialIntent): Promise<string> 
     const contact = info.organization.contact;
     return `You can reach Combine Foundation at ${contact.email}, by phone at ${contact.phone}, or online at ${contact.website}. Our office is at ${contact.address}.`;
   } catch {
-    return 'You can reach Combine Foundation at combinefoundation@combinegrp.com or by phone at +923208686644.';
+    return 'You can reach Combine Foundation at info@combinefoundation.org or by phone at 03208686644.';
   }
 }
