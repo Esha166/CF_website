@@ -30,7 +30,7 @@ export default function Footer() {
             <Image src="/logo.png" alt="Combine Foundation Logo" width={180} height={135} className="object-contain" />
           </div>
           <p className="text-[13px] text-gray-300 leading-relaxed mb-12 max-w-sm">
-            Combine Foundation is a registered non-profit organization under section 42 companies Act 2017 while we are Tax exempted organization and the social impact arm of Combine Group. We are dedicated to creating sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare. Our approach is built on transparency, innovation, and long-term impact.
+            Combine Foundation is a registered non-profit organization under Section 42 of the Companies Act 2017 while we are Tax exempted organization and the social impact arm of Combine Group. We are dedicated to creating sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare. Our approach is built on transparency, innovation, and long-term impact.
           </p>
           <div className="mt-auto text-xs text-gray-300 space-y-3">
             <p>Charity Registration No : PCP-R3/2022/234</p>
@@ -53,7 +53,7 @@ export default function Footer() {
           <div className="flex flex-col space-y-4">
             <h3 className="text-orange font-black text-lg mb-2">Donate</h3>
             <Link href="/donations" className="text-lg font-black text-gray-200 hover:text-white transition-colors">Donate Now</Link>
-            <Link href="/events" className="text-lg font-black text-gray-200 hover:text-white transition-colors">Events Calender</Link>
+            <Link href="/events" className="text-lg font-black text-gray-200 hover:text-white transition-colors">Events Calendar</Link>
             <Link href="/publications" className="text-lg font-black text-gray-200 hover:text-white transition-colors">Publications</Link>
           </div>
 

@@ -39,3 +39,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+
+# QA audit
+Combine_Foundation_Website_QA_Audit.docx
+QA_Audit_Status.md

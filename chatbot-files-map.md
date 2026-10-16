@@ -7,13 +7,13 @@ This document maps only files related to the chatbot, their purpose, and relatio
 ### 1. API Route
 - **`src/app/api/chat/route.ts`**
   - **Purpose**: Next.js App Router API endpoint handling POST requests to `/api/chat`.
-  - **Key logic**: Fast-path for trivial intents (greetings, thanks, contact, mission) via `matchTrivialIntent`/`buildTrivialReply`, returns UIMessage stream without LLM call. Falls back to `createChatResponse` with last 8 messages, `SYSTEM_PROMPT`, and `chatbotTools`.
+  - **Key logic**: Fast-path for trivial intents (greetings, thanks, contact, mission) via `matchTrivialIntent`/`buildTrivialReply`, returns UIMessage stream without LLM call. Falls back to `createChatResponse` with last 8 messages, `SYSTEM_PROMPT`, and `chatbotTools`. Route is capped at `maxDuration = 30` seconds.
   - **Dependencies**: `@/lib/ai/provider`, `@/lib/ai/system-prompt`, `@/lib/ai/tools`, `@/lib/ai/router`, `ai`.
 
 ### 2. UI Component
 - **`src/components/chatbot/ChatbotWidget.tsx`**
   - **Purpose**: Client-side floating chatbot widget mounted globally.
-  - **Key logic**: Uses `@ai-sdk/react` `useChat` with `DefaultChatTransport({ api: '/api/chat' })`. Manages open/close state, input, auto-scroll, shows loading/placeholder states based on `status` and tool usage. Renders assistant text via `renderAssistantText`, which strips stray asterisks and turns consecutive `- ` lines into a real `<ul>` bullet list (for courses/events/projects).
+  - **Key logic**: Uses `@ai-sdk/react` `useChat` with `DefaultChatTransport({ api: '/api/chat' })`. Manages open/close state, input, auto-scroll, shows loading/placeholder states based on `status` and tool usage. Renders assistant text via `renderAssistantText`, which strips stray asterisks and turns consecutive `- ` lines into a real `<ul>` bullet list (for courses/events/projects/careers). A stream error from the API (e.g. an unrecoverable rate limit) surfaces through `useChat`'s `error` and renders as a generic "Couldn't get a response" message.
   - **Dependencies**: `@ai-sdk/react`, `ai`, `lucide-react`, React hooks.
   - **Mount point**: Global - included in root layout.
 
@@ -26,8 +26,9 @@ This document maps only files related to the chatbot, their purpose, and relatio
 ### 4. AI Core - Provider
 - **`src/lib/ai/provider.ts`**
   - **Purpose**: Handles multi-provider LLM streaming with failover.
-  - **Key logic**: Tries providers in priority order (Gemini with tools first if key present; Groq with no tools as fallback). Peeks stream to detect early errors before committing. Retries once on transient non-rate-limit errors. Caps agentic steps via `MAX_STEPS=4`. Converts UI messages to model messages.
-  - **Providers**: `@ai-sdk/google` (Gemini 3.8 Flash), `@ai-sdk/groq` (openai/gpt-oss-20b). Both providers receive the full tool set.
+  - **Key logic**: Tries providers in priority order. Peeks the stream's first chunks to catch early errors (bad key, 429/quota) before committing; retries once on transient (non-rate-limit) errors, otherwise fails over to the next provider. Once real output starts (`text-delta` / `tool-*` / `finish`) it commits and streams the rest with no further failover. Caps agentic steps via `MAX_STEPS=4`. Converts UI messages to model messages. Throws if every provider fails.
+  - **Providers**: `@ai-sdk/google` (`gemini-2.5-flash`, env `GOOGLE_GENERATIVE_AI_API_KEY`) and `@ai-sdk/groq` (`openai/gpt-oss-20b`, env `GROQ_API_KEY`). A provider is only included when its key env var is set. Both providers receive the full tool set.
+  - **Failover window**: Errors are only recovered while peeking — before the first real output chunk. A rate limit/quota error that arrives *mid-generation* (after output has started) is surfaced to the client as a stream error; there is no mid-stream failover, so the partial reply stands and the client shows the generic error.
   - **Dependencies**: `@ai-sdk/google`, `@ai-sdk/groq`, `ai`.
 
 ### 5. AI Core - System Prompt
@@ -79,3 +80,5 @@ This document maps only files related to the chatbot, their purpose, and relatio
 
 ## Notes (from analysis)
 Token economy: list tools return a name plus one short attribute and details tools fetch a single item, so tool payloads (re-sent each agentic step) stay small. `getEventDetails` searches the full cached event set, so it can resolve past events too. `listCareers` only surfaces `active` jobs. UI: chatbot panel background is hardcoded white in dark mode.
+
+Rate limits: because failover only happens during the peek window, an API limit hit *before* any output is handled transparently (next provider/key), but a limit hit *mid-response* is not — the user sees a partial reply plus the generic error. Adding more provider entries (extra Gemini keys via `createGoogleGenerativeAI({ apiKey })` instances, or other providers) widens the pre-output failover pool; it does not fix the mid-stream case. Rotating multiple free-tier keys is also subject to Google's terms, and the route is capped at `maxDuration = 30`s.

@@ -22,6 +22,7 @@
       "email": "info@combinefoundation.org",
       "phone": "03208686644",
       "website": "https://www.combinefoundation.org/",
+      "volunteerApplyUrl": "https://www.combinefoundationportal.com/volunteer/apply",
       "social": {
         "facebook": "https://www.facebook.com/combinefoundationoffical",
         "instagram": "https://www.instagram.com/combinefoundation",
@@ -73,7 +74,7 @@
       },
       {
         "title": "Volunteer Program",
-        "description": "Opportunities for students to gain hands-on experience across technical, media, graphics, and community service niches."
+        "description": "Opportunities for students to gain hands-on experience across technical, media, graphics, and community service niches. Volunteer applications are submitted on our separate volunteer portal at https://www.combinefoundationportal.com/volunteer/apply."
       }
     ],
     "educationWork": [

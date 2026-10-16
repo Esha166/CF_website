@@ -122,11 +122,11 @@ export default function Header() {
               <span className="hidden sm:inline text-[10px] md:text-xs">info@combinefoundation.org</span>
             </a>
             <a
-              href="tel:03208686644"
+              href="tel:+923208686644"
               className="flex items-center space-x-2 hover:text-blue-200 transition-colors"
             >
               <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline text-[10px] md:text-xs">03208686644</span>
+              <span className="hidden sm:inline text-[10px] md:text-xs">+92 320 8686644</span>
             </a>
           </div>
         </div>
