@@ -14,7 +14,7 @@ const faqs: FaqItem[] = [
     id: 1,
     question: "What is Combine Foundation and what is its mission?",
     answer:
-      "Combine Foundation is a registered non-profit organization under section 42 companies Act 2017 while we are Tax exempted organization and the social impact arm of Combine Group. We are dedicated to creating sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare. Our approach is built on transparency, innovation, and long-term impact.",
+      "Combine Foundation is a registered non-profit organization under Section 42 of the Companies Act 2017 while we are Tax exempted organization and the social impact arm of Combine Group. We are dedicated to creating sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare. Our approach is built on transparency, innovation, and long-term impact.",
   },
   {
     id: 2,
