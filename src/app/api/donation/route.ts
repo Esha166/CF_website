@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     const email = sanitizeText(body.email, 254);
     const phone = sanitizeText(body.phone, 20);
     const amount = Number(body.amount);
-    const country = sanitizeText(body.country, 2);
+    const country = sanitizeText(body.country, 100);
     const city = sanitizeText(body.city, 100);
     const paymentMethod = sanitizeText(body.paymentMethod, 20);
 
@@ -70,6 +70,12 @@ export async function POST(req: Request) {
     }
     if (phone.length < 7) {
         return jsonError("Enter a valid phone number.", 400);
+    }
+    if (country.length < 2) {
+        return jsonError("Enter a valid country.", 400);
+    }
+    if (city.length < 2) {
+        return jsonError("Enter a valid city.", 400);
     }
     if (!Number.isFinite(amount) || amount <= 0 || amount > MAX_AMOUNT) {
         return jsonError("Enter a valid donation amount.", 400);

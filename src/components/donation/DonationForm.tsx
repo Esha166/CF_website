@@ -17,13 +17,6 @@ const NAME_RE = /^[a-zA-Z\s'\-]{2,80}$/;
 const PHONE_RE = /^[0-9\s\-\+\(\)]{7,20}$/;
 const MAX_DONATION_AMOUNT = 10_000_000;
 
-const CITIES_BY_COUNTRY: Record<string, string[]> = {
-	PK: ["Karachi", "Lahore", "Islamabad", "Peshawar", "Quetta"],
-	US: ["New York", "Los Angeles", "Chicago", "Houston", "Washington"],
-	UK: ["London", "Manchester", "Birmingham", "Liverpool", "Edinburgh"],
-	AE: ["Dubai", "Abu Dhabi", "Sharjah", "Ajman", "Al Ain"],
-};
-
 function validateName(v: string) {
 	if (!v.trim()) return "Name is required.";
 	if (!NAME_RE.test(v.trim())) return "Enter a valid name (letters only, 2–80 chars).";
@@ -114,14 +107,13 @@ export default function DonationForm({ onSubmitted }: { onSubmitted?: () => void
 
 	const handle = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 		const value = e.target.value;
-		setForm((p) => ({ ...p, [k]: value, ...(k === "country" ? { city: "" } : {}) }));
+		setForm((p) => ({ ...p, [k]: value }));
 		setSubmitError("");
 
 		// Live validate if field has been touched
 		if (touched[k as keyof typeof touched]) {
 			validateField(k, value);
 		}
-		if (k === "country") setErrors((prev) => ({ ...prev, city: "" }));
 	};
 
 	const validateField = (name: string, value: string) => {
@@ -346,48 +338,34 @@ export default function DonationForm({ onSubmitted }: { onSubmitted?: () => void
 						</div>
 
 						{/* Country */}
-						<div className="relative flex flex-col gap-1">
+						<div className="flex flex-col gap-1">
 							<label htmlFor="country" className="sr-only">Country</label>
-							<select
+							<input
 								id="country"
-								className={`${getSelectClass("country")} ${!form.country ? "text-gray-400" : "text-black"}`}
+								className={getInputClass("country")}
+								placeholder="Country"
 								name="country"
 								value={form.country}
 								onChange={handle("country")}
 								onBlur={handleBlur}
-							>
-								<option value="" disabled className="text-gray-400">Select country</option>
-								<option value="PK" className="text-black">Pakistan</option>
-								<option value="US" className="text-black">United States</option>
-								<option value="UK" className="text-black">United Kingdom</option>
-								<option value="AE" className="text-black">UAE</option>
-							</select>
-							<span className="absolute right-3.5 top-10 text-gray-400 pointer-events-none flex items-center">
-								<ChevronDown />
-							</span>
+								maxLength={100}
+							/>
 							{errors.country && <span className="text-xs text-red-500">{errors.country}</span>}
 						</div>
 
 						{/* City */}
-						<div className="relative flex flex-col gap-1">
+						<div className="flex flex-col gap-1">
 							<label htmlFor="city" className="sr-only">City</label>
-							<select
+							<input
 								id="city"
-								className={`${getSelectClass("city")} ${!form.city ? "text-gray-400" : "text-black"}`}
+								className={getInputClass("city")}
+								placeholder="City"
 								name="city"
 								value={form.city}
 								onChange={handle("city")}
 								onBlur={handleBlur}
-								disabled={!form.country}
-							>
-								<option value="" disabled className="text-gray-400">{form.country ? "Select city" : "Select country first"}</option>
-								{(CITIES_BY_COUNTRY[form.country] ?? []).map((city) => (
-									<option key={city} value={city} className="text-black">{city}</option>
-								))}
-							</select>
-							<span className="absolute right-3.5 top-10 text-gray-400 pointer-events-none flex items-center">
-								<ChevronDown />
-							</span>
+								maxLength={100}
+							/>
 							{errors.city && <span className="text-xs text-red-500">{errors.city}</span>}
 						</div>
 
