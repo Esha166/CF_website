@@ -50,7 +50,7 @@ export default function JobDetailsDialog({ job, onClose }: JobDetailsDialogProps
               {job.title}
             </h2>
           </div>
-          <button onClick={onClose} aria-label="Close job details" className="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700">
+          <button onClick={onClose} aria-label="Close job details" className="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 cursor-pointer">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -90,11 +90,11 @@ export default function JobDetailsDialog({ job, onClose }: JobDetailsDialogProps
         </div>
 
         <div className="flex shrink-0 flex-col-reverse gap-3 border-t border-gray-100 bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <button onClick={onClose} className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-bold text-gray-600 transition hover:border-gray-300 hover:bg-gray-50">
+          <button onClick={onClose} className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-bold text-gray-600 transition hover:border-gray-300 hover:bg-gray-50 cursor-pointer">
             Close
           </button>
           {job.formLink && (
-            <a href={job.formLink} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-secondary-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-secondary-600">
+            <a href={job.formLink} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-secondary-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-secondary-600 cursor-pointer">
               Apply Now <ArrowRight className="h-4 w-4" />
             </a>
           )}
