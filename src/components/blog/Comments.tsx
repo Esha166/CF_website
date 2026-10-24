@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import type { CommentData } from "@/lib/blogs";
 import { saveComment } from "@/lib/blogs";
 import { isWithinCooldown, markSubmitted } from "@/lib/anti-spam";
+import Turnstile from "@/components/UI/Turnstile";
 
 interface CommentsProps {
   initialComments: CommentData[];
@@ -19,6 +21,8 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [honeypot, setHoneypot] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileReset, setTurnstileReset] = useState(0);
 
   const wordCount = response.trim() ? response.trim().split(/\s+/).length : 0;
 
@@ -28,6 +32,10 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
 
     if (!trimmedName) {
       setError("Please enter your name");
+      return;
+    }
+    if (trimmedName.length < 2) {
+      setError("Name must be at least 2 characters");
       return;
     }
     if (!trimmedResponse) return;
@@ -48,20 +56,27 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
 
     setIsLoading(true);
     try {
-      const newComment = await saveComment(blogId, trimmedName, trimmedResponse);
-      if (newComment) {
-        markSubmitted("comment");
-        setComments((prev) => [newComment, ...prev]);
-        onCommentAdded?.(newComment);
-        setName("");
-        setResponse("");
-        setError("");
-      } else {
-        setError("Failed to post comment. Please try again.");
-      }
+      const newComment = await saveComment(
+        blogId,
+        trimmedName,
+        trimmedResponse,
+        turnstileToken,
+        honeypot
+      );
+      markSubmitted("comment");
+      setComments((prev) => [newComment, ...prev]);
+      onCommentAdded?.(newComment);
+      setName("");
+      setResponse("");
+      setError("");
+      setHoneypot("");
+      setTurnstileToken("");
+      setTurnstileReset((value) => value + 1);
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
       console.error(err);
+      setTurnstileToken("");
+      setTurnstileReset((value) => value + 1);
     } finally {
       setIsLoading(false);
     }
@@ -90,6 +105,7 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
             if (error) setError("");
           }}
           placeholder="Your name"
+          maxLength={80}
           className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 placeholder-gray-400 outline-none focus:border-gray-300 transition-colors mb-3"
         />
 
@@ -101,11 +117,25 @@ export default function Comments({ initialComments, blogId, onCommentAdded }: Co
           }}
           placeholder="Write a response (minimum 5 words)"
           rows={4}
+          maxLength={2000}
           className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 placeholder-gray-400 outline-none resize-none focus:border-gray-300 transition-colors"
         />
       </div>
 
+      <Turnstile
+        onVerify={setTurnstileToken}
+        resetKey={turnstileReset}
+        className="mb-3 min-h-[65px]"
+      />
+
       {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
+      <p className="text-xs text-gray-500 mb-3">
+        By submitting this form, you agree to our{" "}
+        <Link href="/privacy" className="text-secondary-600 underline hover:text-secondary-700">
+          Privacy Policy.
+        </Link>
+      </p>
 
       <div className="flex items-center gap-3 mb-6">
         {response.trim() && (

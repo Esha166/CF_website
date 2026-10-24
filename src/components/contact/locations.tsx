@@ -71,8 +71,9 @@ const Locations = () => {
             />
 
             {/* Floating Info Card */}
-            <div className="absolute top-4 left-4 z-10 w-[360px]">
-              <div className="w-full rounded-[24px] bg-[#F8F8F8]/95 backdrop-blur-md px-6 py-5 border border-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+            <div className="absolute top-1.5 left-1.5 z-10 w-[360px]">
+  <div className="w-full rounded-[12px] bg-[#F8F8F8] px-6 py-5 border border-gray-200 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+
                 <h3 className="text-[22px] leading-[1.15] font-semibold text-black">
                   {LOCATION.title}
                   {LOCATION.subtitle && (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -62,8 +62,14 @@ const Instagram = ({ className }: { className?: string }) => (
   </svg>
 );
 
+type DropdownId = "work" | "join";
+
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<DropdownId | null>(null);
+
+  const workRef = useRef<HTMLDivElement>(null);
+  const joinRef = useRef<HTMLDivElement>(null);
 
   const ourWorkItems = [
     { label: "Events", href: "/events", icon: <Calendar className="w-4 h-4" /> },
@@ -77,35 +83,81 @@ export default function Header() {
     { label: "Youth Leadership Program", href: "https://ylp.combinefoundation.org/", icon: <GraduationCap className="w-4 h-4" /> },
   ];
 
+  const toggleDropdown = (id: DropdownId) =>
+    setOpenDropdown((prev) => (prev === id ? null : id));
+
+  const closeMobile = () => setIsMobileMenuOpen(false);
+
+  // Close dropdowns on outside click / Escape
+  useEffect(() => {
+    if (!openDropdown) return;
+
+    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+      const ref = openDropdown === "work" ? workRef : joinRef;
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenDropdown(null);
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [openDropdown]);
+
+  // Lock body scroll while mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
+  const linkProps = (href: string) =>
+    href.startsWith("http")
+      ? { target: "_blank", rel: "noopener noreferrer" }
+      : {};
+
+  const navLinkClass =
+    "hover:text-secondary-500 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-secondary-500 hover:after:w-full after:transition-all";
+
+  const mobileRowClass =
+    "flex items-center justify-between rounded-xl px-4 py-3 text-base font-bold text-slate-900 transition hover:bg-secondary-50 hover:text-secondary-600";
+
   return (
     <header className="w-full sticky top-0 z-[100] bg-white">
       {/* Top Bar */}
-
       <div className="bg-secondary-500 text-white py-2 px-4 md:px-8 text-xs font-medium">
         <div className="max-w-[1500px] mx-auto flex justify-between items-center">
-
           {/* Social Icons */}
           <div className="flex items-center space-x-4">
-            <Link 
-              href="https://www.instagram.com/combinefoundation" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <Link
+              href="https://www.instagram.com/combinefoundation"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-blue-200 transition-colors"
             >
               <Instagram className="w-4 h-4" />
             </Link>
-            <Link 
-              href="https://www.linkedin.com/company/combine-foundation/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <Link
+              href="https://www.linkedin.com/company/combine-foundation/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-blue-200 transition-colors"
             >
               <Linkedin className="w-4 h-4" />
             </Link>
-            <Link 
-              href="https://www.facebook.com/combinefoundationoffical" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <Link
+              href="https://www.facebook.com/combinefoundationoffical"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-blue-200 transition-colors"
             >
               <Facebook className="w-4 h-4" />
@@ -122,30 +174,28 @@ export default function Header() {
               <span className="hidden sm:inline text-[10px] md:text-xs">info@combinefoundation.org</span>
             </a>
             <a
-              href="tel:+923208686644"
+              href="tel:03208686644"
               className="flex items-center space-x-2 hover:text-blue-200 transition-colors"
             >
               <Phone className="w-4 h-4" />
-              <span className="hidden sm:inline text-[10px] md:text-xs">+92 320 8686644</span>
+              <span className="hidden sm:inline text-[10px] md:text-xs">03208686644</span>
             </a>
           </div>
         </div>
       </div>
 
       {/* Main Header */}
-
-      <div className="bg-white border-b border-gray-100 shadow-sm px-4 md:px-8 md:py-4 relative">
+      <div className="bg-white border-b border-gray-100 shadow-sm px-4 py-2 md:px-8 md:py-4 relative">
         <div className="max-w-[1500px] mx-auto flex justify-between items-center">
-
           {/* Logo */}
-          <Link href="/" className="flex items-center group">
+          <Link href="/" className="flex items-center group" onClick={closeMobile}>
             <div className="relative overflow-hidden">
-              <Image 
-                src="/logo.png" 
-                alt="Combine Foundation Logo" 
-                width={120} 
-                height={34} 
-                className="object-contain transition-transform duration-300 group-hover:scale-105" 
+              <Image
+                src="/logo.png"
+                alt="Combine Foundation Logo"
+                width={120}
+                height={34}
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
                 priority
               />
             </div>
@@ -153,28 +203,55 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-10 font-semibold text-sm text-gray-800">
-            <Link href="/" className="hover:text-secondary-500 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-secondary-500 hover:after:w-full after:transition-all">
+            <Link href="/" className={navLinkClass}>
               Home
             </Link>
-            <Link href="/about" className="hover:text-secondary-500 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-secondary-500 hover:after:w-full after:transition-all">
+            <Link href="/about" className={navLinkClass}>
               About Us
             </Link>
-            
-            {/* Our Work Dropdown */}
-            <div className="relative group py-2">
-              <button className="flex items-center hover:text-secondary-500 transition-colors">
+
+            {/* Our Work Dropdown (click + hover) */}
+            <div
+              className="relative py-2"
+              ref={workRef}
+              onMouseEnter={() => setOpenDropdown("work")}
+              onMouseLeave={() =>
+                setOpenDropdown((prev) => (prev === "work" ? null : prev))
+              }
+            >
+              <button
+                type="button"
+                onClick={() => toggleDropdown("work")}
+                aria-haspopup="true"
+                aria-expanded={openDropdown === "work"}
+                className={`flex items-center cursor-pointer transition-colors hover:text-secondary-500 ${
+                  openDropdown === "work" ? "text-secondary-500" : ""
+                }`}
+              >
                 Our Work
-                <ChevronDown className="w-4 h-4 ml-1.5 text-gray-400 group-hover:text-secondary-500 transition-transform group-hover:rotate-180" />
+                <ChevronDown
+                  className={`w-4 h-4 ml-1.5 transition-transform ${
+                    openDropdown === "work"
+                      ? "rotate-180 text-secondary-500"
+                      : "text-gray-400"
+                  }`}
+                />
               </button>
-              
-              {/* Dropdown Menu */}
-              <div className="absolute top-full left-0 mt-0 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-[100]">
+
+              <div
+                className={`absolute top-full left-0 mt-0 w-56 transition-all duration-300 transform z-[100] ${
+                  openDropdown === "work"
+                    ? "opacity-100 visible translate-y-0"
+                    : "opacity-0 invisible translate-y-2"
+                }`}
+              >
                 <div className="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden mt-2">
                   <div className="py-2">
                     {ourWorkItems.map((item) => (
-                      <Link 
-                        key={item.label} 
+                      <Link
+                        key={item.label}
                         href={item.href}
+                        onClick={() => setOpenDropdown(null)}
                         className="flex items-center px-4 py-3 text-gray-700 hover:bg-secondary-50 hover:text-secondary-500 transition-colors group/item"
                       >
                         <span className="p-2 rounded-lg bg-gray-50 group-hover/item:bg-white group-hover/item:shadow-sm mr-3 transition-all">
@@ -188,51 +265,78 @@ export default function Header() {
               </div>
             </div>
 
-            <Link href="/our-team" className="hover:text-secondary-500 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-secondary-500 hover:after:w-full after:transition-all">
+            <Link href="/our-team" className={navLinkClass}>
               Our Team
             </Link>
-            <Link href="/publications" className="hover:text-secondary-500 transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-secondary-500 hover:after:w-full after:transition-all">
+            <Link href="/publications" className={navLinkClass}>
               Publications
             </Link>
           </nav>
 
           {/* Action Buttons */}
           <div className="hidden lg:flex items-center space-x-4">
-            {/* Join Us Dropdown */}
-            <div className="relative group">
-              <button className="flex items-center bg-linear-to-r from-secondary-500 to-secondary-700 text-white px-7 py-3 rounded-full hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0">
+            {/* Join Us Dropdown (click + hover) */}
+            <div
+              className="relative"
+              ref={joinRef}
+              onMouseEnter={() => setOpenDropdown("join")}
+              onMouseLeave={() =>
+                setOpenDropdown((prev) => (prev === "join" ? null : prev))
+              }
+            >
+              <button
+                type="button"
+                onClick={() => toggleDropdown("join")}
+                aria-haspopup="true"
+                aria-expanded={openDropdown === "join"}
+                className="flex items-center cursor-pointer bg-linear-to-r from-secondary-500 to-secondary-700 text-white px-7 py-3 rounded-full hover:shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              >
                 Join Us
-                <ChevronDown className="w-4 h-4 ml-2 opacity-80 group-hover:rotate-180 transition-transform" />
+                <ChevronDown
+                  className={`w-4 h-4 ml-2 opacity-80 transition-transform ${
+                    openDropdown === "join" ? "rotate-180" : ""
+                  }`}
+                />
               </button>
 
-              {/* Dropdown Menu */}
-              <div className="absolute top-full right-0 mt-0 w-64 opacity-0 bg-w invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2 z-[100]">
+              <div
+                className={`absolute top-full right-0 mt-0 w-64 transition-all duration-300 transform z-[100] ${
+                  openDropdown === "join"
+                    ? "opacity-100 visible translate-y-0"
+                    : "opacity-0 invisible translate-y-2"
+                }`}
+              >
                 <div className="bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden mt-2">
-                {joinUsItems.map((item) => (
-                  <Link 
-                    key={item.label} 
-                    href={item.href}
-                    className="flex items-center px-4 py-3 text-gray-700 hover:bg-secondary-50 hover:text-secondary-500 transition-colors group/item"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-secondary-50 flex items-center justify-center mr-3 group-hover/item:bg-secondary-500 group-hover/item:text-white transition-all">
-                      {item.icon}
-                    </div>
-                    <span className="text-sm font-medium">{item.label}</span>
-                  </Link>
-                ))}
+                  {joinUsItems.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      {...linkProps(item.href)}
+                      onClick={() => setOpenDropdown(null)}
+                      className="flex items-center px-4 py-3 text-gray-700 hover:bg-secondary-50 hover:text-secondary-500 transition-colors group/item"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-secondary-50 flex items-center justify-center mr-3 group-hover/item:bg-secondary-500 group-hover/item:text-white transition-all">
+                        {item.icon}
+                      </div>
+                      <span className="text-sm font-medium">{item.label}</span>
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <Link href="/donations" className="border-2 border-secondary-500 text-secondary-500 px-8 py-2.5 rounded-full font-bold hover:bg-secondary-700 hover:text-white transition-all duration-300 shadow-sm">
+            <Link
+              href="/donations"
+              className="border-2 border-secondary-500 text-secondary-500 px-8 py-2.5 rounded-full font-bold hover:bg-secondary-700 hover:text-white transition-all duration-300 shadow-sm"
+            >
               Donate
             </Link>
           </div>
 
           {/* Mobile Toggle */}
-          <button 
+          <button
             className="lg:hidden p-2 text-secondary-500 hover:bg-secondary-50 rounded-lg transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={() => setIsMobileMenuOpen((v) => !v)}
             aria-label="Toggle navigation menu"
             aria-expanded={isMobileMenuOpen}
           >
@@ -241,81 +345,93 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 top-[110px] z-[90] lg:hidden animate-in fade-in duration-300">
+        <div className="absolute top-full inset-x-0 z-[90] lg:hidden animate-in fade-in duration-300">
+          {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-slate-950/35 backdrop-blur-[2px]"
-            onClick={() => setIsMobileMenuOpen(false)}
+            className="absolute inset-x-0 top-0 h-screen bg-slate-950/35 backdrop-blur-[2px]"
+            onClick={closeMobile}
           />
 
-          <div className="absolute inset-x-0 bottom-0 max-h-[calc(100vh-110px)] overflow-y-auto rounded-t-[2rem] border-t border-white/60 bg-gradient-to-b from-white to-orange-50 shadow-[0_-20px_60px_rgba(15,23,42,0.18)] animate-in slide-in-from-bottom duration-300">
-            
-
-            <div className="px-4 py-5 sm:px-6">
-              <div className="rounded-[1.5rem] border border-white/70 bg-white/80 p-4 shadow-lg shadow-slate-900/5 backdrop-blur-sm">
-                <div className="space-y-0">
-                  <Link
-                    href="/"
-                    className="flex items-center justify-between rounded-2xl px-4 py-1 text-lg font-bold text-slate-900 transition hover:bg-secondary-50 hover:text-secondary-600"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
+          {/* Panel */}
+          <div className="relative max-h-[calc(100dvh-110px)] overflow-y-auto overscroll-contain rounded-b-[2rem] border-t border-white/60 bg-gradient-to-b from-white to-orange-50 shadow-[0_20px_60px_rgba(15,23,42,0.18)] animate-in slide-in-from-top-2 duration-300">
+            <div className="px-4 py-4 sm:px-6 space-y-3">
+              <div className="rounded-[1.5rem] border border-white/70 bg-white/80 p-3 shadow-lg shadow-slate-900/5 backdrop-blur-sm">
+                {/* Main links */}
+                <div className="space-y-1">
+                  <Link href="/" className={mobileRowClass} onClick={closeMobile}>
                     <span>Home</span>
                     <span className="text-secondary-500">↗</span>
                   </Link>
-                  <Link
-                    href="/about"
-                    className="flex items-center justify-between rounded-2xl px-4 py-1 text-lg font-bold text-slate-900 transition hover:bg-secondary-50 hover:text-secondary-600"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
+                  <Link href="/about" className={mobileRowClass} onClick={closeMobile}>
                     <span>About Us</span>
                     <span className="text-secondary-500">↗</span>
                   </Link>
                 </div>
-                  <div className="space-y-0">
+
+                {/* Our Work */}
+                <div className="mt-3 pt-3 border-t border-slate-100">
+                  <p className="px-4 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    Our Work
+                  </p>
+                  <div className="space-y-1">
                     {ourWorkItems.map((item) => (
                       <Link
-                    href={item.href}
-                    className="flex items-center justify-between rounded-2xl px-4 py-1 text-lg font-bold text-slate-900 transition hover:bg-secondary-50 hover:text-secondary-600"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span>{item.label}</span>
-                    <span className="text-secondary-500">{item.icon}</span>
-                  </Link>
+                        key={item.label}
+                        href={item.href}
+                        className={mobileRowClass}
+                        onClick={closeMobile}
+                      >
+                        <span>{item.label}</span>
+                        <span className="text-secondary-500">{item.icon}</span>
+                      </Link>
                     ))}
                   </div>
-                  <div className="space-y-0">
+                </div>
+
+                {/* Join Us */}
+                <div className="mt-3 pt-3 border-t border-slate-100">
+                  <p className="px-4 pb-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    Join Us
+                  </p>
+                  <div className="space-y-1">
                     {joinUsItems.map((item) => (
                       <Link
-                    href={item.href}
-                    className="flex items-center justify-between rounded-2xl px-4 py-1 text-lg font-bold text-slate-900 transition hover:bg-secondary-50 hover:text-secondary-600"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span>{item.label}</span>
-                    <span className="text-secondary-500">{item.icon}</span>
-                  </Link>
+                        key={item.label}
+                        href={item.href}
+                        {...linkProps(item.href)}
+                        className={mobileRowClass}
+                        onClick={closeMobile}
+                      >
+                        <span>{item.label}</span>
+                        <span className="text-secondary-500">{item.icon}</span>
+                      </Link>
                     ))}
                   </div>
+                </div>
 
-                <div className="mt-1 grid grid-cols-2 gap-3">
+                {/* Team / Publications */}
+                <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-3">
                   <Link
                     href="/our-team"
-                    className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-1 text-center text-base font-bold text-slate-800 transition hover:border-secondary-100 hover:bg-secondary-50 hover:text-secondary-600"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-center text-sm font-bold text-slate-800 transition hover:border-secondary-100 hover:bg-secondary-50 hover:text-secondary-600"
+                    onClick={closeMobile}
                   >
                     Our Team
                   </Link>
                   <Link
                     href="/publications"
-                    className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-1 text-center text-base font-bold text-slate-800 transition hover:border-secondary-100 hover:bg-secondary-50 hover:text-secondary-600"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-center text-sm font-bold text-slate-800 transition hover:border-secondary-100 hover:bg-secondary-50 hover:text-secondary-600"
+                    onClick={closeMobile}
                   >
                     Publications
                   </Link>
                 </div>
               </div>
 
-              <div className="mt-2 rounded-[1.5rem] bg-secondary-500 p-4 shadow-xl shadow-secondary-500/20">
+              {/* Donate card */}
+              <div className="rounded-[1.5rem] bg-secondary-500 p-4 shadow-xl shadow-secondary-500/20">
                 <div className="flex items-center justify-between gap-4">
                   <div className="text-white">
                     <p className="text-sm font-semibold opacity-90">Support our work</p>
@@ -324,7 +440,7 @@ export default function Header() {
                   <Link
                     href="/donations"
                     className="shrink-0 rounded-full bg-white px-5 py-3 text-sm font-extrabold text-secondary-600 transition hover:bg-orange-50"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={closeMobile}
                   >
                     Donate Now
                   </Link>

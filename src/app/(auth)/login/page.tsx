@@ -117,6 +117,9 @@ export default function LoginPage() {
           <div className="h-2 bg-gradient-to-r from-secondary-500 via-orange to-secondary-500"></div>
           
           <div className="p-10">
+            <p className="text-xs text-gray-500 mb-4 text-center">
+              By signing in, you acknowledge our <Link href="/privacy" className="text-secondary-600 underline hover:text-secondary-700">Privacy Policy.</Link>
+            </p>
             <form onSubmit={handleLogin} className="space-y-6">
               {error && (
                 <div className="bg-red-50 border-l-4 border-red-500 p-4 flex items-start gap-3 rounded-r-xl animate-in fade-in slide-in-from-top-4 duration-300">

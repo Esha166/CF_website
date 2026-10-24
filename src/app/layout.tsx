@@ -23,11 +23,10 @@ export const metadata: Metadata = {
     "Combine Foundation is a nonprofit organization focused on education, health awareness, youth empowerment, and community welfare in Pakistan.",
   keywords: [
     "Combine Foundation",
-    "Non Profit Organization in Pakistan",
+    "Nonprofit Organization Pakistan",
     "NPO in Pakistan",
     "NGO in Pakistan",
-    "Tax Exempted NPO",
-    "Tax Exempted NGO Pakistan",
+    "Tax-Exempt Nonprofit Pakistan",
     "Youth Leadership Program",
     "Youth Empowerment Pakistan",
     "Charity Organization in Pakistan",

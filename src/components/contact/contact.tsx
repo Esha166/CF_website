@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore/lite";
-import { db } from "@/lib/firebase";
+import Link from "next/link";
 import { isWithinCooldown, markSubmitted } from "@/lib/anti-spam";
+import Turnstile from "@/components/UI/Turnstile";
 // import type { Message } from "@/lib/collections";
 
 // ── Strict validators (work regardless of input type) ──────────────────────
@@ -48,6 +48,8 @@ const ContactForm = () => {
     const [success, setSuccess] = useState(false);
     const [submitError, setSubmitError] = useState("");
     const [honeypot, setHoneypot] = useState("");
+    const [turnstileToken, setTurnstileToken] = useState("");
+    const [turnstileReset, setTurnstileReset] = useState(0);
 
     // Validate a single field and return the error string
     const validateField = (name: string, value: string) => {
@@ -94,13 +96,6 @@ const ContactForm = () => {
         const hasErrors = Object.values(newErrors).some(Boolean);
         if (hasErrors) return;
 
-        if (!db) {
-            setSubmitError(
-                "Firebase is not initialized. Please check your environment variables."
-            );
-            return;
-        }
-
         if (honeypot.trim()) {
             setSubmitError("Submission blocked.");
             return;
@@ -112,25 +107,42 @@ const ContactForm = () => {
         }
 
         setLoading(true);
+        setSuccess(false);
         try {
-            const payload = {
-                name: sanitise(form.name),
-                email: sanitise(form.email),
-                subject: "Website Contact",
-                message: sanitise(form.message),
-                timestamp: new Date().toLocaleString(),
-                createdAt: serverTimestamp(),
-            };
-            await addDoc(collection(db, "contacts"), payload);
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: sanitise(form.name),
+                    email: sanitise(form.email),
+                    message: sanitise(form.message),
+                    website: honeypot,
+                    turnstileToken,
+                }),
+            });
+            const data = (await res.json().catch(() => ({}))) as { error?: string };
+
+            if (!res.ok) {
+                setSubmitError(data.error ?? "Something went wrong. Please try again.");
+                setTurnstileToken("");
+                setTurnstileReset((value) => value + 1);
+                return;
+            }
+
             markSubmitted("contact");
             setSuccess(true);
+            setSubmitError("");
             setForm({ name: "", email: "", message: "" });
             setErrors(EMPTY_ERRORS);
             setTouched({ name: false, email: false, message: false });
             setHoneypot("");
+            setTurnstileToken("");
+            setTurnstileReset((value) => value + 1);
         } catch (err) {
             console.error(err);
             setSubmitError("Something went wrong. Please try again.");
+            setTurnstileToken("");
+            setTurnstileReset((value) => value + 1);
         } finally {
             setLoading(false);
         }
@@ -243,6 +255,12 @@ const ContactForm = () => {
                             </div>
                         </div>
 
+                        <Turnstile
+                            onVerify={setTurnstileToken}
+                            resetKey={turnstileReset}
+                            className="min-h-[65px]"
+                        />
+
                         {submitError && (
                             <p className="text-sm lg:text-base text-red-500">{submitError}</p>
                         )}
@@ -251,6 +269,11 @@ const ContactForm = () => {
                                 ✓ Message sent successfully!
                             </p>
                         )}
+
+                        {/* Privacy Policy Notice */}
+                        <p className="text-xs text-gray-500 mt-3 text-center">
+                            By submitting this form, you agree to our <Link href="/privacy" className="text-secondary-600 underline hover:text-secondary-700">Privacy Policy.</Link>
+                        </p>
 
                         <button
                             type="submit"

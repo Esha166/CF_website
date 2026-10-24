@@ -7,7 +7,6 @@ import { X, Send, Bot, MessageCircle } from 'lucide-react';
 
 // Site palette (from the screenshot): orange #FF6B00, deep navy-teal headings, soft blue-grey page bg
 const ORANGE = 'var(--secondary-500, #FF6B00)';
-const ORANGE_DARK = 'var(--secondary-600, #E55F00)';
 const NAVY = '#0B3A52';
 
 const SUGGESTIONS = ['What programs do you run?', 'How can I volunteer?', 'Upcoming events'];
@@ -29,8 +28,23 @@ function TypingDots() {
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
+  const [rateNotice, setRateNotice] = useState('');
   const { messages, sendMessage, status, error } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/chat' }),
+    transport: new DefaultChatTransport({
+      api: '/api/chat',
+      fetch: async (input, init) => {
+        const res = await fetch(input, init);
+        if (res.status === 429) {
+          const data = (await res.clone().json().catch(() => null)) as {
+            error?: string;
+          } | null;
+          setRateNotice(data?.error ?? 'Too many messages. Please wait a moment and try again.');
+          // Suppress the generic useChat error so only the rate notice shows.
+          return res;
+        }
+        return res;
+      },
+    }),
   });
   const isLoading = status === 'submitted' || status === 'streaming';
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -41,6 +55,7 @@ export default function ChatbotWidget() {
 
   const send = (text: string) => {
     if (!text.trim() || isLoading) return;
+    setRateNotice('');
     sendMessage({ text });
     setInput('');
   };
@@ -198,10 +213,18 @@ export default function ChatbotWidget() {
               );
             })}
 
+            {rateNotice && (
+              <div className="flex justify-start">
+                <div className="max-w-[84%] rounded-2xl rounded-bl-md px-3.5 py-2.5 text-[13px] bg-amber-50 text-amber-800 border border-amber-200">
+                  {rateNotice}
+                </div>
+              </div>
+            )}
+
             {error && (
               <div className="flex justify-start">
                 <div className="max-w-[84%] rounded-2xl rounded-bl-md px-3.5 py-2.5 text-[13px] bg-red-50 text-red-700 border border-red-200">
-                  Couldn't get a response. Please try again in a moment.
+                  Couldn&apos;t get a response. Please try again in a moment.
                 </div>
               </div>
             )}

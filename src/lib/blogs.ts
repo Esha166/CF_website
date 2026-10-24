@@ -1,4 +1,4 @@
-import { collection, getDocs, query, where, limit, updateDoc, doc, arrayUnion, increment } from "firebase/firestore/lite";
+import { collection, getDocs, query, where, limit, updateDoc, doc, increment, orderBy } from "firebase/firestore/lite";
 import { db } from "@/lib/firebase";
 
 export interface CommentData {
@@ -7,6 +7,26 @@ export interface CommentData {
   date: string;
   text: string;
   avatar: string;
+}
+
+type CommentTimestamp = Date | { toDate?: () => Date } | string | null | undefined;
+
+function formatCommentDate(value: CommentTimestamp): string {
+  let date: Date;
+
+  if (value instanceof Date) {
+    date = value;
+  } else if (value && typeof value === "object" && typeof value.toDate === "function") {
+    date = value.toDate();
+  } else if (typeof value === "string") {
+    date = new Date(value);
+  } else {
+    date = new Date();
+  }
+
+  if (Number.isNaN(date.getTime())) date = new Date();
+
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
 export interface BlogPost {
@@ -43,8 +63,16 @@ export async function getAllBlogs(): Promise<BlogPost[]> {
         try {
             const snap = await getDocs(collection(db, "blogs"));
             return snap.docs.map(doc => {
-                const { createdAt, ...rest } = doc.data();
-                return { id: doc.id, ...rest } as BlogPost;
+                const data = doc.data();
+                const rest = { ...data };
+                delete rest.createdAt;
+                return {
+                    id: doc.id,
+                    ...rest,
+                    comments: typeof data.comments === "number" ? data.comments : 0,
+                    likes: typeof data.likes === "number" ? data.likes : 0,
+                    commentList: Array.isArray(data.commentList) ? data.commentList : [],
+                } as BlogPost;
             });
         } catch (error) {
             console.error("Error fetching blogs:", error);
@@ -65,8 +93,15 @@ export async function getBlogBySlug(slug: string): Promise<BlogPost | undefined>
         if (snap.empty) return undefined;
         const doc = snap.docs[0];
         const data = doc.data();
-        const { createdAt, ...rest } = data;
-        return { id: doc.id, ...rest } as BlogPost;
+        const rest = { ...data };
+        delete rest.createdAt;
+        return {
+            id: doc.id,
+            ...rest,
+            comments: typeof data.comments === "number" ? data.comments : 0,
+            likes: typeof data.likes === "number" ? data.likes : 0,
+            commentList: Array.isArray(data.commentList) ? data.commentList : [],
+        } as BlogPost;
     } catch (error) {
         console.error("Error fetching blog by slug:", error);
         return undefined;
@@ -80,27 +115,51 @@ export async function getAllBlogSlugs() {
 
 // ─── Comments Functions ──────────────────────────────────────────
 
-export async function saveComment(blogId: string, name: string, text: string): Promise<CommentData | null> {
-    if (!db) return null;
+export async function getComments(blogId: string): Promise<CommentData[]> {
+    if (!db) return [];
     try {
-        const newComment: CommentData = {
-            id: Date.now().toString(),
-            name,
-            date: new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }),
-            text,
-            avatar: "",
-        };
+        const snap = await getDocs(
+            query(collection(db, "blogs", blogId, "comments"), orderBy("createdAt", "desc"))
+        );
 
-        await updateDoc(doc(db, "blogs", blogId), {
-            commentList: arrayUnion(newComment),
-            comments: increment(1),
+        return snap.docs.map((commentDoc) => {
+            const data = commentDoc.data();
+            return {
+                id: commentDoc.id,
+                name: typeof data.name === "string" ? data.name : "",
+                date: formatCommentDate(data.createdAt),
+                text: typeof data.text === "string" ? data.text : "",
+                avatar: typeof data.avatar === "string" ? data.avatar : "",
+            };
         });
-
-        return newComment;
     } catch (error) {
-        console.error("Error saving comment:", error);
-        return null;
+        console.error("Error fetching comments:", error);
+        return [];
     }
+}
+
+export async function saveComment(
+    blogId: string,
+    name: string,
+    text: string,
+    turnstileToken = "",
+    website = ""
+): Promise<CommentData> {
+    const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blogId, name, text, turnstileToken, website }),
+    });
+    const data = (await res.json().catch(() => ({}))) as {
+        comment?: CommentData;
+        error?: string;
+    };
+
+    if (!res.ok || !data.comment) {
+        throw new Error(data.error ?? "Failed to post comment. Please try again.");
+    }
+
+    return data.comment;
 }
 
 // ─── Likes Functions ─────────────────────────────────────────────

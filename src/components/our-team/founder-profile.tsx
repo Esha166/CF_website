@@ -16,7 +16,7 @@ export default function FounderProfile() {
             Mr. Amin Nathani
           </h3>
           <p className="text-sm md:text-base text-primary-800 mb-5">
-            Founder & Board of Director
+            Founder & Member, Board of Directors
           </p>
 
           <p className="text-xs sm:text-xs lg:text-lg xl:text-xl text-gray-800 leading-relaxed mb-5">
