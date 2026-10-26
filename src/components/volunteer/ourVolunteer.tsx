@@ -6,7 +6,7 @@ import Image from "next/image";
 const TESTIMONIALS = [
     {
         name: "Manal Kafeel",
-        role: "Volunteer — Content Writer",
+        role: "Volunteer, Content Writer",
         quote:
             "My six-month journey as a Content Writer team member at Combine Foundation has been one of the most helpful and meaningful experiences in my content writing journey. This is where I truly learned how to research properly, structure content, and write with clarity and purpose. Working on education and health-related topics felt very close to my heart, which motivated me to give my best. The team and coordinators were extremely supportive, patient, and understanding, especially during deadlines or delays, which created a positive and stress-free working environment. Being part of such a cooperative and respectful team helped me grow not only as a writer but also as a responsible team member. Overall, this experience strengthened my confidence, improved my skills, and made me more passionate about purpose-driven content writing.",
         image: "/volunteer-program/testimonial.webp",

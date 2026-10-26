@@ -75,6 +75,12 @@ const faqs: FaqItem[] = [
     answer:
       "Because it is more than just volunteering, it is a journey of learning, growth, networking, leadership, and career development while making a positive impact on society.",
   },
+  {
+    id: 12,
+    question: "Are courses free for volunteers?",
+    answer:
+      "Yes. Combine Foundation volunteers get free access to the IT and professional courses available through the volunteer portal. If you apply for a course through our website, you can also get up to 95% scholarship on eligible courses.",
+  },
 ];
 
 export default function VolunteerFAQ() {

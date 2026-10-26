@@ -25,16 +25,20 @@ export default function Footer() {
 
       <div className="max-w-[1500px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 relative z-10">
         {/* Left Column (Logo and Text) */}
-        <div className="hidden md:col-span-5 md:flex flex-col pr-4">
+        <div className="flex flex-col md:col-span-5 pr-4">
           <div className="bg-white inline-flex items-center justify-center rounded-md w-max mb-6">
             <Image src="/logo.png" alt="Combine Foundation Logo" width={180} height={135} className="object-contain" />
           </div>
-          <p className="text-[13px] text-gray-300 leading-relaxed mb-12 max-w-sm">
-            Combine Foundation is a registered non-profit organization under Section 42 of the Companies Act 2017 while we are Tax exempted organization and the social impact arm of Combine Group. We are dedicated to creating sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare. Our approach is built on transparency, innovation, and long-term impact.
+          <p className="text-[13px] text-gray-300 leading-relaxed mb-6 max-w-sm">
+            Combine Foundation is a registered non-profit under Section 42 of the Companies Act 2017 and a tax-exempt organisation, and the social impact arm of Combine Group. We are dedicated to creating sustainable change in Pakistan by focusing on education, health awareness, youth empowerment, and community welfare. Our approach is built on transparency, innovation, and long-term impact.
           </p>
-          <div className="mt-auto text-xs text-gray-300 space-y-3">
-            <p>Charity Registration No : PCP-R3/2022/234</p>
-            <p>National Tax No : 3162706-4</p>
+          <div className="mt-auto text-xs text-gray-300 space-y-2">
+            <p>Charity Registration No: PCP-R3/2022/234</p>
+            <p>National Tax No: 3162706-4</p>
+            <p className="leading-relaxed">
+              <span className="font-semibold text-white">Registered Address:</span>{" "}
+              B-18 Block 16 Gulshan-e-Iqbal near Expo Centre main University Road Karachi, Sindh, Pakistan
+            </p>
           </div>
         </div>
 
@@ -58,7 +62,7 @@ export default function Footer() {
           </div>
 
           {/* Support */}
-          <div className="hidden md:flex flex-col space-y-4">
+          <div className="flex flex-col space-y-4">
             <h3 className="text-orange font-black text-lg mb-2">Support</h3>
             <Link href="/contact" className="text-lg font-black text-gray-200 hover:text-white transition-colors">Contact Us</Link>
             <Link href="/privacy" className="text-lg font-black text-gray-200 hover:text-white transition-colors">Privacy Policy</Link>
@@ -66,6 +70,15 @@ export default function Footer() {
             <Link href="/publications#annual-reports" className="text-lg font-black text-gray-200 hover:text-white transition-colors">Annual Reports</Link>
           </div>
         </div>
+      </div>
+
+      {/* Bottom Bar: Copyright & Registered Address */}
+      <div className="max-w-[1500px] mx-auto mt-12 pt-6 border-t border-white/15 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-gray-300 relative z-10 text-center md:text-left">
+        <p className="font-medium text-gray-200">© 2026 Combine Foundation</p>
+        <p className="text-gray-300 max-w-xl md:text-right leading-relaxed">
+          <span className="font-semibold text-white">Registered Address:</span>{" "}
+          B-18 Block 16 Gulshan-e-Iqbal near Expo Centre main University Road Karachi, Sindh, Pakistan
+        </p>
       </div>
     </footer>
   );

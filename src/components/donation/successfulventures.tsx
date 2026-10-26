@@ -34,7 +34,7 @@ const VENTURES = [
         id: 3,
         heading: "Kitchen Garden Festival - Promoting Sustainable Living Through Kitchen Gardening",
         description:
-            "Our 'Kitchen Garden' Campaign is a Change Making campaign where we focus on spreading organic living, environmental consciousness, and health-oriented practices among individuals within societies. It involves education programs and participation by people from within communities so that the significance of leading an eco-friendly life can be known.\n\nWe have succeeded in encouraging many families to adopt kitchen gardening and live a healthy lifestyle. Our goal is to make our society more sustainable.",
+            "Our Kitchen Garden Festival is a change-making initiative where we focus on spreading organic living, environmental consciousness, and health-oriented practices among individuals within societies. It involves education programs and participation by people from within communities so that the significance of leading an eco-friendly life can be known.\n\nWe have succeeded in encouraging many families to adopt kitchen gardening and live a healthy lifestyle. Our goal is to make our society more sustainable.",
         images: [
             "/donation/Kitchen Gardening.webp",
             "/donation/Kitchen Gardening.png",

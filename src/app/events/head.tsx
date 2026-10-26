@@ -1,12 +1,4 @@
-
+// Deprecated in Next.js App Router in favor of Metadata API in page.tsx
 export default function Head() {
-  return (
-    <>
-      <title>Events | Combine Foundation</title>
-      <meta
-        name="description"
-        content="Discover upcoming and past events organized by Combine Foundation."
-      />
-    </>
-  );
+  return null;
 }

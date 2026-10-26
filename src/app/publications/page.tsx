@@ -8,10 +8,9 @@ import PageMotion from "@/components/UI/PageMotion"
 
 export const metadata = {
     title: "Publications",
-    description: "Explore Combine Foundation's annual reports, MOUs, tax and Sharia compliance certificates as a registered, tax exempted NPO in Pakistan.",
+    description: "Explore Combine Foundation's annual reports, MOUs, tax and Sharia compliance certificates as a registered, tax-exempt NPO in Pakistan.",
     keywords: [
-        "Tax Exempted NPO",
-        "Tax Exempted NGO Pakistan",
+        "Tax-Exempt Nonprofit Pakistan",
         "NPO in Pakistan",
         "NGO in Pakistan",
         "Nonprofit Annual Report Pakistan",

@@ -27,7 +27,7 @@ export async function generateMetadata({
 
   if (!course) {
     return {
-      title: "Free Course",
+      title: "Courses",
     };
   }
 
@@ -36,7 +36,7 @@ export async function generateMetadata({
     description: course.description,
     keywords: [
       course.title,
-      "Free Courses Pakistan",
+      "Courses Pakistan",
       "Youth Leadership Program",
       "Youth Empowerment Pakistan",
       "NGO in Pakistan",

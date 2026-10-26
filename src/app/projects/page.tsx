@@ -1,90 +1,73 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
-import PageHeroMobile from "@/components/UI/Pageheromobile";
-import AchievementsList from "@/components/projects/Achievementslist ";
-import { getAllProjects, type Project } from "@/lib/projects";
-import { getEventLocations, type EventLocation } from "@/lib/events";
-import { Loader2 } from "lucide-react";
+import type { Metadata } from "next";
+import { getAllProjects } from "@/lib/projects";
+import { getEventLocations } from "@/lib/events";
+import ProjectsClientView from "@/components/projects/ProjectsClientView";
 import PageMotion from "@/components/UI/PageMotion";
 
-const AchievementsMap = dynamic(() => import("@/components/projects/map"), { ssr: false });
+interface PageProps {
+  searchParams: Promise<{
+    id?: string;
+  }>;
+}
 
-export default function Projects() {
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [eventLocations, setEventLocations] = useState<EventLocation[]>([]);
-  const [loading, setLoading] = useState(true);
+export const revalidate = 3600;
 
-  useEffect(() => {
-    const loadProjects = async () => {
-      try {
-        const data = await getAllProjects();
-        setProjects(data);
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const { id } = await searchParams;
+  const projects = await getAllProjects();
 
-        const params = new URLSearchParams(window.location.search);
-        const urlId = params.get("id");
-        if (urlId) {
-          const exists = data.some((p) => String(p.id) === urlId);
-          if (exists) {
-            setActiveId(urlId);
-            setTimeout(() => {
-              const el = document.getElementById(`project-card-${urlId}`);
-              el?.scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 300);
-          }
-        }
-      } catch (err) {
-        console.error("Error loading projects:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadProjects();
+  if (id) {
+    const project = projects.find((p) => String(p.id) === String(id));
+    if (project) {
+      const desc = project.description
+        ? project.description.replace(/\s+/g, " ").trim().slice(0, 160)
+        : "Explore this project by Combine Foundation.";
+      return {
+        title: `${project.title} - Projects`,
+        description: desc,
+        openGraph: {
+          title: `${project.title} | Combine Foundation`,
+          description: desc,
+          type: "article",
+          images: project.images?.[0] ? [{ url: project.images[0], alt: project.title }] : [],
+        },
+        twitter: {
+          card: "summary_large_image",
+          title: `${project.title} | Combine Foundation`,
+          description: desc,
+          images: project.images?.[0] ? [project.images[0]] : [],
+        },
+      };
+    }
+  }
 
-    getEventLocations()
-      .then(setEventLocations)
-      .catch((err) => console.error("Error loading event locations:", err));
-  }, []);
-
-  const handleMapSelect = (id: string) => {
-    setActiveId(id);
-    setTimeout(() => {
-      const el = document.getElementById(`project-card-${id}`);
-      el?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 150);
+  return {
+    title: "Projects",
+    description:
+      "Explore Combine Foundation's impactful initiatives, community welfare projects, and achievements across Pakistan.",
+    keywords: [
+      "Combine Foundation Projects",
+      "NGO Projects in Pakistan",
+      "Welfare Initiatives Pakistan",
+      "Community Development Programs",
+    ],
   };
+}
 
-  const handleCardToggle = (id: string) => {
-    setActiveId((prev) => (prev === id ? null : id));
-  };
+export default async function ProjectsPage({ searchParams }: PageProps) {
+  const { id } = await searchParams;
+  const [projects, eventLocations] = await Promise.all([
+    getAllProjects(),
+    getEventLocations(),
+  ]);
 
   return (
     <PageMotion>
-      <div>
-        {loading ? (
-          <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center py-20">
-            <Loader2 className="w-10 h-10 text-orange animate-spin" />
-            <span className="mt-4 text-gray-600 font-medium">Loading projects...</span>
-          </div>
-        ) : (
-          <>
-            <PageHeroMobile title="Projects" imageSrc="/achievement-gallery/hero.webp" />
-            <AchievementsMap
-              projects={projects}
-              events={eventLocations}
-              activeId={activeId}
-              onSelect={handleMapSelect}
-            />
-            <AchievementsList
-              projects={projects}
-              activeId={activeId}
-              onToggle={handleCardToggle}
-            />
-          </>
-        )}
-      </div>
+      <ProjectsClientView
+        initialProjects={projects}
+        initialEventLocations={eventLocations}
+        initialActiveId={id || null}
+      />
     </PageMotion>
   );
 }

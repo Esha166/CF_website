@@ -16,14 +16,14 @@ const certificates: Certificate[] = [
         title: "Certificate of Incorporation",
         image: "/publications/pub1.png",
         imageAlt: "COI",
-        url: "/COI (Combine Foundation).pdf",
+        url: "/coi-combine-foundation.pdf",
     },
     {
         id: 2,
         title: "PCP Certificate",
         image: "/publications/pub2.png",
         imageAlt: "PCP Certificate",
-        url: "/PCP Certificate - 2026-1.pdf",
+        url: "/pcp-certificate-2026-1.pdf",
     },
     {
         id: 3,
@@ -37,7 +37,7 @@ const certificates: Certificate[] = [
         title: "FBR Certificate",
         image: "/publications/pub4.png",
         imageAlt: "FBR Certificate",
-        url: "/FBR Certificate.pdf",
+        url: "/fbr-certificate.pdf",
     },
 ];
 
@@ -95,7 +95,7 @@ const CertificateCard = ({ cert }: { cert: Certificate }) => {
 
 const TaxShariaCertificates = () => {
     return (
-        <section className="bg-white py-12">
+        <section id="tax-certificates" className="scroll-mt-28 bg-white py-12">
             <div className="max-w-[1500px] mx-auto px-4 md:px-6 lg:px-8">
 
                 <div className="mb-2">

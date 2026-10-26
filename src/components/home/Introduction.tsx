@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 const paragraphs = [
-  "Combine Foundation is a Pakistan-based Non-Profit Organization working to improve access to healthcare awareness and education for underserved communities. Combine Foundation is officially registered as a Non-Profit Organization (NPO) under Section 42 of the Companies Act 2017, in 2023",
+  "Combine Foundation is a Pakistan-based Non-Profit Organization working to improve access to healthcare awareness and education for underserved communities. Combine Foundation is officially registered as a Non-Profit Organization (NPO) under Section 42 of the Companies Act 2017, in 2023.",
   "Our vision is to empower youth as responsible, confident, and socially-aware leaders who drive positive change, promote community development, and contribute to a more equitable and sustainable society.",
 ];
 

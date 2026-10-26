@@ -2,6 +2,13 @@ import { createChatResponse } from '@/lib/ai/provider';
 import { SYSTEM_PROMPT } from '@/lib/ai/system-prompt';
 import { chatbotTools } from '@/lib/ai/tools';
 import { matchTrivialIntent, buildTrivialReply } from '@/lib/ai/router';
+import { checkRateLimit } from '@/lib/server/rate-limit';
+import {
+  getClientIp,
+  hashRateLimitKey,
+  jsonError,
+  readJsonBody,
+} from '@/lib/server/security';
 import {
   createUIMessageStream,
   createUIMessageStreamResponse,
@@ -9,6 +16,12 @@ import {
 } from 'ai';
 
 export const maxDuration = 30;
+export const runtime = 'nodejs';
+
+const RATE_LIMIT = 20;
+const RATE_WINDOW_MS = 5 * 60 * 1000;
+const MAX_MESSAGE_LENGTH = 2000;
+const MAX_BODY_BYTES = 100_000;
 
 function getMessageText(message: UIMessage): string {
   return message.parts
@@ -37,13 +50,43 @@ function plainTextResponse(text: string): Response {
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json();
+    const ip = getClientIp(req);
+    const rate = await checkRateLimit(
+      `chat:${hashRateLimitKey(ip)}`,
+      RATE_LIMIT,
+      RATE_WINDOW_MS
+    );
+    if (!rate.allowed) {
+      const minutes = Math.ceil(rate.retryAfterSeconds / 60);
+      return jsonError(
+        `Too many messages. Please wait ${minutes} minute${minutes === 1 ? '' : 's'} and try again.`,
+        429,
+        rate.retryAfterSeconds
+      );
+    }
+
+    const parsed = await readJsonBody(req, MAX_BODY_BYTES);
+    if (!parsed.ok) {
+      return jsonError(
+        parsed.status === 413 ? 'Request is too large.' : 'Invalid request.',
+        parsed.status
+      );
+    }
+
+    const { messages } = parsed.body;
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return jsonError('Invalid request.', 400);
+    }
 
     // Fast path: greetings, thanks, contact and mission are answered instantly
     // without spending an AI call.
     const lastUser = [...messages].reverse().find((m: UIMessage) => m.role === 'user');
     if (lastUser) {
-      const intent = matchTrivialIntent(getMessageText(lastUser));
+      const text = getMessageText(lastUser);
+      if (text.length > MAX_MESSAGE_LENGTH) {
+        return jsonError('Message is too long. Please keep it under 2000 characters.', 400);
+      }
+      const intent = matchTrivialIntent(text);
       if (intent) {
         return plainTextResponse(await buildTrivialReply(intent));
       }

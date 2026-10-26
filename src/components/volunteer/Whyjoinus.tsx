@@ -30,9 +30,9 @@ const PANELS = [
   },
   {
     "src": "/home/impact cards/4.webp",
-    "label": "Free IT Courses",
-    "heading": "Learn In-Demand Technical Skills",
-    "desc": "Access free IT courses designed to enhance your technical knowledge and help you stay competitive in today's job market."
+    "label": "Free Courses",
+    "heading": "Free Courses & Scholarships",
+    "desc": "Combine Foundation volunteers get free access to our IT and professional courses through the volunteer portal. Not a volunteer yet? Apply through our website and get up to 95% scholarship on eligible courses."
   },
   {
     "src": "/home/impact cards/6.webp",
@@ -44,7 +44,7 @@ const PANELS = [
     "src": "/volunteer-program/why join us (3).webp",
     "label": "Recognition",
     "heading": "Earn Certificates & Recommendation Letters",
-    "desc": "Outstanding volunteers receive professional certificates and recommendation letters based on their dedication, commitment, and performance."
+    "desc": "Active volunteers receive professional certificates and recommendation letters based on their dedication, commitment, and performance."
   },
   {
     "src": "/volunteer-program/career.webp",

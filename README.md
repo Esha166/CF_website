@@ -84,9 +84,23 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
+
+# Firebase Admin — required for server-side contact/comment writes and rate limits
+FIREBASE_PROJECT_ID=
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=
+
+# Cloudflare Turnstile — protects the contact and comment forms
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=
+TURNSTILE_SECRET_KEY=
 ```
 
 > Never commit `.env.local` to the repository.
+>
+> `FIREBASE_PRIVATE_KEY` must keep its `\n` escapes when stored on a hosting
+> provider (for example `"-----BEGIN PRIVATE KEY-----\n..."`). If the Turnstile
+> secret is empty, verification is skipped; that is intended for local
+> development only, so configure both Turnstile keys in production.
 
 ---
 

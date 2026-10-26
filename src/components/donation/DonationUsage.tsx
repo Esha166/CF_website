@@ -9,7 +9,7 @@ const SLICES = [
         percent: "40%",
         value: 40,
         color: "var(--secondary-600)",
-        desc: "Your donations help us to provide AI, web development, digital literacy, and leadership training programs that empower youth to become skilled and self-dependent",
+        desc: "Your donations help us to provide AI, web development, digital literacy, and leadership training programs that empower youth to become skilled and self-reliant",
     },
     {
         label: "Scholarships & Student Support",
